@@ -29,7 +29,7 @@ export class Users {
   })
   password: string;
 
-  @Column({ type: 'enum', name: 'platform', enum: Platform })
+  @Column({ type: 'enum', name: 'platform', enum: Platform, nullable: true })
   platform: Platform;
 
   @CreateDateColumn()

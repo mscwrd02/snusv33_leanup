@@ -20,8 +20,8 @@ export class UsersController {
   }
 
   @Post()
-  postUsers(@Body() data: JoinRequestDto) {
-    this.userService.postUsers(data.email, data.password, data.password);
+  async postUsers(@Body() body: JoinRequestDto) {
+    await this.userService.postUsers(body.email, body.password, body.nickname);
   }
 
   @Post('login')
