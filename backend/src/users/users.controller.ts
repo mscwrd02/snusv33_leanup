@@ -10,8 +10,9 @@ import {
 import { JoinRequestDto } from 'src/dto/join.request.dto';
 import { UsersService } from './users.service';
 import { User } from 'src/decorators/user.decorator';
+import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 
-@Controller('users')
+@Controller('api/users')
 export class UsersController {
   constructor(private userService: UsersService) {}
   @Get()
@@ -25,6 +26,7 @@ export class UsersController {
   }
 
   @Post('login')
+  @UseGuards(LocalAuthGuard)
   logIn(@Req() req) {
     return req.user;
   }
