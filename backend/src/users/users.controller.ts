@@ -11,6 +11,8 @@ import { JoinRequestDto } from 'src/dto/join.request.dto';
 import { UsersService } from './users.service';
 import { User } from 'src/decorators/user.decorator';
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
+import { AuthGuard } from '@nestjs/passport';
+import { KakaoAuthGuard } from 'src/auth/kakao-auth.guard';
 
 @Controller('api/users')
 export class UsersController {
@@ -28,6 +30,18 @@ export class UsersController {
   @Post('login')
   @UseGuards(LocalAuthGuard)
   logIn(@Req() req) {
+    return req.user;
+  }
+
+  @Get('login/kakao')
+  @UseGuards(KakaoAuthGuard)
+  kakaoLogIn() {
+    return;
+  }
+
+  @Get('login/kakao/callback')
+  @UseGuards(KakaoAuthGuard)
+  kakaoLogInRedirect(@Req() req) {
     return req.user;
   }
 
