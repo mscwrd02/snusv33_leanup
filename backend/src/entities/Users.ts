@@ -1,3 +1,4 @@
+import { Plans } from './Plans';
 import { Platform } from './common/Platforms';
 import {
   Column,
@@ -5,6 +6,7 @@ import {
   DeleteDateColumn,
   Entity,
   Index,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -32,6 +34,9 @@ export class Users {
   @Column({ type: 'enum', name: 'platform', enum: Platform, nullable: true })
   platform: Platform;
 
+  @Column('varchar', { name: 'profile_image', nullable: true, length: 250 })
+  profileImage: string | null;
+
   @CreateDateColumn()
   createdAt: Date;
 
@@ -40,4 +45,7 @@ export class Users {
 
   @DeleteDateColumn()
   deletedAt: Date | null;
+
+  @OneToMany(() => Plans, (plans) => plans.Owner)
+  Plans: Plans[];
 }
