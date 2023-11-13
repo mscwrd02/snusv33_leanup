@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Plans } from './Plans';
+import { Users } from './Users';
 
 @Entity({ schema: 'frienvel', name: 'category_responses' })
 export class CategoryResponses {
@@ -24,4 +25,11 @@ export class CategoryResponses {
   })
   @JoinColumn([{ name: 'PlanId', referencedColumnName: 'id' }])
   Plan: Plans;
+
+  @ManyToOne(() => Users, (users) => users.CategoryResponses, {
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn([{ name: 'UserId', referencedColumnName: 'id' }])
+  User: Users;
 }

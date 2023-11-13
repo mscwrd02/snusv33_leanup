@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as _ from 'lodash';
 import { AuthService } from './auth.service';
-import { Platform } from 'src/entities/common/Platforms';
+import { Platform } from 'src/entities/common/Platform';
 
 @Injectable()
 export class KakaoStrategy extends PassportStrategy(Strategy) {

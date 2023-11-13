@@ -10,14 +10,16 @@ import {
 import { SpotImages } from './SpotImages';
 import { Categories } from './Categories';
 import { Plans } from './Plans';
+import { Region } from './common/Region';
+import { Recommends } from './Recommends';
 
 @Entity({ schema: 'frienvel', name: 'spots' })
 export class Spots {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
 
-  @Column('varchar', { name: 'location', length: 100 })
-  location: string;
+  @Column('varchar', { name: 'address', length: 100 })
+  address: string;
 
   @Column('varchar', { name: 'hours', length: 100, nullable: true })
   hours: string;
@@ -43,6 +45,9 @@ export class Spots {
   @Column('int', { name: 'reviews', default: 0 })
   reviews: number;
 
+  @Column({ type: 'enum', name: 'region', enum: Region })
+  region: Region;
+
   @CreateDateColumn()
   createdAt: Date;
 
@@ -57,4 +62,7 @@ export class Spots {
 
   @ManyToMany(() => Plans, (plans) => plans.SpotList)
   Plans: Plans[];
+
+  @OneToMany(() => Recommends, (recommends) => recommends.Spot)
+  Recommends: Recommends[];
 }

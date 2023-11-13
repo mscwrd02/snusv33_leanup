@@ -1,11 +1,14 @@
+import { CategoryResponses } from './CategoryResponses';
 import { Plans } from './Plans';
-import { Platform } from './common/Platforms';
+import { SpotResponses } from './SpotResponses';
+import { Platform } from './common/Platform';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
   Index,
+  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -48,4 +51,16 @@ export class Users {
 
   @OneToMany(() => Plans, (plans) => plans.Owner)
   Plans: Plans[];
+
+  @OneToMany(
+    () => CategoryResponses,
+    (CategoryResponses) => CategoryResponses.User,
+  )
+  CategoryResponses: CategoryResponses[];
+
+  @OneToMany(() => SpotResponses, (SpotResponses) => SpotResponses.User)
+  SpotResponses: SpotResponses[];
+
+  @ManyToMany(() => Plans, (plans) => plans.ParticipantsList)
+  ParticipatedPlans: Plans[];
 }

@@ -6,6 +6,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { Plans } from './Plans';
+import { Users } from './Users';
 
 @Entity({ schema: 'frienvel', name: 'spot_responses' })
 export class SpotResponses {
@@ -27,4 +28,11 @@ export class SpotResponses {
   })
   @JoinColumn([{ name: 'PlanId', referencedColumnName: 'id' }])
   Plan: Plans;
+
+  @ManyToOne(() => Users, (users) => users.SpotResponses, {
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn([{ name: 'UserId', referencedColumnName: 'id' }])
+  User: Users;
 }

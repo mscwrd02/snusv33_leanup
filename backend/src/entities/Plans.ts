@@ -15,6 +15,7 @@ import { Users } from './Users';
 import { CategoryResponses } from './CategoryResponses';
 import { SpotResponses } from './SpotResponses';
 import { Spots } from './Spots';
+import { Recommends } from './Recommends';
 
 @Entity({ schema: 'frienvel', name: 'plans' })
 export class Plans {
@@ -24,8 +25,8 @@ export class Plans {
   @Column('varchar', { name: 'link', unique: true, length: 50 })
   link: string;
 
-  @Column('int', { name: 'friends' })
-  friends: number;
+  @Column('int', { name: 'group_num' })
+  group_num: number;
 
   @Column('int', { name: 'category_participants' })
   categoryParticipations: number;
@@ -77,4 +78,21 @@ export class Plans {
     },
   })
   SpotList: Spots[];
+
+  @ManyToMany(() => Users, (users) => users.Plans)
+  @JoinTable({
+    name: 'groups',
+    joinColumn: {
+      name: 'PlanId',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'UserId',
+      referencedColumnName: 'id',
+    },
+  })
+  ParticipantsList: Users[];
+
+  @OneToMany(() => Recommends, (recommends) => recommends.Plan)
+  Recommends: Recommends[];
 }

@@ -5,6 +5,7 @@ import { HttpExceptionFilter } from './http-exception.filter';
 import passport from 'passport';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 declare const module: any;
 
 async function bootstrap() {
@@ -17,6 +18,16 @@ async function bootstrap() {
     credentials: true,
   });
   app.use(cookieParser());
+
+  const config = new DocumentBuilder()
+    .setTitle('leanup API')
+    .setDescription('여행어플 개발을 위한 API 문서')
+    .setVersion('1.0')
+    .addCookieAuth('connect.sid')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
+
   app.use(
     session({
       resave: false,
