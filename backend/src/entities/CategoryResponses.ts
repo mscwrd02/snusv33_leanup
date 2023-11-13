@@ -20,7 +20,7 @@ export class CategoryResponses {
   categoryList: string;
 
   @ManyToOne(() => Plans, (plans) => plans.CategoryResponses, {
-    onDelete: 'SET NULL',
+    onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
   @JoinColumn([{ name: 'PlanId', referencedColumnName: 'id' }])

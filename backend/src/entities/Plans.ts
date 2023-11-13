@@ -28,10 +28,10 @@ export class Plans {
   @Column('int', { name: 'group_num' })
   group_num: number;
 
-  @Column('int', { name: 'category_participants' })
+  @Column('int', { name: 'category_participants', default: 0 })
   categoryParticipations: number;
 
-  @Column('int', { name: 'spot_participants' })
+  @Column('int', { name: 'spot_participants', default: 0 })
   spotParticipations: number;
 
   @Column('date', { name: 'start_date' })
