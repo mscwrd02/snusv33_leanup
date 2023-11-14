@@ -1,5 +1,3 @@
-
-
 name: Deploy NestJS Application
 
 # main 브랜치로 push 혹은 pr이 날라와서 merge되면 workflow가 작동합니다.
