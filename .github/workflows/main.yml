@@ -14,7 +14,7 @@ env:
   AWS_REGION: ap-northeast-2
   S3_BUCKET_NAME: mscwrd02-github-action-s3-bucket
   PROJECT_NAME: my-nest-pp
-  AWS_CODEDEPLOY_APPLICATION_NAME: my-snusv33-leanup-app
+  AWS_CODEDEPLOY_APPLICATION_NAME: my-snusv33_leanup_app
   AWS_CODEDEPLOY_DEPLOYMENT_GROUP_NAME: my-codedeploy-deployment-group
 
 jobs:
