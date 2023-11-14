@@ -20,7 +20,9 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "db:create": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs db:create -d ./dataSource.ts",
+    "db:create:prod": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs db:create -d ./dist/dataSource.ts",
     "db:drop": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs db:drop -d ./dataSource.ts",
+    "db:drop:prod": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs db:drop -d ./dist/dataSource.ts",
     "seed": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d ./dataSource.ts"
   },
   "dependencies": {
