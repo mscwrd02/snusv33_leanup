@@ -6,7 +6,7 @@ files:
     overwrite: yes
 
 permissions:
-  - object: /
+  - object: /home/ubuntu/my-nest-app
     pattern: '**'
     owner: ubuntu
     group: ubuntu
