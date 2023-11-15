@@ -1,10 +1,9 @@
 import {
   Body,
   Controller,
+  ForbiddenException,
   Get,
   Post,
-  Req,
-  Res,
   UseGuards,
 } from '@nestjs/common';
 import { JoinRequestDto } from 'src/dto/join.request.dto';
@@ -28,7 +27,16 @@ export class UsersController {
   @Post()
   @UseGuards(NotLoggedInGuard)
   async postUsers(@Body() body: JoinRequestDto) {
-    await this.userService.postUsers(body.email, body.password, body.nickname);
+    const result = await this.userService.postUsers(
+      body.email,
+      body.password,
+      body.nickname,
+    );
+    if (result) {
+      return 'ok';
+    } else {
+      throw new ForbiddenException();
+    }
   }
 
   @ApiOperation({ summary: '프로필 사진 변경' })

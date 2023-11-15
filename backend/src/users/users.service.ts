@@ -22,5 +22,6 @@ export class UsersService {
       password: hashedPassword,
       platform: Platform.OWN,
     });
+    return true;
   }
 }
