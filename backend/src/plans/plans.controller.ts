@@ -1,14 +1,4 @@
-import {
-  Controller,
-  Delete,
-  Get,
-  Post,
-  Put,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
-import { Plans } from 'src/entities/Plans';
-import { Repository } from 'typeorm';
+import { Controller, Delete, Get, Post, Put, UseGuards } from '@nestjs/common';
 import { PlansService } from './plans.service';
 import { ApiOperation } from '@nestjs/swagger';
 import { LoggedInGuard } from 'src/auth/logged-in-guard';
