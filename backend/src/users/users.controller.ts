@@ -10,45 +10,32 @@ import {
 import { JoinRequestDto } from 'src/dto/join.request.dto';
 import { UsersService } from './users.service';
 import { User } from 'src/decorators/user.decorator';
-import { LocalAuthGuard } from 'src/auth/local-auth.guard';
-import { AuthGuard } from '@nestjs/passport';
-import { KakaoAuthGuard } from 'src/auth/kakao-auth.guard';
+import { NotLoggedInGuard } from 'src/auth/not-logged-in-guard';
+import { LoggedInGuard } from 'src/auth/logged-in-guard';
+import { ApiOperation } from '@nestjs/swagger';
 
 @Controller('api/users')
 export class UsersController {
   constructor(private userService: UsersService) {}
+
+  @ApiOperation({ summary: '내 정보 가져오기' })
   @Get()
   getUsers(@User() user) {
-    return user;
+    return user || false;
   }
 
+  @ApiOperation({ summary: '회원가입' })
   @Post()
+  @UseGuards(NotLoggedInGuard)
   async postUsers(@Body() body: JoinRequestDto) {
     await this.userService.postUsers(body.email, body.password, body.nickname);
   }
 
-  @Post('login')
-  @UseGuards(LocalAuthGuard)
-  logIn(@Req() req) {
-    return req.user;
-  }
-
-  @Get('login/kakao')
-  @UseGuards(KakaoAuthGuard)
-  kakaoLogIn() {
-    return;
-  }
-
-  @Get('login/kakao/callback')
-  @UseGuards(KakaoAuthGuard)
-  kakaoLogInRedirect(@Req() req) {
-    return req.user;
-  }
-
-  @Post('logout')
-  logOut(@Req() req, @Res() res) {
-    req.logOut();
-    res.clearCookie('connect.sid', { httpOnly: true });
-    res.send('ok');
+  @ApiOperation({ summary: '프로필 사진 변경' })
+  @Post('profile_image')
+  @UseGuards(LoggedInGuard)
+  postProfileImage() {
+    //TODO : 프로필 사진 업로드
+    //수정도 같이 되게하기
   }
 }

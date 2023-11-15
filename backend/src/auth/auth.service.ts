@@ -27,7 +27,12 @@ export class AuthService {
     return null;
   }
 
-  async findOrCreateUser(email: string, nickname: string, platform: Platform) {
+  async findOrCreateUser(
+    email: string,
+    nickname: string,
+    platform: Platform,
+    profileImage: string,
+  ) {
     const user = await this.usersRepository.findOne({
       where: { email },
     });
@@ -37,6 +42,7 @@ export class AuthService {
       email: email,
       nickname: nickname,
       platform: platform,
+      profileImage: profileImage,
     });
     return newUser;
   }

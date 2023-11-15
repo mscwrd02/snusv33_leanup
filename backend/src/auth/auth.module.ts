@@ -8,6 +8,7 @@ import { LocalSerializer } from './local.serializer';
 import { LocalStrategy } from './local.strategy';
 import { KakaoStrategy } from './kakao.strategy';
 import { ConfigService } from '@nestjs/config';
+import { AuthController } from './auth.controller';
 
 @Module({
   imports: [
@@ -21,5 +22,6 @@ import { ConfigService } from '@nestjs/config';
     KakaoStrategy,
     ConfigService,
   ],
+  controllers: [AuthController],
 })
 export class AuthModule {}

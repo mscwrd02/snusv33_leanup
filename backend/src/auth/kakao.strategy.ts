@@ -5,6 +5,8 @@ import { ConfigService } from '@nestjs/config';
 import * as _ from 'lodash';
 import { AuthService } from './auth.service';
 import { Platform } from 'src/entities/common/Platform';
+import axios from 'axios';
+import { KakaotalkProfileDto } from 'src/dto/kakaotalk.profile.dto';
 
 @Injectable()
 export class KakaoStrategy extends PassportStrategy(Strategy) {
@@ -29,10 +31,19 @@ export class KakaoStrategy extends PassportStrategy(Strategy) {
       },
     } = profile;
 
+    const headersRequest = { Authorization: `Bearer ${accessToken}` };
+    const response = await axios.get(
+      'https://kapi.kakao.com/v1/api/talk/profile',
+      { headers: headersRequest },
+    );
+
+    const kakaotalkProfile: KakaotalkProfileDto = response.data;
+
     const user = await this.authService.findOrCreateUser(
       email,
-      nickname,
+      kakaotalkProfile.nickName,
       Platform.KAKAO,
+      kakaotalkProfile.profileImageURL,
     );
     return done(null, user);
   }
