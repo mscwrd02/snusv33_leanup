@@ -13,7 +13,6 @@ import { SpotsModule } from './spots/spots.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: `./.${process.env.NODE_ENV}.env`,
     }),
     UsersModule,
     AuthModule,

@@ -42,7 +42,6 @@ async function bootstrap() {
   app.use(passport.session());
 
   await app.listen(3095);
-  console.log('nodeemv' + process.env.NODE_ENV);
   if (module.hot) {
     module.hot.accept();
     module.hot.dispose(() => app.close());
