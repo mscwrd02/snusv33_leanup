@@ -65,20 +65,6 @@ export class Plans {
   @OneToMany(() => SpotResponses, (spotResponses) => spotResponses.Plan)
   SpotResponses: SpotResponses[];
 
-  @ManyToMany(() => Spots, (spots) => spots.Plans)
-  @JoinTable({
-    name: 'spot_forms',
-    joinColumn: {
-      name: 'PlanId',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'SpotId',
-      referencedColumnName: 'id',
-    },
-  })
-  SpotList: Spots[];
-
   @ManyToMany(() => Users, (users) => users.Plans)
   @JoinTable({
     name: 'groups',

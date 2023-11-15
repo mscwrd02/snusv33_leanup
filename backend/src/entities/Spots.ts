@@ -60,9 +60,6 @@ export class Spots {
   @ManyToMany(() => Categories, (categories) => categories.Spots)
   Categories: Categories[];
 
-  @ManyToMany(() => Plans, (plans) => plans.SpotList)
-  Plans: Plans[];
-
   @OneToMany(() => Recommends, (recommends) => recommends.Spot)
   Recommends: Recommends[];
 }
