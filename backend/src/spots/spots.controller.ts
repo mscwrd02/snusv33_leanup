@@ -1,6 +1,7 @@
 import { Controller, Get, Post } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('SPOT')
 @Controller('api/spots')
 export class SpotsController {
   constructor() {}

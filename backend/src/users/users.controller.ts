@@ -3,6 +3,7 @@ import {
   Controller,
   ForbiddenException,
   Get,
+  NotFoundException,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -11,16 +12,33 @@ import { UsersService } from './users.service';
 import { User } from 'src/decorators/user.decorator';
 import { NotLoggedInGuard } from 'src/auth/not-logged-in-guard';
 import { LoggedInGuard } from 'src/auth/logged-in-guard';
-import { ApiOperation } from '@nestjs/swagger';
+import {
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
+import { UserResponseDto } from 'src/dto/user.response.dto';
+import { NotFoundErrorDto } from 'src/dto/not.found.error.dto';
 
+@ApiTags('USER')
 @Controller('api/users')
 export class UsersController {
   constructor(private userService: UsersService) {}
 
+  @ApiOkResponse({
+    description: '내 정보 조회 성공',
+    type: UserResponseDto,
+  })
+  @ApiNotFoundResponse({
+    description: '로그인이 되어있지 않습니다.',
+    type: NotFoundErrorDto,
+  })
   @ApiOperation({ summary: '내 정보 가져오기' })
   @Get()
   getUsers(@User() user) {
-    return user || false;
+    if (!user) throw new NotFoundException();
+    return user;
   }
 
   @ApiOperation({ summary: '회원가입' })

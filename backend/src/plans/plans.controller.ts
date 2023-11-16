@@ -1,8 +1,9 @@
 import { Controller, Delete, Get, Post, Put, UseGuards } from '@nestjs/common';
 import { PlansService } from './plans.service';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { LoggedInGuard } from 'src/auth/logged-in-guard';
 
+@ApiTags('PLAN')
 @Controller('api/plans')
 export class PlansController {
   constructor(private plansService: PlansService) {}
