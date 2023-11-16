@@ -14,17 +14,7 @@ export class AuthService {
   async validateUser(email: string, password: string) {
     const user = await this.usersRepository.findOne({
       where: { email },
-      select: [
-        'id',
-        'email',
-        'password',
-        'nickname',
-        'platform',
-        'profileImage',
-        'createdAt',
-        'updatedAt',
-        'deletedAt',
-      ],
+      select: ['id', 'email', 'password', 'nickname', 'profileImage'],
     });
     if (!user) {
       return null;
@@ -45,14 +35,19 @@ export class AuthService {
   ) {
     const user = await this.usersRepository.findOne({
       where: { email },
+      select: ['id', 'email', 'nickname', 'profileImage'],
     });
     if (user) return user;
 
-    const newUser = await this.usersRepository.save({
+    await this.usersRepository.save({
       email: email,
       nickname: nickname,
       platform: platform,
       profileImage: profileImage,
+    });
+    const newUser = await this.usersRepository.findOne({
+      where: { email },
+      select: ['id', 'email', 'nickname', 'profileImage'],
     });
     return newUser;
   }

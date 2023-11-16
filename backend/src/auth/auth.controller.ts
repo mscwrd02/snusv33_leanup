@@ -2,19 +2,52 @@ import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { LocalAuthGuard } from './local-auth.guard';
 import { KakaoAuthGuard } from './kakao-auth.guard';
 import { LoggedInGuard } from './logged-in-guard';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiBody,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiProperty,
+  ApiResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
+import { User } from 'src/decorators/user.decorator';
+import { UserResponseDto } from 'src/dto/user.response.dto';
+import { ErrorResponseDto } from 'src/dto/error.response.dto';
 
 @ApiTags('AUTH')
 @Controller('api/auth')
 export class AuthController {
   @ApiOperation({ summary: '로그인 - 로컬' })
+  @ApiBody({
+    schema: {
+      example: {
+        email: 'abc@gmail.com',
+        password: '1234',
+      },
+    },
+  })
+  @ApiCreatedResponse({
+    description: '로그인 성공',
+    type: UserResponseDto,
+  })
+  @ApiUnauthorizedResponse({
+    description: '로그인 실패',
+    type: ErrorResponseDto,
+  })
   @Post('login')
   @UseGuards(LocalAuthGuard)
-  logIn(@Req() req) {
-    return req.user;
+  logIn(@User() user) {
+    return user;
   }
 
   @ApiOperation({ summary: '로그인 - 카카오' })
+  @ApiCreatedResponse({
+    description: '로그인 성공',
+    type: UserResponseDto,
+  })
   @Get('login/kakao')
   @UseGuards(KakaoAuthGuard)
   kakaoLogIn() {
