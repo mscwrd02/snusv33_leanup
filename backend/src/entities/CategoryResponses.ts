@@ -19,6 +19,12 @@ export class CategoryResponses {
   @Column('varchar', { name: 'category_list', length: 50 })
   categoryList: string;
 
+  @Column('int', { name: 'UserId', nullable: true })
+  UserId: number;
+
+  @Column('int', { name: 'PlanId', nullable: true })
+  PlanId: number;
+
   @ManyToOne(() => Plans, (plans) => plans.CategoryResponses, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',

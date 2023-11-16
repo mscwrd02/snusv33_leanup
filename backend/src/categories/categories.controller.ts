@@ -1,21 +1,61 @@
-import { Controller, Get, Post } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Post,
+  Req,
+} from '@nestjs/common';
+import {
+  ApiBadRequestResponse,
+  ApiCreatedResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
+import { CategoriesService } from './categories.service';
+import { Categories } from 'src/entities/Categories';
+import { CategoryResponseDto } from 'src/dto/category.response.dto';
+import { ErrorResponseDto } from 'src/dto/error.response.dto';
 
 @ApiTags('CATEGORY')
 @Controller('api/categories')
 export class CategoriesController {
-  constructor() {}
+  constructor(private categoriesService: CategoriesService) {}
 
   @ApiOperation({ summary: '관광지 클래스 종류 조회하기' })
+  @ApiNotFoundResponse({
+    description: '관광지 클래스 종류가 존재하지 않습니다',
+  })
+  @ApiOkResponse({
+    description: '관광지 클래스 종류 조회 성공',
+    type: Categories,
+    isArray: true,
+  })
   @Get()
-  getCategories() {
-    //TODO : 카테고리 목록 조회
+  async getCategories() {
+    const categories = await this.categoriesService.getCategories();
+    if (!categories || !categories.length) throw new NotFoundException();
+    console.log(categories);
+    return categories;
   }
 
   @ApiOperation({ summary: '취향 설문 제출하기' })
+  @ApiCreatedResponse({
+    description: '취향 설문 제출 성공',
+  })
+  @ApiBadRequestResponse({
+    description: '취향 설문 제출 실패',
+    type: ErrorResponseDto,
+  })
   @Post()
-  submitCategories() {
-    //TODO : 취향 설문 제출하기
-    //사용자가 회원가입을 했을수도 있고 안했을 수도 있기 때문에, 둘다 적용 가능한 로직으로 짜야함
+  async submitCategories(@Req() req, @Body() body: CategoryResponseDto) {
+    await this.categoriesService.submitCategories(
+      req.user ? req.user.id : null,
+      body,
+    );
+    return 'ok';
   }
 }
