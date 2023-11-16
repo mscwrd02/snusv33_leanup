@@ -13,13 +13,15 @@ import { User } from 'src/decorators/user.decorator';
 import { NotLoggedInGuard } from 'src/auth/not-logged-in-guard';
 import { LoggedInGuard } from 'src/auth/logged-in-guard';
 import {
+  ApiBadRequestResponse,
+  ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
 import { UserResponseDto } from 'src/dto/user.response.dto';
-import { NotFoundErrorDto } from 'src/dto/not.found.error.dto';
+import { ErrorResponseDto } from 'src/dto/error.response.dto';
 
 @ApiTags('USER')
 @Controller('api/users')
@@ -32,7 +34,7 @@ export class UsersController {
   })
   @ApiNotFoundResponse({
     description: '로그인이 되어있지 않습니다.',
-    type: NotFoundErrorDto,
+    type: ErrorResponseDto,
   })
   @ApiOperation({ summary: '내 정보 가져오기' })
   @Get()
@@ -41,6 +43,13 @@ export class UsersController {
     return user;
   }
 
+  @ApiCreatedResponse({
+    description: '회원가입 성공',
+  })
+  @ApiBadRequestResponse({
+    description: '이미 존재하는 사용자입니다.',
+    type: ErrorResponseDto,
+  })
   @ApiOperation({ summary: '회원가입' })
   @Post()
   @UseGuards(NotLoggedInGuard)
