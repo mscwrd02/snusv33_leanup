@@ -14,8 +14,8 @@ export enum PlanStatus {
 }
 
 export class PlanDetailResponseDto {
-  // 여행계획 아이디 (int), 소유자 아이디 (int), 동행 인원 (Number), 지역 (east, west, south, north)
-  // 여행 시작일(Date), 여행 종료일(Date), 상태 (enum: ready, ing, end), 카톡 프로필 이미지 (string array)
+  // 여행계획 아이디 (int), 소유자 아이디 (int), 설문 주소 (string), 동행 인원 (Number), 지역 (east, west, south, north)
+  // 취향설문참여인원 (int), 여행지설문참여인원 (int), 여행 시작일(Date), 여행 종료일(Date), 상태 (enum: ready, ing, end)
 
   @ApiProperty({
     example: '1',
@@ -36,6 +36,15 @@ export class PlanDetailResponseDto {
   public userId: number;
 
   @ApiProperty({
+    example: 'https://tripwiz.com/abcdedf',
+    description: '설문 주소',
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  public link: string;
+
+  @ApiProperty({
     example: '4',
     description: '동행 인원',
     required: true,
@@ -52,6 +61,24 @@ export class PlanDetailResponseDto {
   @IsString()
   @IsNotEmpty()
   public regionList: string;
+
+  @ApiProperty({
+    example: 4,
+    description: '취향설문참여인원',
+    required: true,
+  })
+  @IsNumber()
+  @IsNotEmpty()
+  public categoryParticipants: number;
+
+  @ApiProperty({
+    example: 4,
+    description: '여행지설문참여인원',
+    required: true,
+  })
+  @IsNumber()
+  @IsNotEmpty()
+  public spotParticipants: number;
 
   @ApiProperty({
     example: '2023-12-21',

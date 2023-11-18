@@ -13,9 +13,8 @@ import { PlanStatus } from './plan.detail.response.dto';
 import { Type } from 'class-transformer';
 
 export class PlanSimpleResponseDto {
-  // 여행계획 아이디 (int), 소유자 아이디 (int), 동행 인원 (Number), 지역 (east, west, south, north)
-  // 여행 시작일 (Date), 여행 종료일(Date), 상태 (enum: ready, ing, end)
-  // 카카오톡 프로필 (string [])
+  // 여행계획 아이디 (int), 소유자 아이디 (int), 동행 인원 (Number)
+  // 여행 시작일 (Date), 여행 종료일(Date), 상태 (enum: ready, ing, end), 카카오톡 프로필 (string [])
 
   @ApiProperty({
     example: '1',
@@ -43,15 +42,6 @@ export class PlanSimpleResponseDto {
   @IsNumber()
   @IsNotEmpty()
   public groupNum: number;
-
-  @ApiProperty({
-    example: 'east, west, south',
-    description: '지역 리스트 (string ,으로 구분)',
-    required: true,
-  })
-  @IsString()
-  @IsNotEmpty()
-  public regionList: string;
 
   @ApiProperty({
     example: '2023-12-21',

@@ -2,11 +2,11 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsDate, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class PlanRequestDto {
-  // 유저 아이디 (int), 동행 인원 (Number), 지역 (east, west, south, north), 여행 시작일(Date), 여행 종료일(Date)
+  // 소유자 아이디 (int), 동행 인원 (Number), 지역 (east, west, south, north), 여행 시작일(Date), 여행 종료일(Date)
 
   @ApiProperty({
     example: '1',
-    description: '유저 아이디',
+    description: '소유자 아이디',
     required: true,
   })
   @IsNumber()
