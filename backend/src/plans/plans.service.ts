@@ -11,6 +11,7 @@ import { Repository, In } from 'typeorm';
 import { PlanSimpleResponseDto } from 'src/dto/plan.simple.response.dto';
 import { UserResponseDto } from 'src/dto/user.response.dto';
 import { Users } from 'src/entities/Users';
+import { PlanRequestDto } from 'src/dto/plan.request.dto';
 
 @Injectable()
 export class PlansService {
@@ -23,14 +24,9 @@ export class PlansService {
 
   async createPlan(
     userId: number,
-    groupNum: number,
-    regionList: string,
-    startDate: Date,
-    endDate: Date,
+    body: PlanRequestDto,
   ): Promise<PlanDetailResponseDto> {
     //TODO : 여행 계획 생성하기
-    // 여행지 선택에서 제주도를 선택하긴 하지만 실제 db에는 저장하지 않음
-
     const user = await this.usersRepository.findOne({ where: { id: userId } });
 
     const newPlan = new Plans();
@@ -38,12 +34,12 @@ export class PlansService {
     newPlan.link = btoa(
       userId.toString() + '_' + this.plansRepository.count().toString(), // binary to ASCII
     );
-    newPlan.group_num = groupNum;
-    newPlan.regionList = regionList;
+    newPlan.group_num = body.groupNum;
+    newPlan.regionList = body.regionList;
     newPlan.categoryParticipations = 0;
     newPlan.spotParticipations = 0;
-    newPlan.startDate = startDate;
-    newPlan.endDate = endDate;
+    newPlan.startDate = body.startDate;
+    newPlan.endDate = body.endDate;
     newPlan.status = PlanStatus.READY;
     newPlan.ParticipantsList = [user];
 
@@ -68,14 +64,14 @@ export class PlansService {
     //TODO : 여행 계획 수정하기
   }
 
-  async deletePlan(id: number): Promise<void> {
+  async deletePlan(planId: number): Promise<void> {
     //TODO : 여행 계획 삭제하기
-    await this.plansRepository.delete(id);
+    await this.plansRepository.delete(planId);
   }
 
-  async getPlanWithId(id: number): Promise<PlanDetailResponseDto> {
+  async getPlanWithId(planId: number): Promise<PlanDetailResponseDto> {
     //TODO : 여행 계획 id로 조회하기
-    const plan = await this.plansRepository.findOne({ where: { id } });
+    const plan = await this.plansRepository.findOne({ where: { id: planId } });
     const planDetailResponse: PlanDetailResponseDto = {
       planId: plan.id,
       userId: plan.userId,
@@ -91,10 +87,10 @@ export class PlansService {
     return Promise.resolve(planDetailResponse);
   }
 
-  async getPlanWithHashId(hash: string): Promise<PlanDetailResponseDto> {
+  async getPlanWithHashId(hashId: string): Promise<PlanDetailResponseDto> {
     //TODO : 여행 계획 hash id로 조회하기
     const plan = await this.plansRepository.findOne({
-      where: { link: atob(hash) },
+      where: { link: atob(hashId) },
     });
     const planDetailResponse: PlanDetailResponseDto = {
       planId: plan.id,
@@ -111,8 +107,10 @@ export class PlansService {
     return Promise.resolve(planDetailResponse);
   }
 
-  async getAllPlan(user: UserResponseDto): Promise<PlanSimpleResponseDto[]> {
+  async getAllPlan(userId: number): Promise<PlanSimpleResponseDto[]> {
     //TODO : participant_list에서 userid가 속한 모든 여행 계획 전체 조회하기
+    const user = await this.usersRepository.findOne({ where: { id: userId } });
+
     const plans = await this.plansRepository
       .createQueryBuilder('plans')
       .leftJoinAndSelect('plans.ParticipantList', 'participantList')

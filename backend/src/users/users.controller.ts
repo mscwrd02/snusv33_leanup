@@ -22,6 +22,7 @@ import {
 } from '@nestjs/swagger';
 import { UserResponseDto } from 'src/dto/user.response.dto';
 import { ErrorResponseDto } from 'src/dto/error.response.dto';
+import { Users } from 'src/entities/Users';
 
 @ApiTags('USER')
 @Controller('api/users')
@@ -38,7 +39,7 @@ export class UsersController {
   })
   @ApiOperation({ summary: '내 정보 가져오기' })
   @Get()
-  getUsers(@User() user: UserResponseDto) {
+  getUsers(@User() user) {
     if (!user) throw new NotFoundException();
     return user;
   }

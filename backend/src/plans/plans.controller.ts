@@ -35,23 +35,20 @@ export class PlansController {
     type: PlanDetailResponseDto,
   })
   @ApiNotFoundResponse({
-    description: '잘못된 요청입니다.',
+    description: '여행 계획 생성 실패',
     type: ErrorResponseDto,
   })
   @ApiOperation({ summary: '여행 계획 생성하기' })
   @Post()
   @UseGuards(LoggedInGuard)
   async createPlan(
+    @User() user,
     @Body() body: PlanRequestDto,
   ): Promise<PlanDetailResponseDto> {
     //TODO : 여행 계획 생성하기
     const plan = await this.plansService.createPlan(
-      // 여행지 선택에서 제주도를 선택하긴 하지만 실제 db에는 저장하지 않음
-      body.user.id,
-      body.groupNum,
-      body.regionList,
-      body.startDate,
-      body.endDate,
+      user ? user.id : null,
+      body,
     );
     if (plan) {
       return plan;
@@ -68,6 +65,13 @@ export class PlansController {
     // 일단 skip
   }
 
+  @ApiOkResponse({
+    description: '여행 계획 삭제 성공',
+  })
+  @ApiNotFoundResponse({
+    description: '여행 계획이 존재하지 않습니다.',
+    type: ErrorResponseDto,
+  })
   @ApiOperation({ summary: '여행 계획 삭제하기' })
   @Delete()
   @UseGuards(LoggedInGuard)
@@ -77,14 +81,14 @@ export class PlansController {
   }
 
   @ApiOkResponse({
-    description: '여행 계획 조회 성공',
+    description: '여행 계획 id로 여행 계획 조회 성공',
     type: PlanDetailResponseDto,
   })
   @ApiNotFoundResponse({
-    description: '잘못된 요청입니다.',
+    description: '여행 계획이 존재하지 않습니다.',
     type: ErrorResponseDto,
   })
-  @ApiOperation({ summary: '여행 계획 id로 조회하기' })
+  @ApiOperation({ summary: '여행 계획 id로 조회하기 (회원 기준)' })
   @Get()
   async getPlanWithId(
     @Query('planId') planId: number,
@@ -100,14 +104,14 @@ export class PlansController {
   }
 
   @ApiOkResponse({
-    description: '여행 계획 조회 성공',
+    description: '여행 계획 링크로 여행 계획 조회 성공',
     type: PlanDetailResponseDto,
   })
   @ApiNotFoundResponse({
-    description: '잘못된 요청입니다.',
+    description: '여행 계획이 존재하지 않습니다.',
     type: ErrorResponseDto,
   })
-  @ApiOperation({ summary: '여행 계획 링크로 조회하기' })
+  @ApiOperation({ summary: '여행 계획 링크로 조회하기 (비회원 기준)' })
   @Get()
   async getPlanWithHashId(@Query('hashId') hashId: string) {
     //TODO : 여행 계획 link주소로 조회하기
@@ -132,10 +136,10 @@ export class PlansController {
   @ApiOperation({ summary: '사용자 정보로 사용자가 속한 모든 여행 조회하기' })
   @Get('all')
   @UseGuards(LoggedInGuard)
-  getAllPlan(@User() user: UserResponseDto) {
+  getAllPlan(@User() user) {
     //TODO : 내가 속한 모든 여행 조회하기
     // 세부 사항이 아니라, 간단하게 현황과 날짜, 참여하고 있는 사람들의 프사같은 정보
-    const planList = this.plansService.getAllPlan(user);
+    const planList = this.plansService.getAllPlan(user.id);
     if (planList) {
       return planList;
     } else {
