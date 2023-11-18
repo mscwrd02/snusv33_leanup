@@ -1,4 +1,42 @@
 import { Injectable } from '@nestjs/common';
+import { PlanDetailResponseDto } from 'src/dto/plan.detail.response.dto';
 
 @Injectable()
-export class PlansService {}
+export class PlansService {
+  constructor() {}
+
+  async createPlan(
+    userId: number,
+    groupNum: number,
+    regionList: string,
+    startDate: Date,
+    endDate: Date,
+  ) {
+    //TODO : 여행 계획 생성하기
+    // 여행지 선택에서 제주도를 선택하긴 하지만 실제 db에는 저장하지 않음
+    return true;
+  }
+
+  async updatePlan() {
+    //TODO : 여행 계획 수정하기
+  }
+
+  async deletePlan() {
+    //TODO : 여행 계획 삭제하기
+  }
+
+  async getPlanWithId(id: number) {
+    //TODO : 여행 계획 조회하기
+    return true;
+  }
+
+  async getPlanWithHashId(hash: string) {
+    //TODO : 여행 계획 조회하기
+    return true;
+  }
+
+  async getAllPlan(id: number) {
+    //TODO : 여행 계획 전체 조회하기
+    return true;
+  }
+}
