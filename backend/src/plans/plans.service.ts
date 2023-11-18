@@ -1,9 +1,14 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { PlanDetailResponseDto } from 'src/dto/plan.detail.response.dto';
+import { Plans } from 'src/entities/Plans';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class PlansService {
-  constructor() {}
+  constructor(
+    @InjectRepository(Plans) private plansRepository: Repository<Plans>,
+  ) {}
 
   async createPlan(
     userId: number,
