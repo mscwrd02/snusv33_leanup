@@ -44,7 +44,8 @@ export class CategoriesController {
 
   @ApiOperation({ summary: '취향 설문 제출하기' })
   @ApiCreatedResponse({
-    description: '취향 설문 제출 성공',
+    description:
+      '취향 설문 제출 성공 / 이전에 같은 이름으로 제출한 이력이 있으면 수정됨',
   })
   @ApiBadRequestResponse({
     description: '취향 설문 제출 실패',
@@ -56,6 +57,7 @@ export class CategoriesController {
       req.user ? req.user.id : null,
       body,
     );
+
     return 'ok';
   }
 }
