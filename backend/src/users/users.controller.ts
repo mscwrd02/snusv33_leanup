@@ -38,7 +38,7 @@ export class UsersController {
   })
   @ApiOperation({ summary: '내 정보 가져오기' })
   @Get()
-  getUsers(@User() user: UserResponseDto) {
+  getUsers(@User() user) {
     if (!user) throw new NotFoundException();
     return user;
   }
