@@ -17,7 +17,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { LoggedInGuard } from 'src/auth/logged-in-guard';
-import { PlanRequenstDto } from 'src/dto/plan.request.dto';
+import { PlanRequestDto } from 'src/dto/plan.request.dto';
 import { PlanDetailResponseDto } from 'src/dto/plan.detail.response.dto';
 import { ErrorResponseDto } from 'src/dto/error.response.dto';
 import { PlanSimpleResponseDto } from 'src/dto/plan.simple.response.dto';
@@ -38,7 +38,7 @@ export class PlansController {
   @ApiOperation({ summary: '여행 계획 생성하기' })
   @Post()
   @UseGuards(LoggedInGuard)
-  async createPlan(@Body() body: PlanRequenstDto) {
+  async createPlan(@Body() body: PlanRequestDto) {
     //TODO : 여행 계획 생성하기
     const plan = await this.plansService.createPlan(
       // 여행지 선택에서 제주도를 선택하긴 하지만 실제 db에는 저장하지 않음
