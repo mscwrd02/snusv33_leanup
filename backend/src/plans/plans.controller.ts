@@ -8,6 +8,7 @@ import {
   Put,
   UseGuards,
   Param,
+  Query,
 } from '@nestjs/common';
 import { PlansService } from './plans.service';
 import {
@@ -42,7 +43,7 @@ export class PlansController {
     //TODO : 여행 계획 생성하기
     const plan = await this.plansService.createPlan(
       // 여행지 선택에서 제주도를 선택하긴 하지만 실제 db에는 저장하지 않음
-      body.userId,
+      body.user.id,
       body.groupNum,
       body.regionList,
       body.startDate,
@@ -80,11 +81,11 @@ export class PlansController {
     type: ErrorResponseDto,
   })
   @ApiOperation({ summary: '여행 계획 id로 조회하기' })
-  @Get(':id')
-  async getPlanWithId(@Param('id') id: number) {
-    //TODO : 여행 계획 link주소로 조회하기
+  @Get()
+  async getPlanWithId(@Query('planId') planId: number) {
+    //TODO : 여행 계획 id로 조회하기
     //현재 상태, 여행 동행인원, 설문 참여인원, 생성자, 참여자 등등 자세히
-    const plan = await this.plansService.getPlanWithId(id);
+    const plan = await this.plansService.getPlanWithId(planId);
     if (plan) {
       return plan;
     } else {
@@ -101,8 +102,8 @@ export class PlansController {
     type: ErrorResponseDto,
   })
   @ApiOperation({ summary: '여행 계획 링크로 조회하기' })
-  @Get(':hashId')
-  async getPlanWithHashId(@Param('hashId') hashId: string) {
+  @Get()
+  async getPlanWithHashId(@Query('hashId') hashId: string) {
     //TODO : 여행 계획 link주소로 조회하기
     //현재 상태, 여행 동행인원, 설문 참여인원, 생성자, 참여자 등등 자세히
     const plan = await this.plansService.getPlanWithHashId(hashId);

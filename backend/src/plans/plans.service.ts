@@ -26,12 +26,12 @@ export class PlansService {
   }
 
   async getPlanWithId(id: number) {
-    //TODO : 여행 계획 조회하기
+    //TODO : 여행 계획 id로 조회하기
     return true;
   }
 
   async getPlanWithHashId(hash: string) {
-    //TODO : 여행 계획 조회하기
+    //TODO : 여행 계획 hash id로 조회하기
     return true;
   }
 

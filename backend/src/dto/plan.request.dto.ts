@@ -1,17 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsDate, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { UserResponseDto } from './user.response.dto';
 
 export class PlanRequestDto {
-  // 소유자 아이디 (int), 동행 인원 (Number), 지역 (east, west, south, north), 여행 시작일(Date), 여행 종료일(Date)
+  // 소유자 정보 (UserResponseDto), 동행 인원 (Number), 지역 (east, west, south, north), 여행 시작일(Date), 여행 종료일(Date)
 
   @ApiProperty({
-    example: '1',
-    description: '소유자 아이디',
+    example:
+      '{아이디: 1, 이메일: "abc@gmail.com", 닉네임: "홍길동", 프로필 이미지: "https://s3.amazon.com/image/abc"}',
+    description: '소유자 정보',
     required: true,
   })
-  @IsNumber()
+  // TODO: UserResponseDto type인지 확인하는 decorater
   @IsNotEmpty()
-  public userId: number;
+  public user: UserResponseDto;
 
   @ApiProperty({
     example: '4',
