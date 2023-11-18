@@ -1,0 +1,42 @@
+.page1_1 {
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .title {
+    display: flex;
+    text-align: center;
+  }
+  .content {
+    text-align: center;
+  }
+  .prev {
+    text-align: center;
+    flex: 1; /* 1:9:1 비율 중 위의 div의 비율 (가로로 1:9:1이므로 1 부분) */
+    color:white;
+    margin-top: 12px;
+  }
+  .logintitle {
+    text-align: center;
+    flex: 9; /* 1:9:1 비율 중 아래의 div의 비율 (가로로 1:9:1이므로 9 부분) */
+    color: #292929;
+    margin-top: 12px;
+
+    /* H2 */
+    font-family: Inter;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+  }
+  .blank {
+    text-align: center;
+    flex: 1; /* 1:9:1 비율 중 위의 div의 비율 (가로로 1:9:1이므로 1 부분) */
+  }
+  .ID_input {
+    margin-top: 120px;
+    text-align: center;
+    flex: 1; /* 1:9:1 비율 중 위의 div의 비율 (가로로 1:9:1이므로 1 부분) */
+  }
+  
