@@ -5,7 +5,7 @@ import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import Prev_btn from "./prev_btn";
 import { Link } from 'react-router-dom';
 
-function Page1_1() {
+function Page1_2() {
   const [userId, setUserId] = useState<string>('');
   const [userPW, setUserPW] = useState<string>('');
   const handleInputChange_ID = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,11 +78,9 @@ function Page1_1() {
         <div style={underlineStyle}></div>
       </div>
       <div className="Login_btn">
-        <Link to="/Page2_2">
         <button onClick={handleLogin} style={login_btn_style}>
           로그인
         </button>
-        </Link>
       </div>
     </div>
   );
@@ -144,4 +142,4 @@ const login_btn_style: React.CSSProperties = {
   boxShadow: '0px 0px 6px 0px rgba(0, 0, 0, 0.20)',
 };
 
-export default Page1_1;
+export default Page1_2;
