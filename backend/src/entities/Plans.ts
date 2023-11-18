@@ -16,17 +16,24 @@ import { CategoryResponses } from './CategoryResponses';
 import { SpotResponses } from './SpotResponses';
 import { Spots } from './Spots';
 import { Recommends } from './Recommends';
+import { PlanStatus } from 'src/dto/plan.detail.response.dto';
 
 @Entity({ schema: 'frienvel', name: 'plans' })
 export class Plans {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
 
+  @Column('int', { name: 'UserId', nullable: true })
+  userId: number;
+
   @Column('varchar', { name: 'link', unique: true, length: 50 })
   link: string;
 
   @Column('int', { name: 'group_num' })
   group_num: number;
+
+  @Column('varchar', { name: 'region_list', length: 30 })
+  regionList: string;
 
   @Column('int', { name: 'category_participants', default: 0 })
   categoryParticipations: number;
@@ -39,6 +46,13 @@ export class Plans {
 
   @Column('date', { name: 'end_date' })
   endDate: Date;
+
+  @Column('enum', {
+    name: 'status',
+    enum: PlanStatus,
+    default: PlanStatus.READY,
+  })
+  status: PlanStatus;
 
   @CreateDateColumn()
   createdAt: Date;

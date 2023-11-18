@@ -6,7 +6,6 @@ import {
   IsNotEmpty,
   IsNumber,
   IsString,
-  Validate,
   ValidateNested,
 } from 'class-validator';
 import { PlanStatus } from './plan.detail.response.dto';

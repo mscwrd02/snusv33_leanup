@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 
 export enum PlanStatus {
-  PLANNING = '계획중',
+  READY = '계획중',
   ING = '여행중',
   END = '여행완료',
 }
