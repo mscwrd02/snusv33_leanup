@@ -1,17 +1,12 @@
-import { User } from './../decorators/user.decorator';
-import { CategoryResponses } from './../entities/CategoryResponses';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  PlanDetailResponseDto,
-  PlanStatus,
-} from 'src/dto/plan.detail.response.dto';
+import { PlanDetailResponseDto } from 'src/dto/plan.detail.response.dto';
 import { Plans } from 'src/entities/Plans';
-import { Repository, In } from 'typeorm';
+import { Repository } from 'typeorm';
 import { PlanSimpleResponseDto } from 'src/dto/plan.simple.response.dto';
-import { UserResponseDto } from 'src/dto/user.response.dto';
 import { Users } from 'src/entities/Users';
 import { PlanRequestDto } from 'src/dto/plan.request.dto';
+import { PlanStatus } from 'src/entities/common/PlanStatus';
 
 @Injectable()
 export class PlansService {
@@ -26,14 +21,13 @@ export class PlansService {
     userId: number,
     body: PlanRequestDto,
   ): Promise<PlanDetailResponseDto> {
-    //TODO : 여행 계획 생성하기
+    // 여행 계획 생성하기
     const user = await this.usersRepository.findOne({ where: { id: userId } });
+    const count = await this.plansRepository.count();
 
     const newPlan = new Plans();
     newPlan.userId = userId;
-    newPlan.link = btoa(
-      userId.toString() + '_' + this.plansRepository.count().toString(), // binary to ASCII
-    );
+    newPlan.link = btoa(userId.toString() + '_' + count.toString()); // binary to ASCII
     newPlan.group_num = body.groupNum;
     newPlan.regionList = body.regionList;
     newPlan.categoryParticipations = 0;
@@ -65,12 +59,12 @@ export class PlansService {
   }
 
   async deletePlan(planId: number): Promise<void> {
-    //TODO : 여행 계획 삭제하기
+    // 여행 계획 삭제하기
     await this.plansRepository.delete(planId);
   }
 
   async getPlanWithId(planId: number): Promise<PlanDetailResponseDto> {
-    //TODO : 여행 계획 id로 조회하기
+    // 여행 계획 plan id로 조회하기
     const plan = await this.plansRepository.findOne({ where: { id: planId } });
     const planDetailResponse: PlanDetailResponseDto = {
       planId: plan.id,
@@ -88,9 +82,9 @@ export class PlansService {
   }
 
   async getPlanWithHashId(hashId: string): Promise<PlanDetailResponseDto> {
-    //TODO : 여행 계획 hash id로 조회하기
+    // 여행 계획 hash id로 조회하기
     const plan = await this.plansRepository.findOne({
-      where: { link: atob(hashId) },
+      where: { link: hashId },
     });
     const planDetailResponse: PlanDetailResponseDto = {
       planId: plan.id,
@@ -108,13 +102,13 @@ export class PlansService {
   }
 
   async getAllPlan(userId: number): Promise<PlanSimpleResponseDto[]> {
-    //TODO : participant_list에서 userid가 속한 모든 여행 계획 전체 조회하기
+    // participant_list에서 userid가 속한 모든 여행 계획 전체 조회하기
     const user = await this.usersRepository.findOne({ where: { id: userId } });
 
     const plans = await this.plansRepository
       .createQueryBuilder('plans')
-      .leftJoinAndSelect('plans.ParticipantList', 'participantList')
-      .where('participantList.userId = :userId', { userId: user.id })
+      .leftJoinAndSelect('plans.ParticipantsList', 'participants')
+      .where('participants.id IN (:...userIds)', { userIds: [user.id] })
       .getMany();
 
     const planSimpleResponse: PlanSimpleResponseDto[] = [];

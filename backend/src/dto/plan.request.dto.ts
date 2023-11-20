@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import { IsDate, IsNotEmpty, IsNumber, IsString } from 'class-validator';
-import { UserResponseDto } from './user.response.dto';
 
 export class PlanRequestDto {
   // 소유자 정보 (UserResponseDto), 동행 인원 (Number), 지역 (east, west, south, north), 여행 시작일(Date), 여행 종료일(Date)
@@ -14,8 +14,8 @@ export class PlanRequestDto {
   public groupNum: number;
 
   @ApiProperty({
-    example: 'east, west, south',
-    description: '지역 리스트 (string ,으로 구분)',
+    example: '[east, west, south]',
+    description: '지역 리스트 (string ,으로 구분하고 []로 감싸기])',
     required: true,
   })
   @IsString()
@@ -29,6 +29,7 @@ export class PlanRequestDto {
   })
   @IsDate()
   @IsNotEmpty()
+  @Transform(({ value }) => new Date(value))
   public startDate: Date;
 
   @ApiProperty({
@@ -38,5 +39,6 @@ export class PlanRequestDto {
   })
   @IsDate()
   @IsNotEmpty()
+  @Transform(({ value }) => new Date(value))
   public endDate: Date;
 }

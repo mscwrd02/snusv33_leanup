@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import {
   IsDate,
   IsEnum,
@@ -6,12 +7,7 @@ import {
   IsNumber,
   IsString,
 } from 'class-validator';
-
-export enum PlanStatus {
-  READY = '계획중',
-  ING = '여행중',
-  END = '여행완료',
-}
+import { PlanStatus } from 'src/entities/common/PlanStatus';
 
 export class PlanDetailResponseDto {
   // 여행계획 아이디 (int), 소유자 아이디 (int), 설문 주소 (string), 동행 인원 (Number), 지역 (east, west, south, north)
@@ -54,8 +50,8 @@ export class PlanDetailResponseDto {
   public groupNum: number;
 
   @ApiProperty({
-    example: 'east, west, south',
-    description: '지역 리스트 (string ,으로 구분)',
+    example: '[east, west, south]',
+    description: '지역 리스트 (string ,으로 구분하고 []로 감싸기)',
     required: true,
   })
   @IsString()
@@ -87,6 +83,7 @@ export class PlanDetailResponseDto {
   })
   @IsDate()
   @IsNotEmpty()
+  @Transform(({ value }) => new Date(value))
   public startDate: Date;
 
   @ApiProperty({
@@ -96,6 +93,7 @@ export class PlanDetailResponseDto {
   })
   @IsDate()
   @IsNotEmpty()
+  @Transform(({ value }) => new Date(value))
   public endDate: Date;
 
   @ApiProperty({

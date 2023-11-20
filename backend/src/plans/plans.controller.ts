@@ -8,7 +8,6 @@ import {
   Put,
   UseGuards,
   Param,
-  Query,
 } from '@nestjs/common';
 import { PlansService } from './plans.service';
 import {
@@ -23,7 +22,6 @@ import { PlanDetailResponseDto } from 'src/dto/plan.detail.response.dto';
 import { ErrorResponseDto } from 'src/dto/error.response.dto';
 import { PlanSimpleResponseDto } from 'src/dto/plan.simple.response.dto';
 import { User } from 'src/decorators/user.decorator';
-import { UserResponseDto } from 'src/dto/user.response.dto';
 
 @ApiTags('PLAN')
 @Controller('api/plans')
@@ -45,7 +43,7 @@ export class PlansController {
     @User() user,
     @Body() body: PlanRequestDto,
   ): Promise<PlanDetailResponseDto> {
-    //TODO : 여행 계획 생성하기
+    // 여행 계획 생성하기
     const plan = await this.plansService.createPlan(
       user ? user.id : null,
       body,
@@ -57,12 +55,11 @@ export class PlansController {
     }
   }
 
-  @ApiOperation({ summary: '여행 계획 수정하기' })
+  @ApiOperation({ summary: '여행 계획 수정하기 // 우선 구현 skip함' })
   @Put()
   @UseGuards(LoggedInGuard)
   async updatePlan() {
     //TODO : 여행 계획 수정하기
-    // 일단 skip
   }
 
   @ApiOkResponse({
@@ -73,10 +70,10 @@ export class PlansController {
     type: ErrorResponseDto,
   })
   @ApiOperation({ summary: '여행 계획 삭제하기' })
-  @Delete()
+  @Delete(':planId')
   @UseGuards(LoggedInGuard)
-  async deletePlan(@Query('planId') planId: number): Promise<void> {
-    //TODO : 여행 계획 삭제하기
+  async deletePlan(@Param('planId') planId: number): Promise<void> {
+    // 여행 계획 삭제하기
     await this.plansService.deletePlan(planId);
   }
 
@@ -89,12 +86,12 @@ export class PlansController {
     type: ErrorResponseDto,
   })
   @ApiOperation({ summary: '여행 계획 id로 조회하기 (회원 기준)' })
-  @Get()
+  @Get('planId/:planId')
   async getPlanWithId(
-    @Query('planId') planId: number,
+    @Param('planId') planId: number,
   ): Promise<PlanDetailResponseDto> {
-    //TODO : 여행 계획 id로 조회하기
-    //현재 상태, 여행 동행인원, 설문 참여인원, 생성자, 참여자 등등 자세히
+    // 여행 계획 id로 조회하기
+    // 현재 상태, 여행 동행인원, 설문 참여인원, 생성자, 참여자 등등 자세히
     const plan = await this.plansService.getPlanWithId(planId);
     if (plan) {
       return plan;
@@ -112,10 +109,12 @@ export class PlansController {
     type: ErrorResponseDto,
   })
   @ApiOperation({ summary: '여행 계획 링크로 조회하기 (비회원 기준)' })
-  @Get()
-  async getPlanWithHashId(@Query('hashId') hashId: string) {
-    //TODO : 여행 계획 link주소로 조회하기
-    //현재 상태, 여행 동행인원, 설문 참여인원, 생성자, 참여자 등등 자세히
+  @Get('hashId/:hashId')
+  async getPlanWithHashId(
+    @Param('hashId') hashId: string,
+  ): Promise<PlanDetailResponseDto> {
+    // 여행 계획 link주소로 조회하기
+    // 현재 상태, 여행 동행인원, 설문 참여인원, 생성자, 참여자 등등 자세히
     const plan = await this.plansService.getPlanWithHashId(hashId);
     if (plan) {
       return plan;
@@ -136,8 +135,8 @@ export class PlansController {
   @ApiOperation({ summary: '사용자 정보로 사용자가 속한 모든 여행 조회하기' })
   @Get('all')
   @UseGuards(LoggedInGuard)
-  getAllPlan(@User() user) {
-    //TODO : 내가 속한 모든 여행 조회하기
+  getAllPlan(@User() user): Promise<PlanSimpleResponseDto[]> {
+    // 내가 속한 모든 여행 조회하기
     // 세부 사항이 아니라, 간단하게 현황과 날짜, 참여하고 있는 사람들의 프사같은 정보
     const planList = this.plansService.getAllPlan(user.id);
     if (planList) {

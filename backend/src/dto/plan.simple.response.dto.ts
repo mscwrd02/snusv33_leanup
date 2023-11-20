@@ -8,8 +8,8 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { PlanStatus } from './plan.detail.response.dto';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
+import { PlanStatus } from 'src/entities/common/PlanStatus';
 
 export class PlanSimpleResponseDto {
   // 여행계획 아이디 (int), 소유자 아이디 (int), 동행 인원 (Number)
@@ -49,6 +49,7 @@ export class PlanSimpleResponseDto {
   })
   @IsDate()
   @IsNotEmpty()
+  @Transform(({ value }) => new Date(value))
   public startDate: Date;
 
   @ApiProperty({
@@ -58,6 +59,7 @@ export class PlanSimpleResponseDto {
   })
   @IsDate()
   @IsNotEmpty()
+  @Transform(({ value }) => new Date(value))
   public endDate: Date;
 
   @ApiProperty({

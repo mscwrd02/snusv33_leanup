@@ -14,9 +14,8 @@ import {
 import { Users } from './Users';
 import { CategoryResponses } from './CategoryResponses';
 import { SpotResponses } from './SpotResponses';
-import { Spots } from './Spots';
 import { Recommends } from './Recommends';
-import { PlanStatus } from 'src/dto/plan.detail.response.dto';
+import { PlanStatus } from './common/PlanStatus';
 
 @Entity({ schema: 'frienvel', name: 'plans' })
 export class Plans {
@@ -47,7 +46,8 @@ export class Plans {
   @Column('date', { name: 'end_date' })
   endDate: Date;
 
-  @Column('enum', {
+  @Column({
+    type: 'enum',
     name: 'status',
     enum: PlanStatus,
     default: PlanStatus.READY,
