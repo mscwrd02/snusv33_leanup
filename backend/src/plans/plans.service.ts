@@ -81,6 +81,12 @@ export class PlansService {
     return Promise.resolve(planDetailResponse);
   }
 
+  async getParticipantsStatus(planId: number) {
+    // 여행 id를 받아서, 동행인원의 이름과, 각각이 취향설문과 여행지 설문을 참여했는지 반환하기
+    //{"name":["홍길동", "철수", "짱구"], "categoryResponseStatus" : [true, false, true, true, false], "spotResponseStatus" : [true, false, true, true, false]
+    //이거 구현해서, getPlanwithId랑HashId에 정보 추가해서 보내주기
+  }
+
   async getPlanWithHashId(hashId: string): Promise<PlanDetailResponseDto> {
     // 여행 계획 hash id로 조회하기
     const plan = await this.plansRepository.findOne({

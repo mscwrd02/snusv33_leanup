@@ -44,10 +44,7 @@ export class PlansController {
     @Body() body: PlanRequestDto,
   ): Promise<PlanDetailResponseDto> {
     // 여행 계획 생성하기
-    const plan = await this.plansService.createPlan(
-      user ? user.id : null,
-      body,
-    );
+    const plan = await this.plansService.createPlan(user.id, body);
     if (plan) {
       return plan;
     } else {
