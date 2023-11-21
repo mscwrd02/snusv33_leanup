@@ -4,12 +4,8 @@ import Page1_1 from './Page1_1';
 import Page2_1 from "./Page2_1";
 import Page2_2 from "./Page2_2";
 import Page3 from "./Page3";
-<<<<<<< HEAD
-import Page1_1 from './Page1_1';
 import Page1_2 from './Page1_2';
 import Page5 from './Page5';
-=======
->>>>>>> b68d6f1eaff1aacbc904356c67f9e2299516058f
 
 function App(){
   return(

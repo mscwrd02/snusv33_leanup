@@ -4,8 +4,12 @@ import "./Page1_1.css";
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import Prev_btn from "./prev_btn";
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 function Page1_1() {
+  const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
+  //const axios = require('axios');
+
   const [userId, setUserId] = useState<string>('');
   const [userPW, setUserPW] = useState<string>('');
   const handleInputChange_ID = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -16,34 +20,28 @@ function Page1_1() {
   };
   const handleLogin = async () => {
     if (userId && userPW){
-      window.location.href = "/page2_2";
-      try {
-        // API 호출 예시 (fetch 사용)
-        const response = await fetch('https://example.com/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userId,
-            userPW,
-          }),
-        });
+      await axios.post(backend_url+'/api/auth/login', {
+        "email": userId,
+        "password": userPW
+      })
+      .then(function (response) {
+        const res = JSON.stringify(response);
+        console.log(res);
+        console.log("Done");
+        window.location.href = "/page2_2";
+      })
+      .catch(function (error){
+        window.alert('로그인에 실패하였습니다.');
+      })
     
-        // 응답 처리
-        if (response.ok) {
-          console.log('로그인 성공');
-          // 로그인이 성공했을 때, 다른 작업 수행
-        } else {
-          console.error('로그인 실패');
-          // 로그인이 실패했을 때, 다른 작업 수행
-        }
-      } catch (error) {
-        console.error('API 호출 오류', error);
-        // 오류 처리
-      }
     }
   };
+  const handlekakaoLogin = async () => {
+      // API 호출 예시 (fetch 사용)
+      //console.log('hi');
+    const response = await axios.get(backend_url+'/api/auth/login/kakao', {
+    })
+  }
 
   return (
     <div className="page1_1">
@@ -94,7 +92,7 @@ function Page1_1() {
       </div>
       <div className="Kakao_Login_btn">
         <Link to="/page2_2">
-        <button onClick={handleLogin} style={kakao_login_btn_style}>
+        <button onClick={handlekakaoLogin} style={kakao_login_btn_style}>
           카카오 계정으로 로그인
         </button>
         </Link>

@@ -3,6 +3,9 @@ import "./Page1_2.css";
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import Prev_btn from "./prev_btn";
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+// import { toast } from 'react-toastify';
+// import 'react-toastify/dist/ReactToastify.css';
 
 function Page1_2() {
   const [userId, setUserId] = useState<string>('');
@@ -19,34 +22,27 @@ function Page1_2() {
     setUserName(event.target.value);
   };
 
+  const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
+
   const handleJoin = async () => {
     if (userId && userPW && userName){
-        window.location.href = "/page2_2";
-        try {
-            // API 호출 예시 (fetch 사용)
-            const response = await fetch('https://example.com/login', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                userId,
-                userPW,
-              }),
-            });
-        
-            // 응답 처리
-            if (response.ok) {
-              console.log('로그인 성공');
-              // 로그인이 성공했을 때, 다른 작업 수행
-            } else {
-              console.error('로그인 실패');
-              // 로그인이 실패했을 때, 다른 작업 수행
-            }
-          } catch (error) {
-            console.error('API 호출 오류', error);
-            // 오류 처리
-          }
+        // window.location.href = "/page2_2";
+        await axios.post(backend_url + '/api/users', {
+          "email": userId,
+          "password": userPW,
+          "nickname": userName
+        })
+        .then(function (response) {
+          const res = JSON.stringify(response);
+          console.log(res);
+          console.log("Done");
+          window.location.href = "/page1_1";
+        }) 
+        .catch(function (error){
+          console.log("error");
+          window.alert('회원가입에 실패하였습니다.');
+        }) 
+
     }
   };
 
