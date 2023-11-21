@@ -4,6 +4,7 @@ import { Categories } from 'src/entities/Categories';
 import { CategoryResponses } from 'src/entities/CategoryResponses';
 import { Plans } from 'src/entities/Plans';
 import { Recommends } from 'src/entities/Recommends';
+import { SpotResponses } from 'src/entities/SpotResponses';
 import { Spots } from 'src/entities/Spots';
 import { Region } from 'src/entities/common/Region';
 import { DataSource, Repository } from 'typeorm';
@@ -27,6 +28,9 @@ export class SpotsService {
 
     @InjectRepository(CategoryResponses)
     private categoryResponsesRepository: Repository<CategoryResponses>,
+
+    @InjectRepository(SpotResponses)
+    private spotResponsesRepository: Repository<SpotResponses>,
   ) {}
   async addRecommends(planId: number) {
     const presentRecommends = await this.recommendsRepository.find({
@@ -99,6 +103,33 @@ export class SpotsService {
       throw new BadRequestException('관광지 추천에 실패했습니다');
     } finally {
       await queryRunner.release();
+    }
+  }
+
+  async getRecommendSpot(planId: number) {
+    try {
+      const recommends = await this.recommendsRepository
+        .createQueryBuilder('recommends')
+        .leftJoinAndSelect('recommends.Spot', 'spot')
+        .where('recommends.PlanId = :planId', { planId })
+        .getMany();
+      const recommendSpots = recommends.map((recommend) => recommend.Spot);
+      return recommendSpots;
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException('추천 장소 조회에 실패했습니다');
+    }
+  }
+
+  async alreadySubmitResponses(planId: number, userId: number) {
+    try {
+      return await this.spotResponsesRepository.find({
+        where: { PlanId: planId, UserId: userId },
+        select: ['score', 'spotId'],
+      });
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException('이미 응답한 정보 조회에 실패했습니다');
     }
   }
 }

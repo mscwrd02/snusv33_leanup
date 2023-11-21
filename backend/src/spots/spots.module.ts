@@ -7,6 +7,7 @@ import { Categories } from 'src/entities/Categories';
 import { CategoryResponses } from 'src/entities/CategoryResponses';
 import { Plans } from 'src/entities/Plans';
 import { Recommends } from 'src/entities/Recommends';
+import { SpotResponses } from 'src/entities/SpotResponses';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { Recommends } from 'src/entities/Recommends';
       Plans,
       Categories,
       CategoryResponses,
+      SpotResponses,
     ]),
   ],
   controllers: [SpotsController],

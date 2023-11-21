@@ -1,13 +1,17 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
 import { SpotsService } from './spots.service';
 import { SpotMoreRecommendDto } from 'src/dto/spot.more.recommend.dto';
 import { ErrorResponseDto } from 'src/dto/error.response.dto';
+import { User } from 'src/decorators/user.decorator';
+import { LoggedInGuard } from 'src/auth/logged-in-guard';
+import { FormWithHistoryResponseDto } from 'src/dto/form.with.history.response.dto';
 
 @ApiTags('SPOT')
 @Controller('api/spots')
@@ -15,10 +19,22 @@ export class SpotsController {
   constructor(private readonly spotsService: SpotsService) {}
 
   @ApiOperation({ summary: '관광지 설문지 요청하기' })
-  @Get()
-  sendSpotsFormWithHistory() {
+  @ApiOkResponse({
+    description: '관광지 설문지를 받아옴',
+    type: FormWithHistoryResponseDto,
+  })
+  @Get(':planId')
+  @UseGuards(LoggedInGuard)
+  async getSpotsFormWithHistory(
+    @Param('planId') planId: number,
+    @User() user,
+  ): Promise<FormWithHistoryResponseDto> {
     //recomends 테이블에 연결되어있는 여행계획에 대한 장소 추천 목록을 보내주기
     //사용자가 이미 spot_response에 응답한 기록이 있는 경우 그 정보를 포함해서 보내주기(프론트에서 이어하기 할 수 있게)
+    const spotForm = await this.spotsService.getRecommendSpot(+planId);
+    const alreadySubmitResponses =
+      await this.spotsService.alreadySubmitResponses(+planId, user.id);
+    return { spotForm, alreadySubmitResponses };
   }
 
   @ApiOperation({ summary: '관광지 설문 제출하기' })
