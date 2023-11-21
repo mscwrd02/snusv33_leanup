@@ -14,7 +14,7 @@ export class PlanRequestDto {
   public groupNum: number;
 
   @ApiProperty({
-    example: '[east, west, south]',
+    example: '["east", "west", "south"]',
     description: '지역 리스트 (string ,으로 구분하고 []로 감싸기])',
     required: true,
   })

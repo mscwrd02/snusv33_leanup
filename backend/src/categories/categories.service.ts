@@ -1,10 +1,15 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CategoryResponseDto } from 'src/dto/category.response.dto';
 import { Categories } from 'src/entities/Categories';
 import { CategoryResponses } from 'src/entities/CategoryResponses';
 import { Plans } from 'src/entities/Plans';
+import { Users } from 'src/entities/Users';
+import { Spots } from 'src/entities/Spots';
+import { PlanStatus } from 'src/entities/common/PlanStatus';
 import { DataSource, Repository } from 'typeorm';
+import { Recommends } from 'src/entities/Recommends';
+import { Region } from 'src/entities/common/Region';
 
 @Injectable()
 export class CategoriesService {
@@ -15,6 +20,12 @@ export class CategoriesService {
     @InjectRepository(CategoryResponses)
     private categoryResponsesRepository: Repository<CategoryResponses>,
 
+    @InjectRepository(Plans)
+    private plansRepository: Repository<Plans>,
+
+    @InjectRepository(Spots)
+    private spotRepository: Repository<Spots>,
+
     private dataSource: DataSource,
   ) {}
 
@@ -23,51 +34,134 @@ export class CategoriesService {
     return categories;
   }
 
-  async submitCategories(userId: number | null, body: CategoryResponseDto) {
+  async submitCategories(userId: number, body: CategoryResponseDto) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
       const parsedArray = JSON.parse(body.categoryList);
 
-      const duplicatedResponse = await queryRunner.manager
-        .getRepository(CategoryResponses)
+      const newResponse = new CategoryResponses();
+      newResponse.categoryList = body.categoryList;
+      newResponse.participationName = body.participantName;
+      newResponse.UserId = userId;
+      newResponse.PlanId = body.planId;
+
+      const user = await queryRunner.manager
+        .getRepository(Users)
+        .findOne({ where: { id: userId } });
+
+      //참여자 숫자 늘리고, 모두 참여했으면 상태를 바꾸기
+      const includedPlan = await queryRunner.manager
+        .getRepository(Plans)
         .findOne({
-          where: {
-            participationName: body.participantName,
-            PlanId: body.planId,
-          },
+          where: { id: body.planId },
+          relations: ['ParticipantsList'],
         });
+      includedPlan.categoryParticipations += 1;
+      if (includedPlan.group_num == includedPlan.categoryParticipations)
+        includedPlan.status = PlanStatus.SPOTING;
+      includedPlan.ParticipantsList.push(user);
 
-      if (duplicatedResponse) {
-        duplicatedResponse.categoryList = body.categoryList;
-        await queryRunner.manager
-          .getRepository(CategoryResponses)
-          .save(duplicatedResponse);
-      } else {
-        const newResponse = new CategoryResponses();
-        newResponse.categoryList = body.categoryList;
-        newResponse.participationName = body.participantName;
-        if (userId) newResponse.UserId = userId;
-        newResponse.PlanId = body.planId;
+      await Promise.all([
+        queryRunner.manager.getRepository(CategoryResponses).save(newResponse),
+        queryRunner.manager.getRepository(Plans).save(includedPlan),
+      ]);
 
-        const includedPlan = await queryRunner.manager
-          .getRepository(Plans)
-          .findOne({ where: { id: body.planId } });
-        includedPlan.categoryParticipations += 1;
-
-        await Promise.all([
-          queryRunner.manager
-            .getRepository(CategoryResponses)
-            .save(newResponse),
-          queryRunner.manager.getRepository(Plans).save(includedPlan),
-        ]);
-      }
       await queryRunner.commitTransaction();
       return true;
     } catch (err) {
+      console.log(err);
       await queryRunner.rollbackTransaction();
       throw new BadRequestException('취향 설문 응답에 실패했습니다');
+    } finally {
+      await queryRunner.release();
+    }
+  }
+  async isCategoryFormCompleted(planId: number) {
+    const plan = await this.plansRepository.findOne({ where: { id: planId } });
+    if (plan.status == PlanStatus.CATEGORYING) return false;
+    else return true;
+  }
+
+  //response에 있는 숫자들을 바탕으로, 숫자에 해당하는 카테고리를 가지고 있는 spot들을 추천해줄거다.
+  //확률 방식으로 구현하자.
+  async addRecommends(planId: number) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    const myPlan = await queryRunner.manager
+      .getRepository(Plans)
+      .findOne({ where: { id: planId } });
+    const availableRegion: Array<Region> = JSON.parse(myPlan.regionList);
+    const categoryResponses = await queryRunner.manager
+      .getRepository(CategoryResponses)
+      .find({ where: { PlanId: planId } });
+
+    const parsedResponses: Array<number> = categoryResponses.reduce(
+      (acc, val) => {
+        const parsedList = JSON.parse(val.categoryList);
+        return acc.concat(parsedList);
+      },
+      [],
+    );
+
+    const categoryRecommendResults: Array<number> = [];
+    for (let i = 0; i < 2; i++) {
+      const randomIndex = Math.floor(Math.random() * parsedResponses.length);
+      const randomElement = parsedResponses[randomIndex];
+      categoryRecommendResults.push(randomElement);
+    }
+
+    try {
+      for (const category of categoryRecommendResults) {
+        const recommendedSpots = await queryRunner.manager
+          .getRepository(Recommends)
+          .find({ where: { PlanId: planId } });
+        const recommendedSpotIds = recommendedSpots.map(
+          (recommendedSpots) => recommendedSpots.SpotId,
+        );
+
+        const wow = await this.categoriesRepository.findOne({
+          where: { id: category },
+          relations: ['Spots'],
+        });
+        const availableSpotId = wow.Spots.map((it) => it.id);
+
+        if (recommendedSpotIds.length == 0) {
+          const spot = await queryRunner.manager
+            .getRepository(Spots)
+            .createQueryBuilder('spot')
+            .where('spot.region IN (:...availableRegion)', { availableRegion })
+            .andWhere('spot.id IN (:...availableSpotId)', { availableSpotId })
+            .orderBy('spot.reviews', 'DESC')
+            .getOne();
+          await queryRunner.manager
+            .getRepository(Recommends)
+            .save({ PlanId: planId, SpotId: spot.id });
+        } else {
+          const spot = await queryRunner.manager
+            .getRepository(Spots)
+            .createQueryBuilder('spot')
+            .where('spot.region IN (:...availableRegion)', { availableRegion })
+            .andWhere('spot.id NOT IN (:...recommendedSpotIds)', {
+              recommendedSpotIds,
+            })
+            .andWhere('spot.id IN (:...availableSpotId)', { availableSpotId })
+            .orderBy('spot.reviews', 'DESC')
+            .getOne();
+          await queryRunner.manager
+            .getRepository(Recommends)
+            .save({ PlanId: planId, SpotId: spot.id });
+        }
+      }
+
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      console.log(err);
+      await queryRunner.rollbackTransaction();
+      throw new BadRequestException('관광지 추천에 실패했습니다');
     } finally {
       await queryRunner.release();
     }

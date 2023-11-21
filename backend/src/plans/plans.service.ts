@@ -36,6 +36,7 @@ export class PlansService {
     newPlan.endDate = body.endDate;
     newPlan.status = PlanStatus.CATEGORYING;
     newPlan.ParticipantsList = [user];
+    console.log(newPlan.ParticipantsList);
 
     const savedPlan = await this.plansRepository.save(newPlan);
     const planDetailResponse: PlanDetailResponseDto = {

@@ -6,6 +6,7 @@ import {
   NotFoundException,
   Post,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -19,6 +20,9 @@ import { CategoriesService } from './categories.service';
 import { Categories } from 'src/entities/Categories';
 import { CategoryResponseDto } from 'src/dto/category.response.dto';
 import { ErrorResponseDto } from 'src/dto/error.response.dto';
+import { LoggedInGuard } from 'src/auth/logged-in-guard';
+import { User } from 'src/decorators/user.decorator';
+import { UserResponseDto } from 'src/dto/user.response.dto';
 
 @ApiTags('CATEGORY')
 @Controller('api/categories')
@@ -51,13 +55,14 @@ export class CategoriesController {
     description: '취향 설문 제출 실패',
     type: ErrorResponseDto,
   })
+  @UseGuards(LoggedInGuard)
   @Post()
-  async submitCategories(@Req() req, @Body() body: CategoryResponseDto) {
-    await this.categoriesService.submitCategories(
-      req.user ? req.user.id : null,
-      body,
-    );
-
+  async submitCategories(@User() user, @Body() body: CategoryResponseDto) {
+    await this.categoriesService.submitCategories(user.id, body);
+    const isCategoryFormCompleted =
+      await this.categoriesService.isCategoryFormCompleted(body.planId);
+    if (isCategoryFormCompleted)
+      await this.categoriesService.addRecommends(body.planId);
     return 'ok';
   }
 
