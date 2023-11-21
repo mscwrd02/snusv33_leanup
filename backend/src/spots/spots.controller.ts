@@ -1,11 +1,18 @@
-import { Controller, Get, Post } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { User } from 'src/decorators/user.decorator';
+import { Body, Controller, Get, Post } from '@nestjs/common';
+import {
+  ApiBadRequestResponse,
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
+import { SpotsService } from './spots.service';
+import { SpotMoreRecommendDto } from 'src/dto/spot.more.recommend.dto';
+import { ErrorResponseDto } from 'src/dto/error.response.dto';
 
 @ApiTags('SPOT')
 @Controller('api/spots')
 export class SpotsController {
-  constructor() {}
+  constructor(private readonly spotsService: SpotsService) {}
 
   @ApiOperation({ summary: '관광지 설문지 요청하기' })
   @Get()
@@ -22,9 +29,17 @@ export class SpotsController {
   }
 
   @ApiOperation({ summary: '관광지 추천 20개 더 받기' })
-  @Get('more')
-  getMoreRecommends() {
-    //recommends 테이블에 취향을 기반으로 관광지 20개 더 추가해주기
+  @ApiCreatedResponse({
+    description: '관광지 추천이 추가됨',
+  })
+  @ApiBadRequestResponse({
+    description: '관광지 더 추천받기 실패',
+    type: ErrorResponseDto,
+  })
+  @Post('more')
+  async getMoreRecommends(@Body() body: SpotMoreRecommendDto) {
+    await this.spotsService.addRecommends(body.planId);
+    return 'ok';
   }
 
   @ApiOperation({ summary: '관광지 추천결과 조회하기' })

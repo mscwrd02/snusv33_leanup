@@ -22,7 +22,6 @@ import { CategoryResponseDto } from 'src/dto/category.response.dto';
 import { ErrorResponseDto } from 'src/dto/error.response.dto';
 import { LoggedInGuard } from 'src/auth/logged-in-guard';
 import { User } from 'src/decorators/user.decorator';
-import { UserResponseDto } from 'src/dto/user.response.dto';
 
 @ApiTags('CATEGORY')
 @Controller('api/categories')
@@ -49,7 +48,7 @@ export class CategoriesController {
   @ApiOperation({ summary: '취향 설문 제출하기' })
   @ApiCreatedResponse({
     description:
-      '취향 설문 제출 성공 / 이전에 같은 이름으로 제출한 이력이 있으면 수정됨',
+      '취향 설문 제출 성공 / 마지막 제출의 경우, 장소 추천목록 만들어짐',
   })
   @ApiBadRequestResponse({
     description: '취향 설문 제출 실패',
