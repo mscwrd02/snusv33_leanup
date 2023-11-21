@@ -22,6 +22,7 @@ import {
 } from '@nestjs/swagger';
 import { UserResponseDto } from 'src/dto/user.response.dto';
 import { ErrorResponseDto } from 'src/dto/error.response.dto';
+import { Users } from 'src/entities/Users';
 
 @ApiTags('USER')
 @Controller('api/users')
