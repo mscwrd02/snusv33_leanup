@@ -60,4 +60,6 @@ export class CategoriesController {
 
     return 'ok';
   }
+
+  //취향설문제출에서, 모든 사람이 취향 설문을 제출했으면, recommends에 관광지 20개 추가하기
 }
