@@ -1,4 +1,4 @@
-import {BrowserRouter, Route, Routes} from 'react-router-dom';
+import {BrowserRouter, Route, Routes, Link} from 'react-router-dom';
 import "./Page1.css";
 
 function Page1() {
@@ -22,9 +22,9 @@ function Page1() {
             </svg>
           </div>
         </div>
-        <div className="Start">
+        <Link className="Start" to="/page1_1" style={{ textDecoration: "none"}}>
           시작하기
-        </div>
+        </Link>
     </div>
   );
 }

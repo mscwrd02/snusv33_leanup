@@ -1,4 +1,4 @@
-import {BrowserRouter, Route, Routes} from 'react-router-dom';
+import {BrowserRouter, Route, Routes, Link} from 'react-router-dom';
 import {useState} from 'react';
 import "./Page3.css";
 import DatePicker from "react-datepicker";
@@ -22,11 +22,11 @@ function Page3() {
       <div className="Page3">
 
         <div className="Top">
-            <div className="Back">
+            <Link to="/page2_1" className="Back">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="27" viewBox="0 0 14 27" fill="none">
                     <path d="M13.1699 0L0 13.1699L13.1699 26.3397L13.9999 25.442L1.43203 13.1699L14 0.904566L13.1699 0Z" fill="black"/>
                 </svg>                
-            </div>
+            </Link>
             <div className="Title">여행 계획하기</div>
         </div>
 

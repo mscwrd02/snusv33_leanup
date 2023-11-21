@@ -1,16 +1,18 @@
-import {BrowserRouter, Route, Routes} from 'react-router-dom';
+import {BrowserRouter, Route, Routes, Link} from 'react-router-dom';
 import "./Page2_1.css";
 
 function Page2_1() {
   return (
     <div className="Page2_1">
-        <div className="Logo">Tripwiz</div>
+        <Link className="Logo" to="/page2_2" style={{ textDecoration: "none"}}>Tripwiz</Link>
         <div className="Location">
-            <div className="Date">2023/12/21(목) ~ 2023/12/23(토)</div>
-            <div className="Jeju">제주도</div>
-            <div className="Below">
-                <div className="Planning">계획중</div>
-            </div>
+            <Link to="/page3" style={{ textDecoration: "none"}}>
+                <div className="Date">2023/12/21(목) ~ 2023/12/23(토)</div>
+                <div className="Jeju">제주도</div>
+                <div className="Below">
+                    <div className="Planning">계획중</div>
+                </div>
+            </Link>
         </div>
         <div className="Decoration">Tripwiz</div>
         <div className="Add">

@@ -1,18 +1,22 @@
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import Page1 from "./Page1";
+import Page1_1 from './Page1_1';
 import Page2_1 from "./Page2_1";
 import Page2_2 from "./Page2_2";
 import Page3 from "./Page3";
+<<<<<<< HEAD
 import Page1_1 from './Page1_1';
 import Page1_2 from './Page1_2';
 import Page5 from './Page5';
+=======
+>>>>>>> b68d6f1eaff1aacbc904356c67f9e2299516058f
 
 function App(){
   return(
       <BrowserRouter>
           <Routes>
               <Route path="/">
-                  <Route index element={<Page3 />} />
+                  <Route index element={<Page1 />} />
                   <Route path="page1" element={<Page1 />} />
                   <Route path="page1_1" element={<Page1_1 />} />
                   <Route path="page1_2" element={<Page1_2 />} />
