@@ -23,7 +23,8 @@
     "db:create:prod": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs db:create -d ./dist/dataSource.ts",
     "db:drop": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs db:drop -d ./dataSource.ts",
     "db:drop:prod": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs db:drop -d ./dist/dataSource.ts",
-    "seed": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d ./dataSource.ts"
+    "seed": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d ./dataSource.ts",
+    "seed:prod": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d ./dist/dataSource.ts"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",

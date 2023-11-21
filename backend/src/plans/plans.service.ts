@@ -34,7 +34,7 @@ export class PlansService {
     newPlan.spotParticipations = 0;
     newPlan.startDate = body.startDate;
     newPlan.endDate = body.endDate;
-    newPlan.status = PlanStatus.READY;
+    newPlan.status = PlanStatus.CATEGORYING;
     newPlan.ParticipantsList = [user];
 
     const savedPlan = await this.plansRepository.save(newPlan);

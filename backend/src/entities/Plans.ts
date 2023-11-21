@@ -50,7 +50,7 @@ export class Plans {
     type: 'enum',
     name: 'status',
     enum: PlanStatus,
-    default: PlanStatus.READY,
+    default: PlanStatus.CATEGORYING,
   })
   status: PlanStatus;
 
