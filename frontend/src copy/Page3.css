@@ -1,0 +1,182 @@
+.Page3 {
+    width: 430px;
+    height: 932px;
+    background: #FFF;    
+}
+
+.Top {
+    margin-top: 12px;
+    display: flex;
+
+    padding-left: 22px;
+    align-items: center;
+}
+
+.Back {
+    width: 14px;
+    height: 26.34px;
+    flex-shrink: 0;
+}
+
+.Title {
+    margin-left: 121px;
+
+    color: #292929;
+
+    /* H2 */
+    font-family: Inter;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.Input {
+    width: 356px;
+    height: 365px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    margin-top: 140px;
+    margin-left: 38px;
+    
+}
+
+.Text {
+    color: #000;
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+
+    margin-bottom: 10px;
+}
+
+.Option {
+    width: 356px;
+    height: 36px;
+    flex-shrink: 0;
+
+    border: 0.5px solid #B4B4B4;
+    background: #FFF;
+    
+    /* drop blur */
+    box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.20);
+
+    color: #000;
+
+    /* body */
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.Number {
+    display: flex;
+    align-items: center;
+
+    width: 347px;
+    height: 22px;
+    flex-shrink: 0;
+
+    border: 0.5px solid #B4B4B4;
+    background: #FFF;
+    
+    /* drop blur */
+    box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.20);
+
+    padding-top: 6px;
+    padding-bottom: 6px;
+    padding-left: 9px;
+}
+
+.Minus {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.Ntext{
+    color: #000;
+
+    /* body */
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    
+    margin-left: 19px;
+    margin-right: 19px;
+}
+
+.Plus {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.Date {
+    display: flex;
+    align-content: flex-start;
+
+    width: 356px;
+    height: 36px;
+    flex-shrink: 0;
+
+    background: #FFF;
+    
+    /* drop blur */
+    /*border: 0.5px solid #B4B4B4;
+    box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.20);*/
+    margin-left: 0px;
+    margin-top: 0px;
+}
+
+.Picker{
+    color: #000;
+
+    width: 348px;
+    height: 28px;
+
+    /* body */
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.Nextpage{
+    display: flex;
+    width: 360px;
+    height: 40px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+
+    border-radius: 10px;
+    background: #000;
+    
+    /* shadow/main */
+    box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.20);
+
+    color: #FFF;
+    text-align: center;
+    
+    /* body */
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+
+    margin-top: 200px;
+    margin-left: 35px;
+}
