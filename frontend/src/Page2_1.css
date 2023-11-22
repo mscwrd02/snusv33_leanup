@@ -1,7 +1,9 @@
+/*
 .Page2_1 {
     width: 430px;
     height: 932px;
-    background: #FFF;    
+    background: #FFF;
+    padding-top: 6px;
 }
 
 .Logo {
@@ -14,7 +16,7 @@
     font-size: 24px;
     font-style: normal;
     font-weight: 700;
-    line-height: 140%; /* 33.6px */
+    line-height: 140%;
 }
 
 .Location {
@@ -26,7 +28,6 @@
     border: 0.5px solid #B4B4B4;
     background: #FFF;
     
-    /* drop blur */
     box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.20);
 
     margin-left: auto;
@@ -45,7 +46,7 @@
     font-size: 60px;
     font-style: normal;
     font-weight: 700;
-    line-height: 140%; /* 84px */
+    line-height: 140%;
 
     margin-top: 87px;
     margin-left: auto;
@@ -74,7 +75,6 @@
 
     color: #FFF;
 
-    /* caption */
     font-family: Inter;
     font-size: 14px;
     font-style: normal;
@@ -89,7 +89,6 @@
 .Jeju {
     color: var(--Black, #000);
 
-    /* Title */
     font-family: Inter;
     font-size: 28px;
     font-style: normal;
@@ -114,7 +113,6 @@
 
     color: #FFF;
 
-    /* body */
     font-family: Inter;
     font-size: 16px;
     font-style: normal;
@@ -127,3 +125,5 @@
 
     margin-left: 19px;
 }
+
+*/

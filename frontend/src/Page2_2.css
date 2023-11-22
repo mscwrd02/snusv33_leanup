@@ -1,7 +1,10 @@
+/*
 .Page2_2 {
     width: 430px;
     height: 932px;
     background: #FFF;    
+
+    padding-top: 6px;
 }
 
 .Logo {
@@ -14,7 +17,7 @@
     font-size: 24px;
     font-style: normal;
     font-weight: 700;
-    line-height: 140%; /* 33.6px */
+    line-height: 140%;
 }
 
 .Explaination {
@@ -50,3 +53,4 @@
     margin-left: 328px;
     margin-top: 276px;
 }
+*/

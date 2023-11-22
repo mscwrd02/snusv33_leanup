@@ -1,3 +1,4 @@
+/*
 .Page3 {
     width: 430px;
     height: 932px;
@@ -23,7 +24,6 @@
 
     color: #292929;
 
-    /* H2 */
     font-family: Inter;
     font-size: 20px;
     font-style: normal;
@@ -33,7 +33,7 @@
 
 .Input {
     width: 356px;
-    height: 365px;
+    height: 380px;
 
     display: flex;
     flex-direction: column;
@@ -52,7 +52,7 @@
     font-weight: 700;
     line-height: normal;
 
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .Option {
@@ -63,12 +63,10 @@
     border: 0.5px solid #B4B4B4;
     background: #FFF;
     
-    /* drop blur */
     box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.20);
 
     color: #000;
 
-    /* body */
     font-family: Inter;
     font-size: 16px;
     font-style: normal;
@@ -86,8 +84,7 @@
 
     border: 0.5px solid #B4B4B4;
     background: #FFF;
-    
-    /* drop blur */
+
     box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.20);
 
     padding-top: 6px;
@@ -104,7 +101,6 @@
 .Ntext{
     color: #000;
 
-    /* body */
     font-family: Inter;
     font-size: 16px;
     font-style: normal;
@@ -131,9 +127,6 @@
 
     background: #FFF;
     
-    /* drop blur */
-    /*border: 0.5px solid #B4B4B4;
-    box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.20);*/
     margin-left: 0px;
     margin-top: 0px;
 }
@@ -144,7 +137,6 @@
     width: 348px;
     height: 28px;
 
-    /* body */
     font-family: Inter;
     font-size: 16px;
     font-style: normal;
@@ -164,13 +156,11 @@
     border-radius: 10px;
     background: #000;
     
-    /* shadow/main */
     box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.20);
 
     color: #FFF;
     text-align: center;
     
-    /* body */
     font-family: Inter;
     font-size: 16px;
     font-style: normal;
@@ -180,3 +170,4 @@
     margin-top: 200px;
     margin-left: 35px;
 }
+*/
