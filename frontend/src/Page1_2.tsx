@@ -1,44 +1,48 @@
 import React, {useState} from "react";
-import logo from "./logo.svg";
-import "./Page1_1.css";
+import "./Page1_2.css";
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import Prev_btn from "./prev_btn";
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+// import { toast } from 'react-toastify';
+// import 'react-toastify/dist/ReactToastify.css';
 
 function Page1_2() {
   const [userId, setUserId] = useState<string>('');
   const [userPW, setUserPW] = useState<string>('');
+  const [userName, setUserName] = useState<string>('');
+
   const handleInputChange_ID = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserId(event.target.value);
   };
   const handleInputChange_PW = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserPW(event.target.value);
   };
-  const handleLogin = async () => {
-    try {
-      // API 호출 예시 (fetch 사용)
-      const response = await fetch('https://example.com/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId,
-          userPW,
-        }),
-      });
-  
-      // 응답 처리
-      if (response.ok) {
-        console.log('로그인 성공');
-        // 로그인이 성공했을 때, 다른 작업 수행
-      } else {
-        console.error('로그인 실패');
-        // 로그인이 실패했을 때, 다른 작업 수행
-      }
-    } catch (error) {
-      console.error('API 호출 오류', error);
-      // 오류 처리
+  const handleInputChange_Name = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUserName(event.target.value);
+  };
+
+  const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
+
+  const handleJoin = async () => {
+    if (userId && userPW && userName){
+        // window.location.href = "/page2_2";
+        await axios.post(backend_url + '/api/users', {
+          "email": userId,
+          "password": userPW,
+          "nickname": userName
+        })
+        .then(function (response) {
+          const res = JSON.stringify(response);
+          console.log(res);
+          console.log("Done");
+          window.location.href = "/page1_1";
+        }) 
+        .catch(function (error){
+          console.log("error");
+          window.alert('회원가입에 실패하였습니다.');
+        }) 
+
     }
   };
 
@@ -46,13 +50,13 @@ function Page1_2() {
     <div className="page1_1">
       <div className="title">
         <div className="prev"> 
-          <Link to="/Page1">
+          <Link to="/Page1_1">
             <button style={buttonStyle}>
               <Prev_btn />
             </button> 
           </Link>
         </div> 
-        <div className="logintitle">로그인</div> 
+        <div className="logintitle">회원가입</div> 
         <div className="blank"></div>
       </div>
       <div className="ID_input" style={inputContainerStyle}>
@@ -62,13 +66,13 @@ function Page1_2() {
           value={userId}
           onChange={handleInputChange_ID}
           style={inputStyle}
-          placeholder="아이디"
+          placeholder="이메일"
         />
         <div style={underlineStyle}></div>
       </div>
       <div className="PW_input" style={inputContainerStyle_PW}>
         <input
-          type="text"
+          type="password"
           id="userPW"
           value={userPW}
           onChange={handleInputChange_PW}
@@ -77,10 +81,21 @@ function Page1_2() {
         />
         <div style={underlineStyle}></div>
       </div>
-      <div className="Login_btn">
-        <button onClick={handleLogin} style={login_btn_style}>
-          로그인
-        </button>
+      <div className="PW_input" style={inputContainerStyle_Name}>
+        <input
+          type="text"
+          id="userName"
+          value={userName}
+          onChange={handleInputChange_Name}
+          style={inputStyle}
+          placeholder="이름"
+        />
+        <div style={underlineStyle}></div>
+      </div>
+      <div className="Join_btn">
+            <button onClick={handleJoin} style={login_btn_style}>
+            이메일로 가입하기
+            </button>
       </div>
     </div>
   );
@@ -110,6 +125,13 @@ const inputContainerStyle_PW: React.CSSProperties = {
   flexDirection: 'column',
   alignItems: 'center',
 };
+
+const inputContainerStyle_Name: React.CSSProperties = {
+    marginTop: '27px', /* 입력칸과 버튼 사이의 간격 조절 */
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  };
 
 const inputStyle: React.CSSProperties = {
   //padding: '8px',
