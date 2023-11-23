@@ -22,6 +22,12 @@ export class SpotResponses {
   @Column('int', { name: 'spot_id' })
   spotId: number;
 
+  @Column('int', { name: 'UserId', nullable: true })
+  UserId: number;
+
+  @Column('int', { name: 'PlanId', nullable: true })
+  PlanId: number;
+
   @ManyToOne(() => Plans, (plans) => plans.SpotResponses, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',

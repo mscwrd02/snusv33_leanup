@@ -64,7 +64,6 @@ export class AuthController {
   @Post('logout')
   @UseGuards(LoggedInGuard)
   logOut(@Req() req, @Res() res) {
-    req.logOut();
     res.clearCookie('connect.sid', { httpOnly: true });
     res.send('ok');
   }
