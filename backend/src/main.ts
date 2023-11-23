@@ -36,6 +36,7 @@ async function bootstrap() {
       cookie: {
         httpOnly: true,
         sameSite: 'none',
+        secure: true,
       },
     }),
   );
