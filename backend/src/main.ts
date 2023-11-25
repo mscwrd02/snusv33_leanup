@@ -35,8 +35,6 @@ async function bootstrap() {
       secret: process.env.COOKIE_SECRET,
       cookie: {
         httpOnly: true,
-        sameSite: 'none',
-        secure: true,
       },
     }),
   );
