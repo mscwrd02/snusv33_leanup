@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 
 function Page1_1() {
-  const backend_url: string = process.env.REACT_APP_BACK_URL as string;
+  const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
   //const axios = require('axios');
 
   const [userId, setUserId] = useState<string>("");
