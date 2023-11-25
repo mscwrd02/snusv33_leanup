@@ -16,6 +16,7 @@ import { CategoryResponses } from './CategoryResponses';
 import { SpotResponses } from './SpotResponses';
 import { Recommends } from './Recommends';
 import { PlanStatus } from './common/PlanStatus';
+import { Schedules } from './Schedule';
 
 @Entity({ schema: 'frienvel', name: 'plans' })
 export class Plans {
@@ -95,4 +96,7 @@ export class Plans {
 
   @OneToMany(() => Recommends, (recommends) => recommends.Plan)
   Recommends: Recommends[];
+
+  @OneToMany(() => Schedules, (schedules) => schedules.Plan)
+  Schedules: Schedules[];
 }

@@ -13,6 +13,7 @@ import { Plans } from './Plans';
 import { Region } from './common/Region';
 import { Recommends } from './Recommends';
 import { ApiProperty } from '@nestjs/swagger';
+import { Schedules } from './Schedule';
 
 @Entity({ schema: 'frienvel', name: 'spots' })
 export class Spots {
@@ -108,4 +109,7 @@ export class Spots {
 
   @OneToMany(() => Recommends, (recommends) => recommends.Spot)
   Recommends: Recommends[];
+
+  @OneToMany(() => Schedules, (schedules) => schedules.Spot)
+  Schedules: Schedules[];
 }

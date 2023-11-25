@@ -10,6 +10,7 @@ import { SpotImages } from 'src/entities/SpotImages';
 import { CategoryResponses } from 'src/entities/CategoryResponses';
 import { Categories } from 'src/entities/Categories';
 import { Recommends } from 'src/entities/Recommends';
+import { Schedules } from 'src/entities/Schedule';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { Recommends } from 'src/entities/Recommends';
       CategoryResponses,
       Categories,
       Recommends,
+      Schedules,
     ]),
   ],
   providers: [UsersService],

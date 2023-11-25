@@ -8,6 +8,7 @@ import { SpotResponses } from './entities/SpotResponses';
 import { Plans } from './entities/Plans';
 import { Spots } from './entities/Spots';
 import { Recommends } from './entities/Recommends';
+import { Schedules } from './entities/Schedule';
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ const dataSource = new DataSource({
     SpotResponses,
     Spots,
     Recommends,
+    Schedules,
   ],
   charset: 'utf8mb4_general_ci',
   synchronize: false,

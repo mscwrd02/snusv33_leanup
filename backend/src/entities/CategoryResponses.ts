@@ -25,6 +25,9 @@ export class CategoryResponses {
   @Column('int', { name: 'PlanId', nullable: true })
   PlanId: number;
 
+  @Column('varchar', { name: 'comment', nullable: true, length: 100 })
+  comment: string;
+
   @ManyToOne(() => Plans, (plans) => plans.CategoryResponses, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
