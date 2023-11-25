@@ -33,7 +33,7 @@ function Page1_1() {
           const res = JSON.stringify(response);
           console.log(res);
           console.log("Done");
-          window.location.href = "/page2_2";
+          //window.location.href = "/page2_2";
         })
         .catch(function (error) {
           window.alert("로그인에 실패하였습니다.");
