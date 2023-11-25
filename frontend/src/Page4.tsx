@@ -261,9 +261,10 @@ function createTrip(){
         "regionList": "[east, west]",
         "startDate": "2023-12-25",
         "endDate": "2023-12-30"
-    })
+    }, { withCredentials: true })
     .then(function (response) {
-        console.log(response)
+        console.log(response);
+        
     }).catch(function (error) {
         // 오류발생시 실행
     }).then(function() {

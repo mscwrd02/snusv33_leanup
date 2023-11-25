@@ -31,7 +31,7 @@ function Page1_2() {
           "email": userId,
           "password": userPW,
           "nickname": userName
-        })
+        },{ withCredentials: true })
         .then(function (response) {
           const res = JSON.stringify(response);
           console.log(res);

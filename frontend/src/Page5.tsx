@@ -8,7 +8,7 @@ function Page5() {
   
   const generateStringToCopy = () => {
     // 여기에서 원하는 로직에 따라 새로운 문자열을 생성합니다.
-    return 'https://www.frienvel.com/?code=1m2dm3';
+    return 'https://choigangminseok';
   };
 
   const Sharing_Link = generateStringToCopy();
@@ -26,7 +26,24 @@ function Page5() {
   };
 
   const handleKakaoShare = async () => {
+    if (!window.Kakao.isInitialized()){
+      window.Kakao.init('aee10f2f78c2808dcf4aea2225adcfb6');
+    }
 
+    const kakao = window.Kakao;
+
+    kakao.Share.sendDefault({
+      objectType: 'feed',
+      content: {
+        title: 'hi',
+        imageUrl:
+          'http://via.placeholder.com/500.jpg/',
+        link: {
+          webUrl: 'hihi',
+          mobileWebUrl: 'hihi',
+        },
+      },
+    })
   };
 
   const boxStyle: React.CSSProperties = {

@@ -23,7 +23,7 @@ function Page1_1() {
       await axios.post(backend_url+'/api/auth/login', {
         "email": userId,
         "password": userPW
-      })
+      }, { withCredentials: true })
       .then(function (response) {
         const res = JSON.stringify(response);
         console.log(res);
@@ -42,7 +42,7 @@ function Page1_1() {
     // const response = await axios.get(backend_url+'/api/auth/login/kakao', {
     // })
     window.location.href = backend_url + "/api/auth/login/kakao";
-    
+
   }
 
   return (
