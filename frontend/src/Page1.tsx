@@ -13,6 +13,7 @@ const Page1Container = styled.div`
 const Page1Header = styled.div`
   display:flex;
   margin-top:58px;
+  padding-left: 20px;
 `;
 
 const Logo = styled.div`
@@ -153,8 +154,6 @@ function Page1() {
     <Page1Container>
         <Page1Header>
           <Logo>Tripwiz</Logo>
-          <Join>회원가입</Join>
-          <Login>로그인</Login>
         </Page1Header>
         <Introduce>
           함께 여행 계획 짜는<br></br>가장 쉬운 방법,<br></br>Tripwiz.

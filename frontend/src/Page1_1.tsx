@@ -39,10 +39,10 @@ function Page1_1() {
   const handlekakaoLogin = async () => {
       // API 호출 예시 (fetch 사용)
       //console.log('hi');
-    // const response = await axios.get(backend_url+'/api/auth/login/kakao', {
-    // })
+//    const response = await axios.get(backend_url+'/api/auth/login/kakao', {
+    //})
     window.location.href = backend_url + "/api/auth/login/kakao";
-
+    
   }
 
   return (

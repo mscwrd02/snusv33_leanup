@@ -1,8 +1,19 @@
-import {BrowserRouter, Route, Routes, Link} from 'react-router-dom';
+import {BrowserRouter, Route, Routes} from 'react-router-dom';
+import { Link as ReactRouterDomLink, LinkProps as ReactRouterDomLinkProps } from "react-router-dom";
+
 import {useState} from 'react';
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
 import styled from "styled-components";
+
+interface LinkProps extends ReactRouterDomLinkProps {
+	isActive?: boolean;
+	children: React.ReactNode;
+}
+
+const Link: React.FC<LinkProps> = ({ isActive, children, ...props }) => {
+	return <ReactRouterDomLink {...props}>{children}</ReactRouterDomLink>;
+};
 
 const Page3Container = styled.div`
     width: 430px;
@@ -18,7 +29,7 @@ const Top = styled.div`
     align-items: center;
 `;
 
-const Back = styled(Link)`
+const Back = styled(ReactRouterDomLink)`
     width: 14px;
     height: 26.34px;
     flex-shrink: 0;
@@ -93,7 +104,7 @@ const Number = styled.div`
 
     padding-top: 6px;
     padding-bottom: 6px;
-    padding-left: 9px;
+    padding-left: 1px;
 `;
 
 const Minus = styled.svg`
@@ -111,8 +122,8 @@ const Ntext = styled.div`
     font-weight: 500;
     line-height: normal;
     
-    margin-left: 19px;
-    margin-right: 19px;
+    margin-left: 5px;
+    margin-right: 5px;
 `;
 
 const Plus = styled.svg`
@@ -157,8 +168,9 @@ const Nextpage = styled(Link)`
     gap: 10px;
     flex-shrink: 0;
 
-    border-radius: 10px;
-    background: #000;
+    border-radius: 36px;
+    background: ${(props) => (props.isActive ? '#0D99FF' : '#B1B1B1')};
+    pointer-events: ${(props) => (props.isActive ? 'auto' : 'none')};
     
     box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.20);
 
@@ -173,10 +185,15 @@ const Nextpage = styled(Link)`
 
     margin-top: 200px;
     margin-left: 35px;
+
+    text-decoration: None;
 `;
 
 function Page3() {
     const [counter, setCounter] = useState(0);
+    const [startDate, setStartDate] = useState<Date | null>(new Date());
+    const [endDate, setEndDate] = useState<Date | null>(new Date());
+    const [isActive, setIsActive] = useState(false);
 
     function plus(){
         setCounter(counter+1);
@@ -186,8 +203,12 @@ function Page3() {
         else setCounter(counter-1);
     }
 
-    const [startDate, setStartDate] = useState<Date | null>(new Date());
-    const [endDate, setEndDate] = useState<Date | null>(new Date());
+    function isCompleted(){
+        console.log(startDate);
+        if((counter>0) && (startDate!==null)){
+            return true;
+        }
+    }
 
     return (
       <Page3Container>
@@ -225,6 +246,7 @@ function Page3() {
                 <Text>여행 시작일</Text>
                 <When>
                     <Picker
+                        dateFormat= "yyyy.M.d"
                         selected={startDate}
                         onChange={(date) => setStartDate(date)}
                     />
@@ -235,6 +257,7 @@ function Page3() {
                 <Text>여행 종료일</Text>
                 <When>
                     <Picker
+                        dateFormat= "yyyy.M.d"
                         selected={endDate}
                         onChange={(date) => setEndDate(date)}
                     />
@@ -242,8 +265,8 @@ function Page3() {
             </div>
         </Input>
 
-        <Nextpage to="/page4">
-            링크 생성하기
+        <Nextpage to="/page4" isActive={isCompleted()}>
+            다음
         </Nextpage>
       </Page3Container>
     );
