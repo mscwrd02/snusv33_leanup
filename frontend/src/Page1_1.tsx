@@ -200,7 +200,12 @@ const kakao_login_btn_style: React.CSSProperties = {
   justifyContent: 'center',
   alignItems: 'center',
   display: 'flex',
-  flexDirection: 'row'
+  flexDirection: 'row',
+  fontFamily: 'Inter',
+  fontSize: '16px',
+  fontStyle: 'normal',
+  fontWeight: 500,
+  lineHeight: 'normal',
 };
 
 export default Page1_1;
