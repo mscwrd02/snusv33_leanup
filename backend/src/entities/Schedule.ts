@@ -2,18 +2,39 @@ import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { Plans } from './Plans';
 import { Spots } from './Spots';
 import { TimeBlock } from './common/TimeBlock';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({ schema: 'frienvel', name: 'schedules' })
 export class Schedules {
+  @ApiProperty({
+    example: '2023-12-20',
+    description: '일정 날짜',
+    required: true,
+  })
   @Column('date', { name: 'date' })
   date: Date;
 
+  @ApiProperty({
+    example: 1,
+    description: '계획 id',
+    required: true,
+  })
   @Column('int', { primary: true, name: 'PlanId' })
   PlanId: number;
 
+  @ApiProperty({
+    example: 1,
+    description: '장소 id',
+    required: true,
+  })
   @Column('int', { primary: true, name: 'SpotId' })
   SpotId: number;
 
+  @ApiProperty({
+    example: 'morning',
+    description: '시간대',
+    required: true,
+  })
   @Column({ type: 'enum', name: 'time', enum: TimeBlock })
   time: TimeBlock;
 
