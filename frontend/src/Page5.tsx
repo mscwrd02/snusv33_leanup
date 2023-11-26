@@ -111,13 +111,6 @@ function Page5() {
       <div className="link" style={link_style}>
           {Sharing_Link}
       </div>
-      <div className="text1" style={text1_style}>
-          모두 설문에 참여하면, <br/>
-          AI가 모두의 취향을 반영한 장소를 추천해줘요!
-      </div>
-      <div className="text2" style={text2_style}>
-          * 추천된 장소들은 동일한 링크에서 확인할 수 있어요!
-      </div>
       <div className="link_copy_btn">
             <button onClick={handleLinkCopy} style={link_copy_btn_style}>
             링크 복사하기
@@ -125,8 +118,15 @@ function Page5() {
       </div>
       <div className="kakao_share_btn">
             <button onClick={handleKakaoShare} style={kakao_share_btn_style}>
-            카톡으로 공유하기
+            카카오톡으로 공유하기
             </button>
+      </div>
+      <div className="text1" style={text1_style}>
+          모두 설문에 참여하면, <br/>
+          AI가 모두의 취향을 반영한 장소를 추천해줘요!
+      </div>
+      <div className="text2" style={text2_style}>
+          * 추천된 장소들은 동일한 링크에서 확인할 수 있어요!
       </div>
       <div className="label_survey_rate" style={label_survey_rate_style}>
             설문 참여율
