@@ -189,7 +189,11 @@ const Nextpage = styled(Link)`
     text-decoration: None;
 `;
 
-function Page3() {
+export let exportCounter: number = 0;
+export let exportStartDate: Date | null = new Date();
+export let exportEndDate: Date | null = new Date();
+
+export function Page3() {
     const [counter, setCounter] = useState(0);
     const [startDate, setStartDate] = useState<Date | null>(new Date());
     const [endDate, setEndDate] = useState<Date | null>(new Date());
@@ -197,18 +201,25 @@ function Page3() {
 
     function plus(){
         setCounter(counter+1);
+        //exportCounter += 1;
     }
     function minus(){
         if(counter == 0)  setCounter(counter);
-        else setCounter(counter-1);
+        else{
+            setCounter(counter-1);
+            //exportCounter -= 1;
+        }
     }
 
     function isCompleted(){
-        console.log(startDate);
         if((counter>0) && (startDate!==null)){
             return true;
         }
     }
+    
+    exportCounter = counter;
+    exportStartDate = startDate;
+    exportEndDate = endDate;
 
     return (
       <Page3Container>
@@ -272,5 +283,4 @@ function Page3() {
     );
   }
   
-  export default Page3;
-
+//export default Page3;

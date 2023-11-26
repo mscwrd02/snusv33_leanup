@@ -4,7 +4,7 @@ import Page1_1 from './Page1_1';
 import Page1_2 from './Page1_2';
 import Page2_1 from "./Page2_1";
 import Page2_2 from "./Page2_2";
-import Page3 from "./Page3";
+import {Page3} from "./Page3";
 import Page4 from "./Page4";
 import Page5 from './Page5';
 import Page6 from "./Page6";
