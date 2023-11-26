@@ -7,6 +7,7 @@ import Page2_2 from "./Page2_2";
 import {Page3} from "./Page3";
 import Page4 from "./Page4";
 import Page5 from './Page5';
+import Page6 from "./Page6";
 
 function App(){
   return(
@@ -22,6 +23,7 @@ function App(){
                   <Route path="page3" element={<Page3 />} />
                   <Route path="page4" element={<Page4 />} />
                   <Route path="page5" element={<Page5 />} />
+                  <Route path="page6" element={<Page6 />} />
               </Route>
           </Routes>
       </BrowserRouter>

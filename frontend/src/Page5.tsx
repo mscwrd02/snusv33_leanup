@@ -60,7 +60,7 @@ function Page5() {
     <div className="page1_1">
       <div className="title">
         <div className="prev"> 
-          <Link to="/Page1_1">
+          <Link to="/Page6">
             <button style={buttonStyle}>
               <Prev_btn />
             </button> 
@@ -133,11 +133,9 @@ function Page5() {
       </div>
       <div className="background_survey_rate" style={background_survey_rate_style}>
         <div className="survey_rate" style={boxStyle}>
-          
         </div>
       </div>
-
-
+      
     </div>
   );
 }
