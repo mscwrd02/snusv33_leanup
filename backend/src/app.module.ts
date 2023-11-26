@@ -9,6 +9,7 @@ import { PlansModule } from './plans/plans.module';
 import { CategoriesModule } from './categories/categories.module';
 import { SpotsModule } from './spots/spots.module';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
+import { SchedulesModule } from './schedules/schedules.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { LoggerMiddleware } from './middlewares/logger.middleware';
     PlansModule,
     CategoriesModule,
     SpotsModule,
+    SchedulesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
