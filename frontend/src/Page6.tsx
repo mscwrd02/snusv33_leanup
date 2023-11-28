@@ -161,7 +161,7 @@ const Preferencetop = styled.div`
     margin-bottom: 17px;
 `
 
-const Go = styled.div`
+const Go = styled(Link)`
     width: 78px;
     height: 30px;
     flex-shrink: 0;
@@ -300,7 +300,7 @@ function Page6() {
             <Preference>
                 <Preferencetop>
                     <Text>취향 고르기</Text>
-                    <Go>하러 가기</Go>
+                    <Go to="/page6_1" style={{ textDecoration: "none"}}>하러 가기</Go>
                 </Preferencetop>
                 <Surveyrate>
                     50%
