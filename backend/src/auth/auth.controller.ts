@@ -56,7 +56,8 @@ export class AuthController {
 
   @Get('login/kakao/callback')
   @UseGuards(KakaoAuthGuard)
-  kakaoLogInRedirect(@Req() req) {
+  kakaoLogInRedirect(@Req() req, @Res() res) {
+    res.redirect(process.env.CALLBACK_URL);
     return req.user;
   }
 
