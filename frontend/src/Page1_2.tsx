@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 // import { toast } from 'react-toastify';
 // import 'react-toastify/dist/ReactToastify.css';
+import kakaoLogo from './images/kakaotalk.png';
 
 function Page1_2() {
   const [userId, setUserId] = useState<string>('');
@@ -21,6 +22,15 @@ function Page1_2() {
   const handleInputChange_Name = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserName(event.target.value);
   };
+
+  const handlekakaoLogin = async () => {
+    // API 호출 예시 (fetch 사용)
+    //console.log('hi');
+//    const response = await axios.get(backend_url+'/api/auth/login/kakao', {
+  //})
+  window.location.href = backend_url + "/api/auth/login/kakao";
+  
+  }
 
   const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
 
@@ -58,6 +68,19 @@ function Page1_2() {
         </div> 
         <div className="logintitle">회원가입</div> 
         <div className="blank"></div>
+      </div>
+      <div className="Kakao_Login_btn" style={center_align}>
+        {/* <Link to="/page2_2"> */}
+        <button onClick={handlekakaoLogin} style={kakao_login_btn_style}>
+          <img src={kakaoLogo} style={{width: '40px', height: '40px'}} alt="카카오 계정으로 로그인" />
+          카카오로 3초만에 시작하기
+        </button>
+        {/* </Link> */}
+      </div>
+      <div style={orWithLinesStyle}>
+        <div style={beforeLineStyle} />
+        OR
+        <div style={afterLineStyle} />
       </div>
       <div className="ID_input" style={inputContainerStyle}>
         <input
@@ -101,6 +124,43 @@ function Page1_2() {
   );
 }
 
+const center_align: React.CSSProperties = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+};
+const orWithLinesStyle: React.CSSProperties = {
+  marginTop: '60px',
+  position: 'relative',
+  display: 'inline-block',
+  color: '#A0A0A0',
+  textAlign: 'center',
+  fontFamily: 'Inter',
+  fontSize: '12px',
+  fontStyle: 'normal',
+  fontWeight: 400,
+  lineHeight: 'normal',
+};
+const lineStyle: React.CSSProperties = {
+  content: '""',
+  position: 'absolute',
+  height: '1px',
+  width: '153px',
+  backgroundColor: '#A0A0A0',
+  background: '#D9D9D9',
+  top: '50%',
+};
+
+const beforeLineStyle: React.CSSProperties = {
+  ...lineStyle,
+  left: '-160px',
+};
+
+const afterLineStyle: React.CSSProperties = {
+  ...lineStyle,
+  right: '-160px',
+};
+
 const buttonStyle: React.CSSProperties = {
   display: 'flex',
   alignItems: 'center',
@@ -113,7 +173,7 @@ const buttonStyle: React.CSSProperties = {
 
 
 const inputContainerStyle: React.CSSProperties = {
-  marginTop: '165px', /* 입력칸과 버튼 사이의 간격 조절 */
+  marginTop: '60px', /* 입력칸과 버튼 사이의 간격 조절 */
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
@@ -162,6 +222,33 @@ const login_btn_style: React.CSSProperties = {
   border: 'none',
   borderRadius: '10px',
   boxShadow: '0px 0px 6px 0px rgba(0, 0, 0, 0.20)',
+};
+const kakao_login_btn_style: React.CSSProperties = {
+  marginTop: '167px',
+  width: '83.7%',
+  height: '40px',
+  background: 'rgba(254, 229, 0, 1)',
+  color: 'black', // 텍스트 색상을 흰색으로 변경
+  border: 'none',
+  borderRadius: '10px',
+  boxShadow: '0px 0px 6px 0px rgba(0, 0, 0, 0.20)',
+  // backgroundImage: `url(${kakaoLoginImage})`, // 배경 이미지 설정
+  // //backgroundSize: 'auto 100%',
+  // backgroundSize: 'cover', // 이미지 사이즈 조절
+  // backgroundRepeat: 'no-repeat', // 이미지 반복 방지
+  // backgroundPosition: 'center', // 이미지 위치 조절
+  //display: 'flex',
+  // flexDirection: 'row',
+  justifyContent: 'center',
+  alignItems: 'center',
+  display: 'flex',
+  flexDirection: 'row',
+  fontFamily: 'Inter',
+  fontSize: '16px',
+  fontStyle: 'normal',
+  fontWeight: 500,
+  lineHeight: 'normal',
+
 };
 
 export default Page1_2;

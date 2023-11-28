@@ -9,6 +9,7 @@ import Page4 from "./Page4";
 import Page5 from './Page5';
 import Page6 from "./Page6";
 import Page6_1 from "./Page6_1";
+import PageforGuest from "./PageforGuest";
 
 function App(){
   return(
@@ -25,7 +26,9 @@ function App(){
                   <Route path="page4" element={<Page4 />} />
                   <Route path="page5" element={<Page5 />} />
                   <Route path="page6" element={<Page6 />} />
+
                   <Route path="page6_1" element={<Page6_1 />} />
+                  <Route path="pageforguest" element={<PageforGuest />} />
               </Route>
           </Routes>
       </BrowserRouter>

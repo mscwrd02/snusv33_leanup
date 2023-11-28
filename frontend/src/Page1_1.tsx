@@ -5,6 +5,9 @@ import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import Prev_btn from "./prev_btn";
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import kakaoLoginImage from './images/kakao_login.png';
+import kakaoLogo from './images/kakaotalk.png';
+
 
 function Page1_1() {
   const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
@@ -92,16 +95,23 @@ function Page1_1() {
         </button>
         </Link>
       </div>
-      <div className="Kakao_Login_btn">
-        <Link to="/page2_2">
+      <div className="Kakao_Login_btn" style={center_align}>
+        {/* <Link to="/page2_2"> */}
         <button onClick={handlekakaoLogin} style={kakao_login_btn_style}>
+          <img src={kakaoLogo} style={{width: '40px', height: '40px'}} alt="카카오 계정으로 로그인" />
           카카오 계정으로 로그인
         </button>
-        </Link>
+        {/* </Link> */}
       </div>
     </div>
   );
 }
+
+const center_align: React.CSSProperties = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+};
 
 const buttonStyle: React.CSSProperties = {
   display: 'flex',
@@ -180,6 +190,22 @@ const kakao_login_btn_style: React.CSSProperties = {
   border: 'none',
   borderRadius: '10px',
   boxShadow: '0px 0px 6px 0px rgba(0, 0, 0, 0.20)',
+  // backgroundImage: `url(${kakaoLoginImage})`, // 배경 이미지 설정
+  // //backgroundSize: 'auto 100%',
+  // backgroundSize: 'cover', // 이미지 사이즈 조절
+  // backgroundRepeat: 'no-repeat', // 이미지 반복 방지
+  // backgroundPosition: 'center', // 이미지 위치 조절
+  //display: 'flex',
+  // flexDirection: 'row',
+  justifyContent: 'center',
+  alignItems: 'center',
+  display: 'flex',
+  flexDirection: 'row',
+  fontFamily: 'Inter',
+  fontSize: '16px',
+  fontStyle: 'normal',
+  fontWeight: 500,
+  lineHeight: 'normal',
 };
 
 export default Page1_1;
