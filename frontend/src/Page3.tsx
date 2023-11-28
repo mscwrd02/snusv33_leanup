@@ -1,10 +1,14 @@
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import { Link as ReactRouterDomLink, LinkProps as ReactRouterDomLinkProps } from "react-router-dom";
 
-import {useState} from 'react';
-import DatePicker from "react-datepicker";
-import 'react-datepicker/dist/react-datepicker.css';
+import React, {useState} from 'react';
 import styled from "styled-components";
+
+import DatePicker from "react-datepicker";
+import { ko } from "date-fns/esm/locale";
+import 'react-datepicker/dist/react-datepicker.css';
+
+import Select from 'react-select';
 
 interface LinkProps extends ReactRouterDomLinkProps {
 	isActive?: boolean;
@@ -82,11 +86,15 @@ const Option = styled.select`
 
     color: #000;
 
-    font-family: Inter;
+    color: #000;
+    font-family: Noto Sans KR;
     font-size: 16px;
     font-style: normal;
-    font-weight: 500;
-    line-height: normal;
+    font-weight: 400;
+    line-height: 120%; /* 19.2px */
+    letter-spacing: -0.8px;
+
+    padding-left: 5px;
 `;
 
 const Number = styled.div`
@@ -104,7 +112,7 @@ const Number = styled.div`
 
     padding-top: 6px;
     padding-bottom: 6px;
-    padding-left: 1px;
+    padding-left: 5px;
 `;
 
 const Minus = styled.svg`
@@ -116,11 +124,13 @@ const Minus = styled.svg`
 const Ntext = styled.div`
     color: #000;
 
-    font-family: Inter;
+    color: #000;
+    font-family: Noto Sans KR;
     font-size: 16px;
     font-style: normal;
-    font-weight: 500;
-    line-height: normal;
+    font-weight: 400;
+    line-height: 120%; /* 19.2px */
+    letter-spacing: -0.8px;
     
     margin-left: 5px;
     margin-right: 5px;
@@ -144,6 +154,7 @@ const When = styled.div`
     
     margin-left: 0px;
     margin-top: 0px;
+    
 `;
 
 const Picker = styled(DatePicker)`
@@ -152,11 +163,14 @@ const Picker = styled(DatePicker)`
     width: 348px;
     height: 28px;
 
-    font-family: Inter;
+    color: #000;
+    font-family: Noto Sans KR;
     font-size: 16px;
     font-style: normal;
-    font-weight: 500;
-    line-height: normal;
+    font-weight: 400;
+    line-height: 120%; /* 19.2px */
+    letter-spacing: -0.8px;
+    
 `;
 
 const Nextpage = styled(Link)`
@@ -203,6 +217,7 @@ export function Page3() {
         setCounter(counter+1);
         //exportCounter += 1;
     }
+    
     function minus(){
         if(counter == 0)  setCounter(counter);
         else{
@@ -216,6 +231,10 @@ export function Page3() {
             return true;
         }
     }
+
+    const options = [
+        { value: '제주도', label: '제주도' }
+    ]
     
     exportCounter = counter;
     exportStartDate = startDate;
@@ -238,6 +257,7 @@ export function Page3() {
                 <Option name="items1">
                     <option value="제주도">제주도</option>
 		        </Option>
+                
             </div>
 
             <div>
@@ -257,8 +277,9 @@ export function Page3() {
                 <Text>여행 시작일</Text>
                 <When>
                     <Picker
-                        dateFormat= "yyyy.M.d"
+                        dateFormat= "yyyy년 M월 d일"
                         selected={startDate}
+                        locale={ko}
                         onChange={(date) => setStartDate(date)}
                     />
                 </When>
@@ -268,8 +289,10 @@ export function Page3() {
                 <Text>여행 종료일</Text>
                 <When>
                     <Picker
-                        dateFormat= "yyyy.M.d"
+                        dateFormat= "yyyy년 M월 d일"
                         selected={endDate}
+                        minDate={startDate}
+                        locale={ko}
                         onChange={(date) => setEndDate(date)}
                     />
                 </When>

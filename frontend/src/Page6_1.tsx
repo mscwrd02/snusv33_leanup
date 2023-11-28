@@ -3,6 +3,8 @@ import {useState, useEffect} from 'react';
 import styled from "styled-components";
 import axios from 'axios';
 
+import { exportPlanId } from './Page4';
+
 const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
 
 const Page6_1Container = styled.div`
@@ -172,7 +174,7 @@ function Page6_1(){
         axios.post(backend_url+"/api/categories", {
             "participantName": "양재혁",
             "categoryList": "[1, 4, 7]",
-            "planId" : 1
+            "planId" : exportPlanId
         }, { withCredentials: true })
         .then(function (response) {
             console.log(response);

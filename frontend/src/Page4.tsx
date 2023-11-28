@@ -279,7 +279,9 @@ const Ok = styled(Link)<OkProps>`
 `;
 
 
-function Page4(){
+export let exportPlanId: number = 0;
+
+export function Page4(){
     const [cardClickedArray, setCardClickedArray] = useState<boolean[]>([false, false, false, false]);
     const [checkClicked, setCheckClicked] = useState(false);
     let directions: string[] = [];
@@ -310,7 +312,8 @@ function Page4(){
         }, { withCredentials: true })
         .then(function (response) {
             console.log(response);
-            
+            console.log(response['data']['planId'])
+            exportPlanId = response['data']['planId']
         }).catch(function (error) {
             // 오류발생시 실행
         }).then(function() {
@@ -454,5 +457,3 @@ function Page4(){
         </Page4Container>
     )
 }
-
-export default Page4;
