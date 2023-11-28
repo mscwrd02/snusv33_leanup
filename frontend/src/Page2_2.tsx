@@ -63,7 +63,7 @@ function Page2_2() {
             플러스 버튼을 <span>눌러</span><br></br>여행 계획<span>을</span><br></br>시작해보세요!
         </Explaination>
         <Add>
-          <Link to="/page2_1">
+          <Link to="/page3">
               <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60" fill="none">
                   <circle cx="30" cy="30" r="30" fill="#0D99FF"/>
                   <path d="M30 44.5714L30 14.5714" stroke="white" stroke-width="7" stroke-linecap="round"/>

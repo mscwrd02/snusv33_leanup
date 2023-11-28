@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes, Link } from "react-router-dom";
 import { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
+import { exportCounter, exportStartDate, exportEndDate } from "./Page3";
 
 const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
 
@@ -51,39 +52,53 @@ const Title = styled.div`
 
 const Explaination = styled.div`
   margin: 0px;
-  margin-top: 40px;
+  margin-top: 20px;
+  margin-bottom: 10px;
 
-  color: var(--Black, #000);
-  font-family: Inter;
-  font-size: 24px;
+  color: var(--DARK-BLUE, #1d2029);
+  text-align: center;
+  font-family: Noto Sans KR;
+  font-size: 20px;
   font-style: normal;
   font-weight: 500;
-  line-height: normal;
+  line-height: 120%; /* 24px */
+  letter-spacing: -0.6px;
 
-  text-align: center;
+  span {
+    color: var(--DARK-BLUE, #1d2029);
+    font-family: Noto Sans KR;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 900;
+    line-height: 120%;
+    letter-spacing: -0.6px;
+  }
 `;
 
-const Jeju = styled.span`
-  color: var(--Black, #000);
-  text-align: center;
-  font-family: Inter;
-  font-size: 24px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: normal;
-`;
+const Extra = styled.div`
+  width: 278px;
 
-const Cf = styled.div`
-  color: rgba(0, 0, 0, 0.5);
+  color: #747474;
   text-align: center;
-
-  font-family: Inter;
-  font-size: 14px;
+  font-family: Noto Sans KR;
+  font-size: 15px;
   font-style: normal;
   font-weight: 400;
-  line-height: normal;
+  line-height: 120%; /* 18px */
+  letter-spacing: -0.45px;
 
-  margin-top: 6px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+
+  span {
+    color: #747474;
+    font-family: Noto Sans KR;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 120%;
+    letter-spacing: -0.45px;
+  }
 `;
 
 const Selection = styled.div`
@@ -98,7 +113,12 @@ const Selection = styled.div`
   margin-top: 22px;
 `;
 
-const Card = styled.div`
+interface CardProps {
+  cardClicked: boolean;
+  onClick: () => void;
+}
+
+const Card = styled.button<CardProps>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -108,6 +128,11 @@ const Card = styled.div`
   flex-shrink: 0;
 
   border-radius: 14px;
+  border: 2px solid ${(props) => (props.cardClicked ? "#2E5AF5;" : "#FFFFFF")};
+  &.Direction {
+    color: #2e5af5;
+  }
+
   background: #d9d9d9;
 `;
 
@@ -123,8 +148,12 @@ const Where = styled.div`
   margin-top: 54px;
 `;
 
-const Direction = styled.span`
-  color: var(--Black, #000);
+interface DirectionProps {
+  cardClicked: boolean;
+}
+
+const Direction = styled.span<DirectionProps>`
+  color: ${(props) => (props.cardClicked ? "#2E5AF5;" : "var(--Black, #000);")};
   text-align: center;
   font-family: Noto Sans KR;
   font-size: 25px;
@@ -218,67 +247,124 @@ const Enlarge = styled.div`
   margin-right: 6px;
 `;
 
-const Extra = styled.div`
-  width: 278px;
-
-  color: var(--Black, #000);
-  text-align: center;
-
-  /* body */
-  font-family: Inter;
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: normal;
-
-  margin-top: 30px;
-`;
-
-const Ok = styled(Link)`
-  width: 90%;
-
-  display: flex;
-  justify-content: flex-end;
-
-  color: #000;
-  text-align: center;
-
-  /* body */
-  font-family: Inter;
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: normal;
-
-  margin-top: 10px;
-`;
-
-function createTrip() {
-  console.log("나이스~");
-  console.log(backend_url);
-  axios
-    .post(
-      backend_url + "/api/plans",
-      {
-        groupNum: 4,
-        regionList: "[east, west]",
-        startDate: "2023-12-25",
-        endDate: "2023-12-30",
-      },
-      { withCredentials: true }
-    )
-    .then(function (response) {
-      console.log(response);
-    })
-    .catch(function (error) {
-      // 오류발생시 실행
-    })
-    .then(function () {
-      // 항상 실행
-    });
+interface OkProps {
+  isActive: boolean;
 }
 
-function Page4() {
+const Ok = styled(Link)<OkProps>`
+  width: 356px;
+  height: 54px;
+  flex-shrink: 0;
+  border-radius: 36px;
+
+  background: ${(props) => (props.isActive ? "#0D99FF" : "#B1B1B1")};
+  pointer-events: ${(props) => (props.isActive ? "auto" : "none")};
+
+  color: #fff;
+  text-align: center;
+  font-family: Noto Sans KR;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 100%; /* 20px */
+  letter-spacing: 0.6px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-top: 50px;
+`;
+
+export let exportPlanId: number = 0;
+
+export function Page4() {
+  const [cardClickedArray, setCardClickedArray] = useState<boolean[]>([
+    false,
+    false,
+    false,
+    false,
+  ]);
+  const [checkClicked, setCheckClicked] = useState(false);
+  let directions: string[] = [];
+
+  function cardClick(index: number) {
+    setCardClickedArray((prevState) => {
+      const updatedArray = [...prevState];
+      updatedArray[index] = !updatedArray[index];
+
+      if (
+        updatedArray[0] ||
+        updatedArray[1] ||
+        updatedArray[2] ||
+        updatedArray[3]
+      )
+        setCheckClicked(true);
+      else setCheckClicked(false);
+
+      return updatedArray;
+    });
+  }
+
+  function createTrip() {
+    console.log(exportCounter);
+    console.log(String(directions));
+    console.log(
+      String(exportStartDate?.getFullYear()) +
+        "-" +
+        String((exportStartDate?.getMonth() ?? 0) + 1) +
+        "-" +
+        String(exportStartDate?.getDate())
+    );
+    console.log(
+      String(exportEndDate?.getFullYear()) +
+        "-" +
+        String((exportEndDate?.getMonth() ?? 0) + 1) +
+        "-" +
+        String(exportEndDate?.getDate())
+    );
+
+    axios
+      .post(
+        backend_url + "/api/plans",
+        {
+          groupNum: exportCounter,
+          regionList: String(directions),
+          startDate:
+            String(exportStartDate?.getFullYear()) +
+            "-" +
+            String((exportStartDate?.getMonth() ?? 0) + 1) +
+            "-" +
+            String(exportStartDate?.getDate()),
+          endDate:
+            String(exportEndDate?.getFullYear()) +
+            "-" +
+            String((exportEndDate?.getMonth() ?? 0) + 1) +
+            "-" +
+            String(exportEndDate?.getDate()),
+        },
+        { withCredentials: true }
+      )
+      .then(function (response) {
+        console.log(response);
+        console.log(response["data"]["planId"]);
+        exportPlanId = response["data"]["planId"];
+      })
+      .catch(function (error) {
+        // 오류발생시 실행
+      })
+      .then(function () {
+        // 항상 실행
+      });
+  }
+
+  for (let i = 0; i < 4; i++) {
+    if (i == 0 && cardClickedArray[i]) directions.push("west");
+    else if (i == 1 && cardClickedArray[i]) directions.push("east");
+    else if (i == 2 && cardClickedArray[i]) directions.push("north");
+    else if (i == 3 && cardClickedArray[i]) directions.push("south");
+  }
+
   return (
     <Page4Container>
       <Top>
@@ -300,21 +386,20 @@ function Page4() {
       </Top>
 
       <Explaination>
-        <Jeju>제주도</Jeju>에서
-        <br />
-        여행하고 싶은 곳을
-        <br />
-        선택해주세요.
+        제주도에서 여행하고 싶은 곳을 <br /> <span>모두</span> 선택해주세요.
       </Explaination>
 
-      <Cf>* 복수선택 가능</Cf>
+      <Extra>
+        렌트카 여행 시 <span>2~3개</span>,<br />
+        뚜벅이 여행 시 <span>1~2개</span>를 추천해요!
+      </Extra>
 
       <Selection>
-        <Card>
+        <Card cardClicked={cardClickedArray[0]} onClick={() => cardClick(0)}>
           <Where>
             노을이 아름다운
             <br />
-            <Direction>제주 서부</Direction>
+            <Direction cardClicked={cardClickedArray[0]}>제주 서부</Direction>
           </Where>
           <Example>
             <Location>애월</Location>
@@ -393,11 +478,11 @@ function Page4() {
             </Enlarge>
           </Bottom>
         </Card>
-        <Card>
+        <Card cardClicked={cardClickedArray[1]} onClick={() => cardClick(1)}>
           <Where>
             신비로운 대자연의
             <br />
-            <Direction>제주 동부</Direction>
+            <Direction cardClicked={cardClickedArray[1]}>제주 동부</Direction>
           </Where>
           <Example>
             <Location>조천</Location>
@@ -476,11 +561,11 @@ function Page4() {
             </Enlarge>
           </Bottom>
         </Card>
-        <Card>
+        <Card cardClicked={cardClickedArray[2]} onClick={() => cardClick(2)}>
           <Where>
             뚜벅이를 위한
             <br />
-            <Direction>제주 북부</Direction>
+            <Direction cardClicked={cardClickedArray[2]}>제주 북부</Direction>
           </Where>
           <Examplea>
             <Locationa>제주 공항</Locationa>
@@ -557,11 +642,11 @@ function Page4() {
             </Enlarge>
           </Bottom>
         </Card>
-        <Card>
+        <Card cardClicked={cardClickedArray[3]} onClick={() => cardClick(3)}>
           <Where>
             다양한 액티비티의
             <br />
-            <Direction>제주 남부</Direction>
+            <Direction cardClicked={cardClickedArray[3]}>제주 남부</Direction>
           </Where>
           <Example>
             <Location>안덕</Location>
@@ -641,17 +726,14 @@ function Page4() {
           </Bottom>
         </Card>
       </Selection>
-
-      <Extra>
-        렌트카 여행 시 2~3개,
-        <br />
-        뚜벅이 여행 시 1~2개를 추천해요!
-      </Extra>
-      <Ok to="/page6" style={{ textDecoration: "none" }} onClick={createTrip}>
-        확인
+      <Ok
+        to="/page5"
+        style={{ textDecoration: "none" }}
+        isActive={checkClicked}
+        onClick={createTrip}
+      >
+        공유링크 만들기
       </Ok>
     </Page4Container>
   );
 }
-
-export default Page4;

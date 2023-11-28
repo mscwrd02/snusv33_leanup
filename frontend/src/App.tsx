@@ -4,18 +4,19 @@ import Page1_1 from './Page1_1';
 import Page1_2 from './Page1_2';
 import Page2_1 from "./Page2_1";
 import Page2_2 from "./Page2_2";
-import Page3 from "./Page3";
-import Page4 from "./Page4";
+import {Page3} from "./Page3";
+import {Page4} from "./Page4";
 import Page5 from './Page5';
 import Page6 from "./Page6";
-import Page7 from "./Page7";
+import Page6_1 from "./Page6_1";
+import PageforGuest from "./PageforGuest";
 
 function App(){
   return(
       <BrowserRouter>
           <Routes>
               <Route path="/">
-                  <Route index element={<Page4 />} />
+                  <Route index element={<Page1 />} />
                   <Route path="page1" element={<Page1 />} />
                   <Route path="page1_1" element={<Page1_1 />} />
                   <Route path="page1_2" element={<Page1_2 />} />
@@ -25,7 +26,9 @@ function App(){
                   <Route path="page4" element={<Page4 />} />
                   <Route path="page5" element={<Page5 />} />
                   <Route path="page6" element={<Page6 />} />
-                  <Route path="page7" element={<Page7 />} />
+
+                  <Route path="page6_1" element={<Page6_1 />} />
+                  <Route path="pageforguest" element={<PageforGuest />} />
               </Route>
           </Routes>
       </BrowserRouter>
