@@ -35,7 +35,7 @@ export class CategoriesService {
   }
 
   async submitCategories(userId: number, body: CategoryResponseDto) {
-    this.plansRepository
+    await this.plansRepository
       .findOne({ where: { id: body.planId } })
       .then((plan) => {
         if (plan.status != PlanStatus.CATEGORYING)
