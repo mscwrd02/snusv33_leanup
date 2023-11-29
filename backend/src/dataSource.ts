@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { DataSource } from 'typeorm';
+import { DataSource, DataSourceOptions } from 'typeorm';
 import { Users } from './entities/Users';
 import { Categories } from './entities/Categories';
 import { CategoryResponses } from './entities/CategoryResponses';
@@ -9,10 +9,10 @@ import { Plans } from './entities/Plans';
 import { Spots } from './entities/Spots';
 import { Recommends } from './entities/Recommends';
 import { Schedules } from './entities/Schedule';
-
+import { SeederOptions } from 'typeorm-extension';
 dotenv.config();
 
-const dataSource = new DataSource({
+const options: DataSourceOptions & SeederOptions = {
   type: 'mysql',
   host: 'localhost',
   port: 3306,
@@ -33,6 +33,9 @@ const dataSource = new DataSource({
   charset: 'utf8mb4_general_ci',
   synchronize: false,
   logging: true,
-});
+  seeds: [process.env.SEEDER_PATH],
+};
+
+const dataSource = new DataSource(options);
 
 export default dataSource;
