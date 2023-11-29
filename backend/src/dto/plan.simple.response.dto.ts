@@ -13,7 +13,7 @@ import { PlanStatus } from 'src/entities/common/PlanStatus';
 
 export class PlanSimpleResponseDto {
   // 여행계획 아이디 (int), 소유자 아이디 (int), 동행 인원 (Number)
-  // 여행 시작일 (Date), 여행 종료일(Date), 상태 (enum: ready, ing, end), 카카오톡 프로필 (string [])
+  // 여행 시작일 (Date), 여행 종료일(Date), 상태 (enum: ready, ing, end), 이름 (string []), 카카오톡 프로필 (string [])
 
   @ApiProperty({
     example: '1',
@@ -64,12 +64,24 @@ export class PlanSimpleResponseDto {
 
   @ApiProperty({
     example: '취향조사중',
-    description: '상태 (취향조사중, 관광지조사중, 일정계획중, 계획완료 중 1개)',
+    description: '상태 (취향조사중, 관광지조사중, 여행중, 여행완료 중 1개)',
     required: true,
   })
   @IsEnum(PlanStatus)
   @IsNotEmpty()
   public status: string;
+
+  @ApiProperty({
+    example: '["홍길동", "철수", "짱구"]',
+    description: '이름',
+    required: true,
+  })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => String)
+  @IsString()
+  @IsNotEmpty()
+  public participantsName: string[];
 
   @ApiProperty({
     example: '["https://image1.jpg", "https://image2.jpg"]',

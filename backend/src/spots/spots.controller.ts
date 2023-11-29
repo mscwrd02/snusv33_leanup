@@ -65,14 +65,24 @@ export class SpotsController {
     type: ErrorResponseDto,
   })
   @Post('more')
+  @UseGuards(LoggedInGuard)
   async getMoreRecommends(@Body() body: SpotMoreRecommendDto) {
     await this.spotsService.addRecommends(body.planId);
     return 'ok';
   }
 
   @ApiOperation({ summary: '관광지 추천결과 조회하기' })
+  @ApiOkResponse({
+    description: '관광지 추천결과 조회 성공',
+  })
+  @ApiBadRequestResponse({
+    description: '관광지 추천결과 조회 실패',
+    type: ErrorResponseDto,
+  })
   @Get('recommend')
-  getRecommend() {
+  @UseGuards(LoggedInGuard)
+  async getRecommend() {
     //지금까지 제출한 관광지 설문을 바탕으로 추천 결과를 보내주기
+    // 현재 planId에 속하는 모든 spotResponse의 score를 합산해서 내림차순으로 정렬해서 보내주기
   }
 }
