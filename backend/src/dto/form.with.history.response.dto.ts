@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Categories } from 'src/entities/Categories';
 import { Spots } from 'src/entities/Spots';
 
 export class submitResponseDto {
@@ -17,12 +18,20 @@ export class submitResponseDto {
   spotId: number;
 }
 
+export class SpotWithCategory extends Spots {
+  @ApiProperty({
+    type: [Categories],
+    description: '장소에 대한 카테고리들',
+  })
+  Categories: Categories[];
+}
+
 export class FormWithHistoryResponseDto {
   @ApiProperty({
-    type: [Spots],
+    type: [SpotWithCategory],
     description: '추천 장소들',
   })
-  spotForm: Spots[];
+  spotForm: SpotWithCategory[];
 
   @ApiProperty({
     type: [submitResponseDto],

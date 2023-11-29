@@ -111,10 +111,14 @@ export class SpotsService {
       const recommends = await this.recommendsRepository
         .createQueryBuilder('recommends')
         .leftJoinAndSelect('recommends.Spot', 'spot')
+        .leftJoinAndSelect('spot.Categories', 'categories')
         .where('recommends.PlanId = :planId', { planId })
         .getMany();
-      const recommendSpots = recommends.map((recommend) => recommend.Spot);
-      return recommendSpots;
+
+      const recommendSpotsWithCategories = recommends.map((recommend) => {
+        return { ...recommend.Spot };
+      });
+      return recommendSpotsWithCategories;
     } catch (err) {
       console.log(err);
       throw new BadRequestException('추천 장소 조회에 실패했습니다');

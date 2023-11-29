@@ -25,6 +25,13 @@ export class Spots {
   id: number;
 
   @ApiProperty({
+    example: '한라산',
+    description: '장소 이름',
+  })
+  @Column('varchar', { name: 'name', length: 100, nullable: true })
+  name: string;
+
+  @ApiProperty({
     example: '제주시 한림읍 애월리 123-4',
     description: '장소의 주소',
   })
@@ -102,10 +109,10 @@ export class Spots {
   @Column({ type: 'varchar', name: 'link', nullable: true, length: 100 })
   link: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ select: false })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ select: false })
   updatedAt: Date;
 
   @OneToMany(() => SpotImages, (spotImages) => spotImages.Spot)
