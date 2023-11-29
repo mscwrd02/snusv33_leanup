@@ -33,8 +33,8 @@ export class PlanDetailResponseDto {
   public userId: number;
 
   @ApiProperty({
-    example: 'https://tripwiz.com/abcdedf',
-    description: '설문 주소',
+    example: 'abcdedf',
+    description: '설문 주소 (hashId)',
     required: true,
   })
   @IsString()
@@ -127,7 +127,7 @@ export class PlanDetailResponseDto {
 
   @ApiProperty({
     example: '취향조사중',
-    description: '상태 (취향조사중, 관광지조사중, 여행중, 여행완료 중 1개)',
+    description: '상태 (취향조사중, 관광지조사중, 일정계획중, 계획완료 중 1개)',
     required: true,
   })
   @IsEnum(PlanStatus)

@@ -24,10 +24,12 @@ export class PlansService {
     // 여행 계획 생성하기
     const user = await this.usersRepository.findOne({ where: { id: userId } });
     const count = await this.plansRepository.count();
+    // TODO: 사실 count가 아니라 id로 해야하는데, id가 autoincrement라서 count로 대체함
+    // delete하면 id가 빈자리가 생기는데, 이걸로 해도 되는지는 모르겠음
 
     const newPlan = new Plans();
     newPlan.userId = userId;
-    newPlan.link = btoa(userId.toString() + '_' + count.toString()); // binary to ASCII
+    newPlan.link = btoa(userId.toString() + '_' + (count + 1).toString()); // binary to ASCII
     newPlan.group_num = body.groupNum;
     newPlan.regionList = body.regionList;
     newPlan.categoryParticipations = 0;
@@ -35,8 +37,7 @@ export class PlansService {
     newPlan.startDate = body.startDate;
     newPlan.endDate = body.endDate;
     newPlan.status = PlanStatus.CATEGORYING;
-    newPlan.ParticipantsList = [user];
-    console.log(newPlan.ParticipantsList);
+    newPlan.ParticipantsList.push(user);
 
     const savedPlan = await this.plansRepository.save(newPlan);
     const planDetailResponse: PlanDetailResponseDto = {
@@ -117,27 +118,34 @@ export class PlansService {
     // 여행 id를 받아서, 동행인원의 이름과, 각각이 취향설문과 여행지 설문을 참여했는지 반환하기
     //{"name":["홍길동", "철수", "짱구"], "categoryResponseStatus" : [true, false, true, true, false], "spotResponseStatus" : [true, false, true, true, false]
     //이거 구현해서, getPlanwithId랑HashId에 정보 추가해서 보내주기
-    const plan = await this.plansRepository.findOne({ where: { id: planId } });
+    const plan = await this.plansRepository.findOne({
+      where: { id: planId },
+      relations: ['ParticipantsList'],
+    });
     const participantsName = [];
     const categoryResponseStatus = [];
     const spotResponseStatus = [];
 
     for (let i = 0; i < plan.ParticipantsList.length; i++) {
       participantsName.push(plan.ParticipantsList[i].nickname);
-      const categoryResponse = await this.usersRepository.findOne({
+      const participant = await this.usersRepository.findOne({
         where: { id: plan.ParticipantsList[i].id },
-        relations: ['CategoryResponses'],
+        relations: ['CategoryResponses', 'SpotResponses'],
       });
-      if (categoryResponse) {
+      if (
+        participant.CategoryResponses.map(
+          (response) => response.PlanId,
+        ).includes(planId)
+      ) {
         categoryResponseStatus.push(true);
       } else {
         categoryResponseStatus.push(false);
       }
-      const spotResponse = await this.usersRepository.findOne({
-        where: { id: plan.ParticipantsList[i].id },
-        relations: ['SpotResponses'],
-      });
-      if (spotResponse) {
+      if (
+        participant.SpotResponses.map((response) => response.PlanId).includes(
+          planId,
+        )
+      ) {
         spotResponseStatus.push(true);
       } else {
         spotResponseStatus.push(false);
@@ -170,6 +178,9 @@ export class PlansService {
         startDate: plan.startDate,
         endDate: plan.endDate,
         status: plan.status,
+        participantsName: plan.ParticipantsList.map((participant) => {
+          return participant.nickname;
+        }),
         profileImg: plan.ParticipantsList.map((participant) => {
           return participant.profileImage;
         }),
