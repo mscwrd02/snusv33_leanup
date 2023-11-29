@@ -37,7 +37,7 @@ export class PlansService {
     newPlan.startDate = body.startDate;
     newPlan.endDate = body.endDate;
     newPlan.status = PlanStatus.CATEGORYING;
-    newPlan.ParticipantsList.push(user);
+    newPlan.ParticipantsList = [user];
 
     const savedPlan = await this.plansRepository.save(newPlan);
     const planDetailResponse: PlanDetailResponseDto = {
@@ -56,6 +56,49 @@ export class PlansService {
       status: savedPlan.status,
     };
 
+    return Promise.resolve(planDetailResponse);
+  }
+
+  async joinPlan(
+    userId: number,
+    planId: number,
+  ): Promise<PlanDetailResponseDto> {
+    // 여행 계획 참여하기
+    const user = await this.usersRepository.findOne({ where: { id: userId } });
+    const plan = await this.plansRepository.findOne({
+      where: { id: planId },
+      relations: ['ParticipantsList'],
+    });
+    if (plan.group_num === plan.ParticipantsList.length) {
+      return Promise.reject('이미 참여인원이 꽉 찼습니다.');
+    } else if (
+      plan.ParticipantsList.map((participant) => participant.id).includes(
+        userId,
+      )
+    ) {
+      return Promise.reject('이미 참여하셨습니다.');
+    }
+
+    plan.ParticipantsList.push(user);
+    plan.status = PlanStatus.CATEGORYING;
+    await this.plansRepository.save(plan);
+
+    const planStatus = await this.getParticipantsStatus(planId);
+    const planDetailResponse: PlanDetailResponseDto = {
+      planId: plan.id,
+      userId: plan.userId,
+      link: plan.link,
+      groupNum: plan.group_num,
+      regionList: plan.regionList,
+      participantsName: planStatus.participantsName,
+      categoryResponseStatus: planStatus.categoryResponseStatus,
+      spotResponseStatus: planStatus.spotResponseStatus,
+      categoryParticipants: plan.categoryParticipations,
+      spotParticipants: plan.spotParticipations,
+      startDate: plan.startDate,
+      endDate: plan.endDate,
+      status: plan.status,
+    };
     return Promise.resolve(planDetailResponse);
   }
 
@@ -123,11 +166,13 @@ export class PlansService {
       relations: ['ParticipantsList'],
     });
     const participantsName = [];
+    const participantsImage = [];
     const categoryResponseStatus = [];
     const spotResponseStatus = [];
 
     for (let i = 0; i < plan.ParticipantsList.length; i++) {
       participantsName.push(plan.ParticipantsList[i].nickname);
+      participantsImage.push(plan.ParticipantsList[i].profileImage);
       const participant = await this.usersRepository.findOne({
         where: { id: plan.ParticipantsList[i].id },
         relations: ['CategoryResponses', 'SpotResponses'],
@@ -154,15 +199,15 @@ export class PlansService {
 
     return {
       participantsName: JSON.stringify(participantsName),
+      participantsImage: JSON.stringify(participantsImage),
       categoryResponseStatus: JSON.stringify(categoryResponseStatus),
       spotResponseStatus: JSON.stringify(spotResponseStatus),
     };
   }
 
   async getAllPlan(userId: number): Promise<PlanSimpleResponseDto[]> {
-    // participant_list에서 userid가 속한 모든 여행 계획 전체 조회하기
+    // participant_list에서 user가 포함된 모든 여행 계획 전체 조회하기
     const user = await this.usersRepository.findOne({ where: { id: userId } });
-
     const plans = await this.plansRepository
       .createQueryBuilder('plans')
       .leftJoinAndSelect('plans.ParticipantsList', 'participants')
@@ -170,22 +215,20 @@ export class PlansService {
       .getMany();
 
     const planSimpleResponse: PlanSimpleResponseDto[] = [];
-    plans.forEach((plan) => {
-      planSimpleResponse.push({
-        planId: plan.id,
-        userId: plan.userId,
-        groupNum: plan.group_num,
-        startDate: plan.startDate,
-        endDate: plan.endDate,
-        status: plan.status,
-        participantsName: plan.ParticipantsList.map((participant) => {
-          return participant.nickname;
-        }),
-        profileImg: plan.ParticipantsList.map((participant) => {
-          return participant.profileImage;
-        }),
-      });
-    });
+    for (let i = 0; i < plans.length; i++) {
+      const planStatus = await this.getParticipantsStatus(plans[i].id);
+      const planSimple: PlanSimpleResponseDto = {
+        planId: plans[i].id,
+        userId: plans[i].userId,
+        groupNum: plans[i].group_num,
+        startDate: plans[i].startDate,
+        endDate: plans[i].endDate,
+        status: plans[i].status,
+        participantsName: planStatus.participantsName,
+        profileImg: planStatus.participantsImage,
+      };
+      planSimpleResponse.push(planSimple);
+    }
     return Promise.resolve(planSimpleResponse);
   }
 }
