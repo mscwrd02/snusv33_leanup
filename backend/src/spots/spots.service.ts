@@ -143,6 +143,7 @@ export class SpotsService {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
+    // TODO: body.isLast가 true인 경우에는 spotResponses DB에서 done을 true로 바꿔주기
 
     try {
       const user = await queryRunner.manager.getRepository(Users).findOne({

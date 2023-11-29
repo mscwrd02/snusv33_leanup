@@ -10,7 +10,7 @@ import {
 } from 'class-validator';
 
 export class SpotResponseDto {
-  // 여행계획 아이디 (int), 장소 아이디 (int), 점수 (int), 코멘트 (string)
+  // 여행계획 아이디 (int), 장소 아이디 (int), 점수 (int), 코멘트 (string), 마지막 여부 (boolean)
   @ApiProperty({
     example: '1',
     description: '여행계획 아이디',
@@ -49,4 +49,13 @@ export class SpotResponseDto {
   @IsOptional()
   @Length(0, 100, { message: '코멘트는 100자 이내로 입력해주세요' })
   public comment: string;
+
+  @ApiProperty({
+    example: 'true',
+    description: '마지막 응답인지 여부',
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  public isLast: boolean;
 }
