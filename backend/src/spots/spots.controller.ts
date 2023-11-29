@@ -12,6 +12,7 @@ import { ErrorResponseDto } from 'src/dto/error.response.dto';
 import { User } from 'src/decorators/user.decorator';
 import { LoggedInGuard } from 'src/auth/logged-in-guard';
 import { FormWithHistoryResponseDto } from 'src/dto/form.with.history.response.dto';
+import { SpotResponseDto } from 'src/dto/spot.response.dto';
 
 @ApiTags('SPOT')
 @Controller('api/spots')
@@ -38,10 +39,21 @@ export class SpotsController {
   }
 
   @ApiOperation({ summary: '관광지 설문 제출하기' })
+  @ApiOkResponse({
+    description:
+      '관광지 설문 제출 성공 (이미 제출했던 경우 수정, 새로 제출한 경우 생성)',
+  })
+  @ApiBadRequestResponse({
+    description: '관광지 설문 제출 실패',
+    type: ErrorResponseDto,
+  })
   @Post()
-  submitForm() {
+  @UseGuards(LoggedInGuard)
+  async submitForm(@User() user, @Body() body: SpotResponseDto) {
     //제출한 관광지 응답을 저장하기
     //관광지 설문 하나마다 요청이 오는걸로 짜면 좋을듯
+    await this.spotsService.submitSpotResponse(user.id, body);
+    return 'ok';
   }
 
   @ApiOperation({ summary: '관광지 추천 20개 더 받기' })

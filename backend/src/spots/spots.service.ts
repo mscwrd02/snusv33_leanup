@@ -1,11 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { SpotResponseDto } from 'src/dto/spot.response.dto';
 import { Categories } from 'src/entities/Categories';
 import { CategoryResponses } from 'src/entities/CategoryResponses';
 import { Plans } from 'src/entities/Plans';
 import { Recommends } from 'src/entities/Recommends';
 import { SpotResponses } from 'src/entities/SpotResponses';
 import { Spots } from 'src/entities/Spots';
+import { Users } from 'src/entities/Users';
 import { Region } from 'src/entities/common/Region';
 import { DataSource, Repository } from 'typeorm';
 
@@ -134,6 +136,47 @@ export class SpotsService {
     } catch (err) {
       console.log(err);
       throw new BadRequestException('이미 응답한 정보 조회에 실패했습니다');
+    }
+  }
+
+  async submitSpotResponse(userId: number, body: SpotResponseDto) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const user = await queryRunner.manager.getRepository(Users).findOne({
+        where: { id: userId },
+      });
+      const spotResponse = await queryRunner.manager
+        .getRepository(SpotResponses)
+        .findOne({
+          where: { UserId: userId, spotId: body.spotId, PlanId: body.planId },
+        });
+      if (spotResponse) {
+        spotResponse.score = body.score;
+        spotResponse.comment = body.comment;
+        await queryRunner.manager
+          .getRepository(SpotResponses)
+          .save(spotResponse);
+      } else {
+        await queryRunner.manager.getRepository(SpotResponses).save({
+          participantName: user.nickname,
+          score: body.score,
+          spotId: body.spotId,
+          UserId: userId,
+          PlanId: body.planId,
+          comment: body.comment,
+        });
+      }
+
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      console.log(err);
+      await queryRunner.rollbackTransaction();
+      throw new BadRequestException('관광지 설문 제출에 실패했습니다');
+    } finally {
+      await queryRunner.release();
     }
   }
 }
