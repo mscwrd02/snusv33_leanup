@@ -41,6 +41,20 @@ export class Plans {
   @Column('int', { name: 'spot_participants', default: 0 })
   spotParticipations: number;
 
+  @Column('varchar', {
+    name: 'category_response_status',
+    length: 50,
+    nullable: true,
+  })
+  categoryResponseStatus: string;
+
+  @Column('varchar', {
+    name: 'spot_response_status',
+    length: 50,
+    nullable: true,
+  })
+  spotResponseStatus: string;
+
   @Column('date', { name: 'start_date' })
   startDate: Date;
 

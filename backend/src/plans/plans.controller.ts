@@ -52,6 +52,31 @@ export class PlansController {
     }
   }
 
+  // 새로운 user가 plan에 참여할 때 participantList에 추가해주기
+  @ApiOkResponse({
+    description: '여행 계획 참여 성공',
+    type: PlanDetailResponseDto,
+  })
+  @ApiNotFoundResponse({
+    description: '여행 계획이 존재하지 않습니다.',
+    type: ErrorResponseDto,
+  })
+  @ApiOperation({ summary: '여행 계획 참여하기' })
+  @Post('join')
+  @UseGuards(LoggedInGuard)
+  async joinPlan(
+    @User() user,
+    @Body() body: { planId: number },
+  ): Promise<PlanDetailResponseDto> {
+    // 여행 계획 참여하기
+    const plan = await this.plansService.joinPlan(user.id, body.planId);
+    if (plan) {
+      return plan;
+    } else {
+      throw new ForbiddenException();
+    }
+  }
+
   @ApiOperation({ summary: '여행 계획 수정하기 // 우선 구현 skip함' })
   @Put()
   @UseGuards(LoggedInGuard)

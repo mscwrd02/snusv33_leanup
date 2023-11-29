@@ -94,7 +94,7 @@ export class PlanDetailResponseDto {
   })
   @IsNumber()
   @IsNotEmpty()
-  public categoryParticipants: number;
+  public categoryParticipations: number;
 
   @ApiProperty({
     example: 4,
@@ -103,7 +103,7 @@ export class PlanDetailResponseDto {
   })
   @IsNumber()
   @IsNotEmpty()
-  public spotParticipants: number;
+  public spotParticipations: number;
 
   @ApiProperty({
     example: '2023-12-21',
