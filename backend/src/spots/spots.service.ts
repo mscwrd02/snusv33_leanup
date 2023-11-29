@@ -8,6 +8,7 @@ import { Recommends } from 'src/entities/Recommends';
 import { SpotResponses } from 'src/entities/SpotResponses';
 import { Spots } from 'src/entities/Spots';
 import { Users } from 'src/entities/Users';
+import { PlanStatus } from 'src/entities/common/PlanStatus';
 import { Region } from 'src/entities/common/Region';
 import { DataSource, Repository } from 'typeorm';
 
@@ -143,9 +144,17 @@ export class SpotsService {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
-    // TODO: body.isLast가 true인 경우에는 spotResponses DB에서 done을 true로 바꿔주기
 
     try {
+      const plan = await queryRunner.manager.getRepository(Plans).findOne({
+        where: { id: body.planId },
+        relations: ['ParticipantsList'],
+      });
+      if (plan.status == PlanStatus.CATEGORYING) {
+        throw new BadRequestException(
+          '아직 카테고리 응답이 완료되지 않았습니다',
+        );
+      }
       const user = await queryRunner.manager.getRepository(Users).findOne({
         where: { id: userId },
       });
@@ -169,6 +178,21 @@ export class SpotsService {
           PlanId: body.planId,
           comment: body.comment,
         });
+      }
+
+      if (body.isLast) {
+        const participantsList = plan.ParticipantsList.map(
+          (participant) => participant.nickname,
+        );
+        const index = participantsList.indexOf(user.nickname);
+        const spotResponseStatus = JSON.parse(plan.spotResponseStatus);
+        spotResponseStatus[index] = true;
+        plan.spotResponseStatus = JSON.stringify(spotResponseStatus);
+        plan.spotParticipations += 1;
+        if (plan.spotParticipations === plan.group_num) {
+          plan.status = PlanStatus.PLANNIG;
+        }
+        await queryRunner.manager.getRepository(Plans).save(plan);
       }
 
       await queryRunner.commitTransaction();

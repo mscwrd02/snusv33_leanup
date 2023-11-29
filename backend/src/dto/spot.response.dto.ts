@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsBoolean,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -55,7 +56,7 @@ export class SpotResponseDto {
     description: '마지막 응답인지 여부',
     required: true,
   })
-  @IsString()
+  @IsBoolean()
   @IsNotEmpty()
   public isLast: boolean;
 }
