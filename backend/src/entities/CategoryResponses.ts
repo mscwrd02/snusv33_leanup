@@ -14,7 +14,7 @@ export class CategoryResponses {
   id: number;
 
   @Column('varchar', { name: 'participant_name', length: 30 })
-  participationName: string;
+  participantName: string;
 
   @Column('varchar', { name: 'category_list', length: 50 })
   categoryList: string;

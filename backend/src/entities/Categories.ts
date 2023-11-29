@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Spots } from './Spots';
-import { ApiOperation, ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({ schema: 'frienvel', name: 'categories' })
 export class Categories {

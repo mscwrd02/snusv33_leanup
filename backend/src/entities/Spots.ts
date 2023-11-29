@@ -28,7 +28,7 @@ export class Spots {
     example: '제주시 한림읍 애월리 123-4',
     description: '장소의 주소',
   })
-  @Column('varchar', { name: 'address', length: 100 })
+  @Column('varchar', { name: 'address', length: 100, nullable: true })
   address: string;
 
   @ApiProperty({
@@ -94,6 +94,13 @@ export class Spots {
   })
   @Column({ type: 'enum', name: 'region', enum: Region })
   region: Region;
+
+  @ApiProperty({
+    example: 'https://www.naver.com',
+    description: '네이버 링크',
+  })
+  @Column({ type: 'varchar', name: 'link', nullable: true, length: 100 })
+  link: string;
 
   @CreateDateColumn()
   createdAt: Date;

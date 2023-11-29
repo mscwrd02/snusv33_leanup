@@ -14,7 +14,7 @@ export class SpotResponses {
   id: number;
 
   @Column('varchar', { name: 'participant_name', length: 30 })
-  participationName: string;
+  participantName: string;
 
   @Column('int', { name: 'score' })
   score: number;

@@ -32,7 +32,7 @@ export class Plans {
   @Column('int', { name: 'group_num' })
   group_num: number;
 
-  @Column('varchar', { name: 'region_list', length: 30 })
+  @Column('varchar', { name: 'region_list', length: 50 })
   regionList: string;
 
   @Column('int', { name: 'category_participants', default: 0 })
