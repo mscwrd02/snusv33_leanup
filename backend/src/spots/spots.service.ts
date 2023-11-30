@@ -34,6 +34,9 @@ export class SpotsService {
 
     @InjectRepository(SpotResponses)
     private spotResponsesRepository: Repository<SpotResponses>,
+
+    @InjectRepository(Users)
+    private usersRepository: Repository<Users>,
   ) {}
   async addRecommends(planId: number) {
     const presentRecommends = await this.recommendsRepository.find({
@@ -146,31 +149,38 @@ export class SpotsService {
     await queryRunner.startTransaction();
 
     try {
-      const plan = await queryRunner.manager.getRepository(Plans).findOne({
+      const plan = await this.plansRepository.findOne({
         where: { id: body.planId },
         relations: ['ParticipantsList'],
       });
-      if (plan.status == PlanStatus.CATEGORYING) {
-        throw new BadRequestException(
-          '아직 카테고리 응답이 완료되지 않았습니다',
-        );
-      }
-      const user = await queryRunner.manager.getRepository(Users).findOne({
+      const user = await this.usersRepository.findOne({
         where: { id: userId },
       });
-      const spotResponse = await queryRunner.manager
-        .getRepository(SpotResponses)
-        .findOne({
-          where: { UserId: userId, spotId: body.spotId, PlanId: body.planId },
-        });
+
+      if (
+        !plan.ParticipantsList.find((participant) => participant.id === user.id)
+      ) {
+        throw new BadRequestException('참여하지 않은 여행입니다.');
+      } else if (plan.status != PlanStatus.SPOTING) {
+        throw new BadRequestException('관광지 설문 단계가 아닙니다.');
+      }
+
+      const spotResponse = await this.spotResponsesRepository.findOne({
+        where: { UserId: userId, spotId: body.spotId, PlanId: body.planId },
+      });
       if (spotResponse) {
         spotResponse.score = body.score;
         spotResponse.comment = body.comment;
-        await queryRunner.manager
-          .getRepository(SpotResponses)
-          .save(spotResponse);
+        await this.spotResponsesRepository.save(spotResponse);
+
+        const recommendSpot = await this.recommendsRepository.findOne({
+          where: { SpotId: body.spotId, PlanId: body.planId },
+        });
+        recommendSpot.score +=
+          this.convertScore(body.score) - this.convertScore(spotResponse.score); // 기존에 잘못 더해진 score 고려해서 update
+        await this.recommendsRepository.save(recommendSpot);
       } else {
-        await queryRunner.manager.getRepository(SpotResponses).save({
+        await this.spotResponsesRepository.save({
           participantName: user.nickname,
           score: body.score,
           spotId: body.spotId,
@@ -178,6 +188,12 @@ export class SpotsService {
           PlanId: body.planId,
           comment: body.comment,
         });
+
+        const recommendSpot = new Recommends();
+        recommendSpot.score = this.convertScore(body.score);
+        recommendSpot.PlanId = body.planId;
+        recommendSpot.SpotId = body.spotId;
+        await this.recommendsRepository.save(recommendSpot);
       }
 
       if (body.isLast) {
@@ -203,5 +219,16 @@ export class SpotsService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  convertScore(score: number): number {
+    const scoreMap: Record<number, number> = {
+      1: -200,
+      2: -100,
+      3: 100,
+      4: 200,
+    };
+
+    return scoreMap[score] || 0;
   }
 }
