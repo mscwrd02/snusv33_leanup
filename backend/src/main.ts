@@ -42,7 +42,7 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  await app.listen(80);
+  await app.listen(3095);
   if (module.hot) {
     module.hot.accept();
     module.hot.dispose(() => app.close());
