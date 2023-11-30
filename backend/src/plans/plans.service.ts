@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PlanDetailResponseDto } from 'src/dto/plan.detail.response.dto';
 import { Plans } from 'src/entities/Plans';
-import { Repository } from 'typeorm';
+import { IsNull, Not, Repository } from 'typeorm';
 import { PlanSimpleResponseDto } from 'src/dto/plan.simple.response.dto';
 import { Users } from 'src/entities/Users';
 import { PlanRequestDto } from 'src/dto/plan.request.dto';
@@ -23,9 +23,10 @@ export class PlansService {
   ): Promise<PlanDetailResponseDto> {
     // 여행 계획 생성하기
     const user = await this.usersRepository.findOne({ where: { id: userId } });
-    const count = await this.plansRepository.count();
-    // TODO: 사실 count가 아니라 id로 해야하는데, id가 autoincrement라서 count로 대체함
-    // delete하면 id가 빈자리가 생기는데, 이걸로 해도 되는지는 모르겠음
+    const count = await this.plansRepository // 고칠라고 하는데 절대 안 고쳐짐 ㅜㅜ
+      .createQueryBuilder('plan')
+      .withDeleted()
+      .getCount();
 
     const newPlan = new Plans();
     newPlan.userId = userId;
@@ -34,6 +35,7 @@ export class PlansService {
     newPlan.regionList = body.regionList;
     newPlan.categoryParticipations = 0;
     newPlan.spotParticipations = 0;
+    newPlan.participantsName = JSON.stringify([user.nickname]);
     newPlan.categoryResponseStatus = JSON.stringify([false]);
     newPlan.spotResponseStatus = JSON.stringify([false]);
     newPlan.startDate = body.startDate;
@@ -82,6 +84,9 @@ export class PlansService {
     }
 
     plan.ParticipantsList.push(user);
+    plan.participantsName = JSON.stringify(
+      JSON.parse(plan.participantsName).concat(user.nickname),
+    );
     plan.categoryResponseStatus = JSON.stringify(
       JSON.parse(plan.categoryResponseStatus).concat(false),
     );
@@ -97,9 +102,7 @@ export class PlansService {
       link: plan.link,
       groupNum: plan.group_num,
       regionList: plan.regionList,
-      participantsName: JSON.stringify(
-        plan.ParticipantsList.map((participant) => participant.nickname),
-      ),
+      participantsName: plan.participantsName,
       categoryResponseStatus: plan.categoryResponseStatus,
       spotResponseStatus: plan.spotResponseStatus,
       categoryParticipations: plan.categoryParticipations,
@@ -132,9 +135,7 @@ export class PlansService {
       link: plan.link,
       groupNum: plan.group_num,
       regionList: plan.regionList,
-      participantsName: JSON.stringify(
-        plan.ParticipantsList.map((participant) => participant.nickname),
-      ),
+      participantsName: plan.participantsName,
       categoryResponseStatus: plan.categoryResponseStatus,
       spotResponseStatus: plan.spotResponseStatus,
       categoryParticipations: plan.categoryParticipations,
@@ -158,9 +159,7 @@ export class PlansService {
       link: plan.link,
       groupNum: plan.group_num,
       regionList: plan.regionList,
-      participantsName: JSON.stringify(
-        plan.ParticipantsList.map((participant) => participant.nickname),
-      ),
+      participantsName: plan.participantsName,
       categoryResponseStatus: plan.categoryResponseStatus,
       spotResponseStatus: plan.spotResponseStatus,
       categoryParticipations: plan.categoryParticipations,
@@ -172,23 +171,18 @@ export class PlansService {
     return Promise.resolve(planDetailResponse);
   }
 
-  async getParticipantsInfo(planId: number) {
+  async getProfileImage(planId: number) {
     const plan = await this.plansRepository.findOne({
       where: { id: planId },
       relations: ['ParticipantsList'],
     });
-    const participantsName = [];
     const participantsImage = [];
 
     for (let i = 0; i < plan.ParticipantsList.length; i++) {
-      participantsName.push(plan.ParticipantsList[i].nickname);
       participantsImage.push(plan.ParticipantsList[i].profileImage);
     }
 
-    return {
-      participantsName: JSON.stringify(participantsName),
-      participantsImage: JSON.stringify(participantsImage),
-    };
+    return JSON.stringify(participantsImage);
   }
 
   async getAllPlan(userId: number): Promise<PlanSimpleResponseDto[]> {
@@ -202,7 +196,7 @@ export class PlansService {
 
     const planSimpleResponse: PlanSimpleResponseDto[] = [];
     for (let i = 0; i < plans.length; i++) {
-      const participants = await this.getParticipantsInfo(plans[i].id);
+      const profileImage = await this.getProfileImage(plans[i].id);
       const planSimple: PlanSimpleResponseDto = {
         planId: plans[i].id,
         userId: plans[i].userId,
@@ -210,8 +204,8 @@ export class PlansService {
         startDate: plans[i].startDate,
         endDate: plans[i].endDate,
         status: plans[i].status,
-        participantsName: participants.participantsName,
-        profileImg: participants.participantsImage,
+        participantsName: plans[i].participantsName,
+        profileImg: profileImage,
       };
       planSimpleResponse.push(planSimple);
     }

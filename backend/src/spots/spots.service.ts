@@ -168,9 +168,8 @@ export class SpotsService {
       const spotResponse = await this.spotResponsesRepository.findOne({
         where: { UserId: userId, spotId: body.spotId, PlanId: body.planId },
       });
-      console.log('-------------------');
-      console.log(spotResponse);
       if (spotResponse) {
+        // 수정해서 다시 제출
         const recommendSpot = await this.recommendsRepository.findOne({
           where: { SpotId: body.spotId, PlanId: body.planId },
         });
@@ -178,15 +177,27 @@ export class SpotsService {
           this.convertScore(body.score) - this.convertScore(spotResponse.score); // 기존에 잘못 더해진 score 고려해서 update
         await this.recommendsRepository.save(recommendSpot);
 
-        spotResponse.score = body.score;
-        spotResponse.comment = body.comment;
-        await this.spotResponsesRepository.save(spotResponse);
+        await this.spotResponsesRepository.update(
+          { id: spotResponse.id },
+          { score: body.score, comment: body.comment },
+        );
       } else {
-        const recommendSpot = new Recommends();
-        recommendSpot.score = this.convertScore(body.score);
-        recommendSpot.PlanId = body.planId;
-        recommendSpot.SpotId = body.spotId;
-        await this.recommendsRepository.save(recommendSpot);
+        // 처음 제출
+        const recommendSpot = await this.recommendsRepository.findOne({
+          where: { SpotId: body.spotId, PlanId: body.planId },
+        });
+        if (recommendSpot) {
+          // 다른 사람이 이미 해당 장소에 대한 응답을 제출했을 경우
+          recommendSpot.score += this.convertScore(body.score);
+          await this.recommendsRepository.save(recommendSpot);
+        } else {
+          // 해당 장소에 대한 응답이 없을 경우
+          const newRecommendSpot = new Recommends();
+          newRecommendSpot.score = this.convertScore(body.score);
+          newRecommendSpot.PlanId = body.planId;
+          newRecommendSpot.SpotId = body.spotId;
+          await this.recommendsRepository.save(newRecommendSpot);
+        }
 
         await this.spotResponsesRepository.save({
           participantName: user.nickname,
@@ -199,10 +210,8 @@ export class SpotsService {
       }
 
       if (body.isLast) {
-        const participantsList = plan.ParticipantsList.map(
-          (participant) => participant.nickname,
-        );
-        const index = participantsList.indexOf(user.nickname);
+        // 해당 이용자의 마지막 제출일 경우
+        const index = JSON.parse(plan.participantsName).indexOf(user.nickname);
         const spotResponseStatus = JSON.parse(plan.spotResponseStatus);
         spotResponseStatus[index] = true;
         plan.spotResponseStatus = JSON.stringify(spotResponseStatus);
