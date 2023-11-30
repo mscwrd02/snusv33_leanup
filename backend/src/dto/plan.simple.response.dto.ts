@@ -1,12 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsArray,
   IsDate,
   IsEnum,
   IsNotEmpty,
   IsNumber,
   IsString,
-  ValidateNested,
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 import { PlanStatus } from 'src/entities/common/PlanStatus';

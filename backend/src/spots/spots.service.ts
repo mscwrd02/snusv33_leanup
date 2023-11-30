@@ -1,5 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import {
+  RecommendsResponseDto,
+  SpotInfoDto,
+} from 'src/dto/recommends.response.dto';
 import { SpotResponseDto } from 'src/dto/spot.response.dto';
 import { Categories } from 'src/entities/Categories';
 import { CategoryResponses } from 'src/entities/CategoryResponses';
@@ -10,7 +14,7 @@ import { Spots } from 'src/entities/Spots';
 import { Users } from 'src/entities/Users';
 import { PlanStatus } from 'src/entities/common/PlanStatus';
 import { Region } from 'src/entities/common/Region';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, IsNull, Not, Repository } from 'typeorm';
 
 @Injectable()
 export class SpotsService {
@@ -143,6 +147,17 @@ export class SpotsService {
     }
   }
 
+  convertScore(score: number): number {
+    const scoreMap: Record<number, number> = {
+      1: -200,
+      2: -100,
+      3: 100,
+      4: 200,
+    };
+
+    return scoreMap[score] || 0;
+  }
+
   async submitSpotResponse(userId: number, body: SpotResponseDto) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -232,14 +247,44 @@ export class SpotsService {
     }
   }
 
-  convertScore(score: number): number {
-    const scoreMap: Record<number, number> = {
-      1: -200,
-      2: -100,
-      3: 100,
-      4: 200,
-    };
+  async getRecommend(planId: number) {
+    try {
+      // recommendSpot 가져와서 score 내림차순으로 정렬
+      const recommends = await this.recommendsRepository
+        .createQueryBuilder('recommends')
+        .leftJoinAndSelect('recommends.Spot', 'spot')
+        .leftJoinAndSelect('spot.Images', 'images')
+        .where('recommends.PlanId = :planId', { planId })
+        .orderBy('recommends.score', 'DESC')
+        .getMany();
 
-    return scoreMap[score] || 0;
+      // score가 같은 spot들은 array로 묶어서 하나의 score에 대해서 {score: int, spot: SpotInfoDto[]}의 형태로 만듦
+      const recommendsResponseArray: RecommendsResponseDto[] =
+        recommends.reduce((acc, val) => {
+          const lastElement = acc[acc.length - 1];
+          const spotInfo: SpotInfoDto = {
+            spotId: val.Spot.id,
+            name: val.Spot.name,
+            overview: val.Spot.overview,
+            imagePath:
+              val.Spot.Images.length > 0 ? val.Spot.Images[0].path : '', // 우선 첫번째 이미지만 보내기
+            address: val.Spot.address,
+          };
+          if (lastElement && lastElement.score === val.score) {
+            lastElement.spots.push(spotInfo);
+          } else {
+            const recommendsResponse: RecommendsResponseDto = {
+              score: val.score,
+              spots: [spotInfo],
+            };
+            acc.push(recommendsResponse);
+          }
+          return acc;
+        }, []);
+      return recommendsResponseArray;
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException('추천 장소 조회에 실패했습니다');
+    }
   }
 }

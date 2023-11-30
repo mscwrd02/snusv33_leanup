@@ -24,7 +24,7 @@ export class SpotsController {
     description: '관광지 설문지를 받아옴',
     type: FormWithHistoryResponseDto,
   })
-  @Get(':planId')
+  @Get('survey/:planId')
   @UseGuards(LoggedInGuard)
   async getSpotsFormWithHistory(
     @Param('planId') planId: number,
@@ -74,15 +74,19 @@ export class SpotsController {
   @ApiOperation({ summary: '관광지 추천결과 조회하기' })
   @ApiOkResponse({
     description: '관광지 추천결과 조회 성공',
+    type: SpotResponseDto,
+    isArray: true,
   })
   @ApiBadRequestResponse({
     description: '관광지 추천결과 조회 실패',
     type: ErrorResponseDto,
   })
-  @Get('recommend')
+  @Get('recommend/:planId')
   @UseGuards(LoggedInGuard)
-  async getRecommend() {
-    //지금까지 제출한 관광지 설문을 바탕으로 추천 결과를 보내주기
+  async getRecommend(@Param('planId') planId: number) {
+    // 지금까지 제출한 관광지 설문을 바탕으로 추천 결과를 보내주기
     // 현재 planId에 속하는 모든 spotResponse의 score를 합산해서 내림차순으로 정렬해서 보내주기
+    const recommendSpots = await this.spotsService.getRecommend(planId);
+    return recommendSpots;
   }
 }

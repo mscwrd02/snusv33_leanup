@@ -62,14 +62,14 @@ export class PlansController {
     type: ErrorResponseDto,
   })
   @ApiOperation({ summary: '여행 계획 참여하기' })
-  @Post('join')
+  @Post('join/:planId')
   @UseGuards(LoggedInGuard)
   async joinPlan(
     @User() user,
-    @Body() body: { planId: number },
+    @Param('planId') planId: number,
   ): Promise<PlanDetailResponseDto> {
     // 여행 계획 참여하기
-    const plan = await this.plansService.joinPlan(user.id, body.planId);
+    const plan = await this.plansService.joinPlan(user.id, planId);
     if (plan) {
       return plan;
     } else {
