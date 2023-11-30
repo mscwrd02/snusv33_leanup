@@ -161,25 +161,33 @@ export class SpotsService {
         !plan.ParticipantsList.find((participant) => participant.id === user.id)
       ) {
         throw new BadRequestException('참여하지 않은 여행입니다.');
-      } else if (plan.status != PlanStatus.SPOTING) {
-        throw new BadRequestException('관광지 설문 단계가 아닙니다.');
-      }
+      } // else if (plan.status != PlanStatus.SPOTING) {
+      //  throw new BadRequestException('관광지 설문 단계가 아닙니다.');
+      // }
 
       const spotResponse = await this.spotResponsesRepository.findOne({
         where: { UserId: userId, spotId: body.spotId, PlanId: body.planId },
       });
+      console.log('-------------------');
+      console.log(spotResponse);
       if (spotResponse) {
-        spotResponse.score = body.score;
-        spotResponse.comment = body.comment;
-        await this.spotResponsesRepository.save(spotResponse);
-
         const recommendSpot = await this.recommendsRepository.findOne({
           where: { SpotId: body.spotId, PlanId: body.planId },
         });
         recommendSpot.score +=
           this.convertScore(body.score) - this.convertScore(spotResponse.score); // 기존에 잘못 더해진 score 고려해서 update
         await this.recommendsRepository.save(recommendSpot);
+
+        spotResponse.score = body.score;
+        spotResponse.comment = body.comment;
+        await this.spotResponsesRepository.save(spotResponse);
       } else {
+        const recommendSpot = new Recommends();
+        recommendSpot.score = this.convertScore(body.score);
+        recommendSpot.PlanId = body.planId;
+        recommendSpot.SpotId = body.spotId;
+        await this.recommendsRepository.save(recommendSpot);
+
         await this.spotResponsesRepository.save({
           participantName: user.nickname,
           score: body.score,
@@ -188,12 +196,6 @@ export class SpotsService {
           PlanId: body.planId,
           comment: body.comment,
         });
-
-        const recommendSpot = new Recommends();
-        recommendSpot.score = this.convertScore(body.score);
-        recommendSpot.PlanId = body.planId;
-        recommendSpot.SpotId = body.spotId;
-        await this.recommendsRepository.save(recommendSpot);
       }
 
       if (body.isLast) {
