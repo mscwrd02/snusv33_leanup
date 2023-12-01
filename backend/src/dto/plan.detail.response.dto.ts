@@ -11,6 +11,7 @@ import { PlanStatus } from 'src/entities/common/PlanStatus';
 
 export class PlanDetailResponseDto {
   // 여행계획 아이디 (int), 소유자 아이디 (int), 설문 주소 (string), 동행 인원 (Number), 지역 (east, west, south, north)
+  // 동행 인원 이름 (string), 동행 인원 취향 설문 결과 (string), 동행 인원 여행지 설문 결과 (string)
   // 취향설문참여인원 (int), 여행지설문참여인원 (int), 여행 시작일(Date), 여행 종료일(Date), 상태 (enum: ready, ing, end)
 
   @ApiProperty({
@@ -32,8 +33,8 @@ export class PlanDetailResponseDto {
   public userId: number;
 
   @ApiProperty({
-    example: 'https://tripwiz.com/abcdedf',
-    description: '설문 주소',
+    example: 'abcdedf',
+    description: '설문 주소 (hashId)',
     required: true,
   })
   @IsString()
@@ -59,13 +60,41 @@ export class PlanDetailResponseDto {
   public regionList: string;
 
   @ApiProperty({
+    example: '["김철수", "김영희", "김민수"]',
+    description: '동행 인원 이름 (string ,으로 구분하고 []로 감싸기)',
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  public participantsName: string;
+
+  @ApiProperty({
+    example: '[true, false, false]',
+    description: '동행 인원 취향 설문 결과 (string ,으로 구분하고 []로 감싸기)',
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  public categoryResponseStatus: string;
+
+  @ApiProperty({
+    example: '[false, true, false]',
+    description:
+      '동행 인원 여행지 설문 결과 (string ,으로 구분하고 []로 감싸기)',
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  public spotResponseStatus: string;
+
+  @ApiProperty({
     example: 4,
     description: '취향설문참여인원',
     required: true,
   })
   @IsNumber()
   @IsNotEmpty()
-  public categoryParticipants: number;
+  public categoryParticipations: number;
 
   @ApiProperty({
     example: 4,
@@ -74,7 +103,7 @@ export class PlanDetailResponseDto {
   })
   @IsNumber()
   @IsNotEmpty()
-  public spotParticipants: number;
+  public spotParticipations: number;
 
   @ApiProperty({
     example: '2023-12-21',
