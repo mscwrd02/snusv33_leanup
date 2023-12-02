@@ -97,16 +97,39 @@ export class SchedulesService {
 
   async getDayByPlanId(planId: number) {
     try {
-      const recommends = await await this.recommendRepository
+      const rawRecommends = await this.recommendRepository
         .createQueryBuilder('recommends')
+        .innerJoin('recommends.Spot', 'spot')
+        .innerJoin('spot.Images', 'images')
         .select('recommends.day', 'day')
         .addSelect('recommends.SpotId', 'spotId')
+        .addSelect('spot.name', 'name')
+        .addSelect('images.path', 'path')
         .where('recommends.PlanId = :planId', { planId })
         .andWhere('recommends.day != 0')
         .orderBy('recommends.day', 'ASC')
         .getRawMany();
-      await console.log(recommends);
 
+      // 쿼리 결과를 변환
+      const recommends = [];
+      const spotWithImages = {};
+
+      for (const recommend of rawRecommends) {
+        if (!spotWithImages[recommend.spotId]) {
+          spotWithImages[recommend.spotId] = {
+            day: recommend.day,
+            spotId: recommend.spotId,
+            name: recommend.name,
+            paths: [recommend.path],
+          };
+        } else {
+          spotWithImages[recommend.spotId].paths.push(recommend.path);
+        }
+      }
+
+      for (const spotId in spotWithImages) {
+        recommends.push(spotWithImages[spotId]);
+      }
       return recommends;
     } catch (err) {
       console.log(err);

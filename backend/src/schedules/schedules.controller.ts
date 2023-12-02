@@ -18,6 +18,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { DayRequestDto } from 'src/dto/day.request.dto';
+import { DayResponseDto } from 'src/dto/day.response.dto';
 
 @ApiTags('SCHEDULE')
 @Controller('api/schedules')
@@ -93,6 +94,11 @@ export class SchedulesController {
   }
 
   @ApiOperation({ summary: '여행에 추가된 일차 장소 정보 조회하기' })
+  @ApiOkResponse({
+    description: '일차 장소 정보 조회 성공',
+    type: DayResponseDto,
+    isArray: true,
+  })
   @Get('/day/:planId')
   async getDayByPlanId(@Param('planId') planId: string) {
     return await this.schedulesService.getDayByPlanId(+planId);

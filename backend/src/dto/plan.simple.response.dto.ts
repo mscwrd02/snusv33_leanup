@@ -61,7 +61,7 @@ export class PlanSimpleResponseDto {
   public endDate: Date;
 
   @ApiProperty({
-    example: '취향조사중',
+    example: PlanStatus.CATEGORYING,
     description: '상태 (취향조사중, 관광지조사중, 여행중, 여행완료 중 1개)',
     required: true,
   })
