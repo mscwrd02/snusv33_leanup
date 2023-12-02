@@ -13,9 +13,6 @@ export class CategoryResponses {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
 
-  @Column('varchar', { name: 'participant_name', length: 30 })
-  participantName: string;
-
   @Column('varchar', { name: 'category_list', length: 50 })
   categoryList: string;
 

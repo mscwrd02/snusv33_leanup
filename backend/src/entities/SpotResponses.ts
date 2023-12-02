@@ -13,9 +13,6 @@ export class SpotResponses {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
 
-  @Column('varchar', { name: 'participant_name', length: 30 })
-  participantName: string;
-
   @Column('int', { name: 'score' })
   score: number;
 

@@ -1,9 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { DayRequestDto } from 'src/dto/day.request.dto';
 import { ScheduleRequestDto } from 'src/dto/schedule.request.dto';
 import { Recommends } from 'src/entities/Recommends';
 import { Schedules } from 'src/entities/Schedule';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, QueryBuilder, Repository } from 'typeorm';
 
 @Injectable()
 export class SchedulesService {
@@ -11,6 +12,9 @@ export class SchedulesService {
     private dataSource: DataSource,
     @InjectRepository(Schedules)
     private schedulesRepository: Repository<Schedules>,
+
+    @InjectRepository(Recommends)
+    private recommendRepository: Repository<Recommends>,
   ) {}
 
   async getScheduleByPlanId(planId: number) {
@@ -89,5 +93,54 @@ export class SchedulesService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  async getDayByPlanId(planId: number) {
+    try {
+      const recommends = await await this.recommendRepository
+        .createQueryBuilder('recommends')
+        .select('recommends.day', 'day')
+        .addSelect('recommends.SpotId', 'spotId')
+        .where('recommends.PlanId = :planId', { planId })
+        .andWhere('recommends.day != 0')
+        .orderBy('recommends.day', 'ASC')
+        .getRawMany();
+      await console.log(recommends);
+
+      return recommends;
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException('일차 정보 조회에 실패했습니다.');
+    }
+  }
+
+  async addDay(dayRequest: DayRequestDto) {
+    const recommend = await this.recommendRepository.findOne({
+      where: { PlanId: dayRequest.planId, SpotId: dayRequest.spotId },
+    });
+    if (!recommend)
+      throw new BadRequestException(
+        '추천목록에 없는 장소를 일정에 추가할 수 없습니다',
+      );
+    recommend.day = dayRequest.day;
+    await this.recommendRepository.save(recommend);
+    return true;
+  }
+
+  async deleteDay(dayRequest: DayRequestDto) {
+    const recommend = await this.recommendRepository.findOne({
+      where: {
+        PlanId: dayRequest.planId,
+        SpotId: dayRequest.spotId,
+        day: dayRequest.day,
+      },
+    });
+    if (!recommend)
+      throw new BadRequestException(
+        '추천목록에 없는 장소를 일정에서 삭제할 수 없습니다',
+      );
+    recommend.day = 0;
+    await this.recommendRepository.save(recommend);
+    return true;
   }
 }

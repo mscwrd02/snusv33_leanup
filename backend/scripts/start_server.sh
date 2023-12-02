@@ -7,6 +7,7 @@ export NVM_DIR="$HOME/.nvm"
 
 npm install
 
+npm run db:create:prod
 
 npm run start:prod
 

@@ -49,7 +49,6 @@ export class CategoriesService {
 
       const newResponse = new CategoryResponses();
       newResponse.categoryList = body.categoryList;
-      newResponse.participantName = body.participantName;
       newResponse.UserId = userId;
       newResponse.PlanId = body.planId;
 
