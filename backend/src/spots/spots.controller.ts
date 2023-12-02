@@ -11,7 +11,10 @@ import { SpotMoreRecommendDto } from 'src/dto/spot.more.recommend.dto';
 import { ErrorResponseDto } from 'src/dto/error.response.dto';
 import { User } from 'src/decorators/user.decorator';
 import { LoggedInGuard } from 'src/auth/logged-in-guard';
-import { FormWithHistoryResponseDto } from 'src/dto/form.with.history.response.dto';
+import {
+  FormWithHistoryResponseDto,
+  SpotWithCategoryAndImage,
+} from 'src/dto/form.with.history.response.dto';
 import { SpotResponseDto } from 'src/dto/spot.response.dto';
 
 @ApiTags('SPOT')
@@ -88,5 +91,20 @@ export class SpotsController {
     // 현재 planId에 속하는 모든 spotResponse의 score를 합산해서 내림차순으로 정렬해서 보내주기
     const recommendSpots = await this.spotsService.getRecommend(planId);
     return recommendSpots;
+  }
+
+  @ApiOperation({ summary: '관광지 상세정보 조회하기' })
+  @ApiOkResponse({
+    description: '관광지 상세정보 조회 성공',
+    type: SpotWithCategoryAndImage,
+  })
+  @ApiBadRequestResponse({
+    description: '관광지 상세정보 조회 실패',
+    type: ErrorResponseDto,
+  })
+  @Get('info/:spotId')
+  async getSpotInfo(@Param('spotId') spotId: number) {
+    const spotInfo = await this.spotsService.getSpotInfo(spotId);
+    return spotInfo;
   }
 }

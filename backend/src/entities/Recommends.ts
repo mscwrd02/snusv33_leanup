@@ -7,6 +7,9 @@ export class Recommends {
   @Column('int', { name: 'score', default: 0 })
   score: number;
 
+  @Column('varchar', { name: 'comments', length: 500 })
+  comments: string;
+
   @Column('int', { primary: true, name: 'PlanId' })
   PlanId: number;
 

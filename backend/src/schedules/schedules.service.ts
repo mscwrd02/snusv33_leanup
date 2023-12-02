@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { DeleteScheduleDto } from 'src/dto/delete.schedule.dto';
 import { ScheduleRequestDto } from 'src/dto/schedule.request.dto';
 import { Schedules } from 'src/entities/Schedule';
 import { Repository } from 'typeorm';
@@ -34,6 +35,20 @@ export class SchedulesService {
     } catch (err) {
       console.log(err);
       throw new BadRequestException('일정을 생성하는데 실패했습니다.');
+    }
+    return true;
+  }
+
+  async deleteSchedule(schedule: DeleteScheduleDto) {
+    try {
+      await this.schedulesRepository.delete({
+        PlanId: schedule.planId,
+        date: schedule.date,
+        time: schedule.time,
+      });
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException('존재하지 않는 일정입니다.');
     }
     return true;
   }

@@ -122,6 +122,7 @@ export class SpotsService {
         .createQueryBuilder('recommends')
         .leftJoinAndSelect('recommends.Spot', 'spot')
         .leftJoinAndSelect('spot.Categories', 'categories')
+        .leftJoinAndSelect('spot.Images', 'images')
         .where('recommends.PlanId = :planId', { planId })
         .getMany();
 
@@ -162,7 +163,6 @@ export class SpotsService {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
-
     try {
       const plan = await this.plansRepository.findOne({
         where: { id: body.planId },
@@ -176,52 +176,44 @@ export class SpotsService {
         !plan.ParticipantsList.find((participant) => participant.id === user.id)
       ) {
         throw new BadRequestException('참여하지 않은 여행입니다.');
-      } // else if (plan.status != PlanStatus.SPOTING) {
-      //  throw new BadRequestException('관광지 설문 단계가 아닙니다.');
-      // }
+      } else if (plan.status != PlanStatus.SPOTING) {
+        throw new BadRequestException('관광지 설문 단계가 아닙니다.');
+      }
 
-      const spotResponse = await this.spotResponsesRepository.findOne({
-        where: { UserId: userId, spotId: body.spotId, PlanId: body.planId },
-      });
+      const [spotResponse, recommendSpot] = await Promise.all([
+        queryRunner.manager.getRepository(SpotResponses).findOne({
+          where: { UserId: userId, spotId: body.spotId, PlanId: body.planId },
+        }),
+        queryRunner.manager.getRepository(Recommends).findOne({
+          where: { SpotId: body.spotId, PlanId: body.planId },
+        }),
+      ]);
       if (spotResponse) {
         // 수정해서 다시 제출
-        const recommendSpot = await this.recommendsRepository.findOne({
-          where: { SpotId: body.spotId, PlanId: body.planId },
-        });
         recommendSpot.score +=
           this.convertScore(body.score) - this.convertScore(spotResponse.score); // 기존에 잘못 더해진 score 고려해서 update
-        await this.recommendsRepository.save(recommendSpot);
-
-        await this.spotResponsesRepository.update(
-          { id: spotResponse.id },
-          { score: body.score, comment: body.comment },
-        );
+        await Promise.all([
+          queryRunner.manager.getRepository(Recommends).save(recommendSpot),
+          queryRunner.manager
+            .getRepository(SpotResponses)
+            .update(
+              { id: spotResponse.id },
+              { score: body.score, comment: body.comment },
+            ),
+        ]);
       } else {
-        // 처음 제출
-        const recommendSpot = await this.recommendsRepository.findOne({
-          where: { SpotId: body.spotId, PlanId: body.planId },
-        });
-        if (recommendSpot) {
-          // 다른 사람이 이미 해당 장소에 대한 응답을 제출했을 경우
-          recommendSpot.score += this.convertScore(body.score);
-          await this.recommendsRepository.save(recommendSpot);
-        } else {
-          // 해당 장소에 대한 응답이 없을 경우
-          const newRecommendSpot = new Recommends();
-          newRecommendSpot.score = this.convertScore(body.score);
-          newRecommendSpot.PlanId = body.planId;
-          newRecommendSpot.SpotId = body.spotId;
-          await this.recommendsRepository.save(newRecommendSpot);
-        }
-
-        await this.spotResponsesRepository.save({
-          participantName: user.nickname,
-          score: body.score,
-          spotId: body.spotId,
-          UserId: userId,
-          PlanId: body.planId,
-          comment: body.comment,
-        });
+        recommendSpot.score += this.convertScore(body.score);
+        await Promise.all([
+          queryRunner.manager.getRepository(Recommends).save(recommendSpot),
+          queryRunner.manager.getRepository(SpotResponses).save({
+            participantName: user.nickname,
+            score: body.score,
+            spotId: body.spotId,
+            UserId: userId,
+            PlanId: body.planId,
+            comment: body.comment,
+          }),
+        ]);
       }
 
       if (body.isLast) {
@@ -285,6 +277,20 @@ export class SpotsService {
     } catch (err) {
       console.log(err);
       throw new BadRequestException('추천 장소 조회에 실패했습니다');
+    }
+  }
+
+  async getSpotInfo(spotId: number) {
+    try {
+      const spot = await this.spotsRepository.findOne({
+        where: { id: spotId },
+        relations: ['Images', 'Categories'],
+      });
+
+      return spot;
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException('장소 정보 조회에 실패했습니다');
     }
   }
 }

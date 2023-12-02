@@ -93,7 +93,6 @@ export class PlansService {
     plan.spotResponseStatus = JSON.stringify(
       JSON.parse(plan.spotResponseStatus).concat(false),
     );
-    plan.status = PlanStatus.CATEGORYING;
     await this.plansRepository.save(plan);
 
     const planDetailResponse: PlanDetailResponseDto = {

@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Inject,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { SchedulesService } from './schedules.service';
 import { ScheduleRequestDto } from 'src/dto/schedule.request.dto';
 import { Schedules } from 'src/entities/Schedule';
@@ -8,6 +16,7 @@ import {
   ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { DeleteScheduleDto } from 'src/dto/delete.schedule.dto';
 
 @ApiTags('SCHEDULE')
 @Controller('api/schedules')
@@ -38,6 +47,18 @@ export class SchedulesController {
   @Post()
   async createSchedule(@Body() schedule: ScheduleRequestDto) {
     await this.schedulesService.createSchedule(schedule);
+    return 'ok';
+  }
+
+  @ApiCreatedResponse({
+    description: '일정 삭제 성공',
+  })
+  @ApiBadRequestResponse({
+    description: '일정 삭제 실패',
+  })
+  @Delete()
+  async deleteSchedule(@Body() schedule: DeleteScheduleDto) {
+    await this.schedulesService.deleteSchedule(schedule);
     return 'ok';
   }
 }
