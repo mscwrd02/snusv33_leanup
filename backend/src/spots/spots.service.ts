@@ -137,7 +137,7 @@ export class SpotsService {
     try {
       return await this.spotResponsesRepository.find({
         where: { PlanId: planId, UserId: userId },
-        select: ['score', 'spotId'],
+        select: ['score', 'spotId', 'comment'],
       });
     } catch (err) {
       console.log(err);

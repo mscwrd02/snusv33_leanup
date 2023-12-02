@@ -17,6 +17,13 @@ export class submitResponseDto {
     required: true,
   })
   spotId: number;
+
+  @ApiProperty({
+    example: '집가고싶당',
+    description: '이전 댓글',
+    required: true,
+  })
+  comment: string;
 }
 
 export class SpotWithCategoryAndImage extends Spots {
