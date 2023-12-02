@@ -26,7 +26,7 @@ export class Plans {
   @Column('int', { name: 'UserId', nullable: true })
   userId: number;
 
-  @Column('varchar', { name: 'link', unique: true, length: 50 })
+  @Column('varchar', { name: 'link', nullable: true, unique: true, length: 50 })
   link: string;
 
   @Column('int', { name: 'group_num' })
@@ -34,12 +34,6 @@ export class Plans {
 
   @Column('varchar', { name: 'region_list', length: 50 })
   regionList: string;
-
-  @Column('int', { name: 'category_participants', default: 0 })
-  categoryParticipations: number;
-
-  @Column('int', { name: 'spot_participants', default: 0 })
-  spotParticipations: number;
 
   @Column('varchar', { name: 'participants_name', length: 50 })
   participantsName: string;

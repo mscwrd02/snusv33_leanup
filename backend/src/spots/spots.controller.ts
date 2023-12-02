@@ -16,6 +16,7 @@ import {
   SpotWithCategoryAndImage,
 } from 'src/dto/form.with.history.response.dto';
 import { SpotResponseDto } from 'src/dto/spot.response.dto';
+import { RecommendsResponseDto } from 'src/dto/recommends.response.dto';
 
 @ApiTags('SPOT')
 @Controller('api/spots')
@@ -77,7 +78,7 @@ export class SpotsController {
   @ApiOperation({ summary: '관광지 추천결과 조회하기' })
   @ApiOkResponse({
     description: '관광지 추천결과 조회 성공',
-    type: SpotResponseDto,
+    type: RecommendsResponseDto,
     isArray: true,
   })
   @ApiBadRequestResponse({

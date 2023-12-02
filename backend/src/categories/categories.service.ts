@@ -1,6 +1,6 @@
+import { CategoryResponseDto } from './../dto/category.response.dto';
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CategoryResponseDto } from 'src/dto/category.response.dto';
 import { Categories } from 'src/entities/Categories';
 import { CategoryResponses } from 'src/entities/CategoryResponses';
 import { Plans } from 'src/entities/Plans';
@@ -64,10 +64,23 @@ export class CategoriesService {
           where: { id: body.planId },
           relations: ['ParticipantsList'],
         });
-      includedPlan.categoryParticipations += 1;
-      if (includedPlan.group_num == includedPlan.categoryParticipations)
+
+      const index = JSON.parse(includedPlan.participantsName).indexOf(
+        user.nickname,
+      );
+      const categoryResponseStatus = JSON.parse(
+        includedPlan.categoryResponseStatus,
+      );
+      categoryResponseStatus[index] = true;
+      includedPlan.categoryResponseStatus = JSON.stringify(
+        categoryResponseStatus,
+      );
+      if (
+        categoryResponseStatus.filter((it) => it == true).length ==
+        includedPlan.group_num
+      ) {
         includedPlan.status = PlanStatus.SPOTING;
-      includedPlan.ParticipantsList.push(user);
+      }
 
       await Promise.all([
         queryRunner.manager.getRepository(CategoryResponses).save(newResponse),

@@ -23,18 +23,12 @@ export class PlansService {
   ): Promise<PlanDetailResponseDto> {
     // 여행 계획 생성하기
     const user = await this.usersRepository.findOne({ where: { id: userId } });
-    const count = await this.plansRepository // 고칠라고 하는데 절대 안 고쳐짐 ㅜㅜ
-      .createQueryBuilder('plan')
-      .withDeleted()
-      .getCount();
 
     const newPlan = new Plans();
     newPlan.userId = userId;
-    newPlan.link = btoa(userId.toString() + '_' + (count + 1).toString()); // binary to ASCII
+    newPlan.link = null; // 임시
     newPlan.group_num = body.groupNum;
     newPlan.regionList = body.regionList;
-    newPlan.categoryParticipations = 0;
-    newPlan.spotParticipations = 0;
     newPlan.participantsName = JSON.stringify([user.nickname]);
     newPlan.categoryResponseStatus = JSON.stringify([false]);
     newPlan.spotResponseStatus = JSON.stringify([false]);
@@ -42,19 +36,24 @@ export class PlansService {
     newPlan.endDate = body.endDate;
     newPlan.status = PlanStatus.CATEGORYING;
     newPlan.ParticipantsList = [user];
-
     const savedPlan = await this.plansRepository.save(newPlan);
+
+    // 여행 계획 생성 후 link 생성
+    const updatePlan = await this.plansRepository.findOne({
+      where: { id: savedPlan.id },
+    });
+    updatePlan.link = btoa(userId.toString() + '_' + updatePlan.id.toString()); // binary to ASCII
+    await this.plansRepository.save(updatePlan);
+
     const planDetailResponse: PlanDetailResponseDto = {
       planId: savedPlan.id,
       userId: savedPlan.userId,
-      link: savedPlan.link,
+      link: updatePlan.link,
       groupNum: savedPlan.group_num,
       regionList: savedPlan.regionList,
       participantsName: JSON.stringify([user.nickname]),
       categoryResponseStatus: JSON.stringify([false]),
       spotResponseStatus: JSON.stringify([false]),
-      categoryParticipations: 0,
-      spotParticipations: 0,
       startDate: savedPlan.startDate,
       endDate: savedPlan.endDate,
       status: savedPlan.status,
@@ -104,8 +103,6 @@ export class PlansService {
       participantsName: plan.participantsName,
       categoryResponseStatus: plan.categoryResponseStatus,
       spotResponseStatus: plan.spotResponseStatus,
-      categoryParticipations: plan.categoryParticipations,
-      spotParticipations: plan.spotParticipations,
       startDate: plan.startDate,
       endDate: plan.endDate,
       status: plan.status,
@@ -137,8 +134,6 @@ export class PlansService {
       participantsName: plan.participantsName,
       categoryResponseStatus: plan.categoryResponseStatus,
       spotResponseStatus: plan.spotResponseStatus,
-      categoryParticipations: plan.categoryParticipations,
-      spotParticipations: plan.spotParticipations,
       startDate: plan.startDate,
       endDate: plan.endDate,
       status: plan.status,
@@ -161,8 +156,6 @@ export class PlansService {
       participantsName: plan.participantsName,
       categoryResponseStatus: plan.categoryResponseStatus,
       spotResponseStatus: plan.spotResponseStatus,
-      categoryParticipations: plan.categoryParticipations,
-      spotParticipations: plan.spotParticipations,
       startDate: plan.startDate,
       endDate: plan.endDate,
       status: plan.status,

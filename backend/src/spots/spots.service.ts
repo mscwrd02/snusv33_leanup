@@ -192,6 +192,11 @@ export class SpotsService {
         // 수정해서 다시 제출
         recommendSpot.score +=
           this.convertScore(body.score) - this.convertScore(spotResponse.score); // 기존에 잘못 더해진 score 고려해서 update
+        const comments = JSON.parse(recommendSpot.comments);
+        const index = comments.indexOf(spotResponse.comment);
+        comments[index] = body.comment;
+        recommendSpot.comments = JSON.stringify(comments);
+
         await Promise.all([
           queryRunner.manager.getRepository(Recommends).save(recommendSpot),
           queryRunner.manager
@@ -203,6 +208,10 @@ export class SpotsService {
         ]);
       } else {
         recommendSpot.score += this.convertScore(body.score);
+        const comments = JSON.parse(recommendSpot.comments);
+        comments.push(body.comment);
+        recommendSpot.comments = JSON.stringify(comments);
+
         await Promise.all([
           queryRunner.manager.getRepository(Recommends).save(recommendSpot),
           queryRunner.manager.getRepository(SpotResponses).save({
@@ -222,8 +231,9 @@ export class SpotsService {
         const spotResponseStatus = JSON.parse(plan.spotResponseStatus);
         spotResponseStatus[index] = true;
         plan.spotResponseStatus = JSON.stringify(spotResponseStatus);
-        plan.spotParticipations += 1;
-        if (plan.spotParticipations === plan.group_num) {
+        if (
+          spotResponseStatus.filter((it) => it == true).length == plan.group_num
+        ) {
           plan.status = PlanStatus.PLANNIG;
         }
         await queryRunner.manager.getRepository(Plans).save(plan);
