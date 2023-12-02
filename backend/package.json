@@ -40,6 +40,7 @@
     "class-validator": "^0.14.0",
     "cookie-parser": "^1.4.6",
     "cross-env": "^7.0.3",
+    "csv-parse": "^5.5.2",
     "express-session": "^1.17.3",
     "mysql2": "^3.6.3",
     "nest-winston": "^1.9.4",
