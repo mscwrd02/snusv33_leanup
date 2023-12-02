@@ -19,6 +19,7 @@ import {
 } from '@nestjs/swagger';
 import { DayRequestDto } from 'src/dto/day.request.dto';
 import { DayResponseDto } from 'src/dto/day.response.dto';
+import { ScheduleResponseDto } from 'src/dto/schedule.response.dto';
 
 @ApiTags('SCHEDULE')
 @Controller('api/schedules')
@@ -30,7 +31,7 @@ export class SchedulesController {
   @ApiOperation({ summary: '일정 조회하기' })
   @ApiOkResponse({
     description: '일정 조회 성공',
-    type: Schedules,
+    type: ScheduleResponseDto,
     isArray: true,
   })
   @ApiBadRequestResponse({

@@ -23,14 +23,13 @@ export class ScheduleRequestDto {
   spotId: number;
 
   @ApiProperty({
-    example: '2023-12-21',
-    description: '날짜',
+    example: '1',
+    description: '일차',
     required: true,
   })
-  @IsDate()
+  @IsNumber()
   @IsNotEmpty()
-  @Transform(({ value }) => new Date(value))
-  date: Date;
+  date: number;
 
   @ApiProperty({
     example: 'morning',

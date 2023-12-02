@@ -19,9 +19,17 @@ export class SchedulesService {
 
   async getScheduleByPlanId(planId: number) {
     try {
-      const schedules = await this.schedulesRepository.find({
-        where: { PlanId: planId },
-      });
+      const schedules = await this.schedulesRepository
+        .createQueryBuilder('schedules')
+        .innerJoin('schedules.Spot', 'spot')
+        .select('schedules.date', 'date')
+        .addSelect('schedules.time', 'time')
+        .addSelect('schedules.SpotId', 'SpotId')
+        .addSelect('schedules.PlanId', 'PlanId')
+        .addSelect('spot.name', 'name')
+        .where('schedules.PlanId = :planId', { planId })
+        .orderBy('schedules.date', 'ASC')
+        .getRawMany();
       return schedules;
     } catch (err) {
       console.log(err);
