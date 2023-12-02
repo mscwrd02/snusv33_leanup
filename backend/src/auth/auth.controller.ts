@@ -3,13 +3,9 @@ import { LocalAuthGuard } from './local-auth.guard';
 import { KakaoAuthGuard } from './kakao-auth.guard';
 import { LoggedInGuard } from './logged-in-guard';
 import {
-  ApiBadRequestResponse,
   ApiBody,
   ApiCreatedResponse,
-  ApiOkResponse,
   ApiOperation,
-  ApiProperty,
-  ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';

@@ -32,7 +32,7 @@ export class AuthService {
     nickname: string,
     platform: Platform,
     profileImage: string,
-  ) {
+  ): Promise<Users> {
     const user = await this.usersRepository.findOne({
       where: { email },
       select: ['id', 'email', 'nickname', 'profileImage'],

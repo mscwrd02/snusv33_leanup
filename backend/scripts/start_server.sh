@@ -7,8 +7,6 @@ export NVM_DIR="$HOME/.nvm"
 
 npm install
 
-aws s3 cp s3://mscwrd02-github-action-s3-bucket/.env /home/ubuntu/my-nest-app/
-
 
 npm run start:prod
 
