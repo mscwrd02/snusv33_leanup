@@ -42,8 +42,7 @@ export class PlansService {
     const updatePlan = await this.plansRepository.findOne({
       where: { id: savedPlan.id },
     });
-    const count = await this.plansRepository.count();
-    updatePlan.link = btoa(userId.toString() + '_' + count.toString()); // binary to ASCII
+    updatePlan.link = btoa(userId.toString() + '_' + updatePlan.id.toString()); // binary to ASCII
     await this.plansRepository.save(updatePlan);
 
     const planDetailResponse: PlanDetailResponseDto = {
