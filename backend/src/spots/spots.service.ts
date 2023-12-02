@@ -190,6 +190,11 @@ export class SpotsService {
         });
         recommendSpot.score +=
           this.convertScore(body.score) - this.convertScore(spotResponse.score); // 기존에 잘못 더해진 score 고려해서 update
+
+        const comments = JSON.parse(recommendSpot.comments);
+        const index = comments.indexOf(spotResponse.comment);
+        comments[index] = body.comment;
+        recommendSpot.comments = JSON.stringify(comments);
         await this.recommendsRepository.save(recommendSpot);
 
         await this.spotResponsesRepository.update(
@@ -201,18 +206,12 @@ export class SpotsService {
         const recommendSpot = await this.recommendsRepository.findOne({
           where: { SpotId: body.spotId, PlanId: body.planId },
         });
-        if (recommendSpot) {
-          // 다른 사람이 이미 해당 장소에 대한 응답을 제출했을 경우
-          recommendSpot.score += this.convertScore(body.score);
-          await this.recommendsRepository.save(recommendSpot);
-        } else {
-          // 해당 장소에 대한 응답이 없을 경우
-          const newRecommendSpot = new Recommends();
-          newRecommendSpot.score = this.convertScore(body.score);
-          newRecommendSpot.PlanId = body.planId;
-          newRecommendSpot.SpotId = body.spotId;
-          await this.recommendsRepository.save(newRecommendSpot);
-        }
+        recommendSpot.score += this.convertScore(body.score);
+
+        const comments = JSON.parse(recommendSpot.comments);
+        comments.push(body.comment);
+        recommendSpot.comments = JSON.stringify(comments);
+        await this.recommendsRepository.save(recommendSpot);
 
         await this.spotResponsesRepository.save({
           participantName: user.nickname,
