@@ -4,7 +4,7 @@ import { Spots } from '../../entities/Spots';
 import { parse } from 'csv-parse';
 import * as fs from 'fs';
 
-export default class SpotSeeder implements Seeder {
+export default class CSVSpotSeeder implements Seeder {
   public async run(dataSource: DataSource): Promise<any> {
     const spotsRepository = dataSource.getRepository(Spots);
     const spots = [];
