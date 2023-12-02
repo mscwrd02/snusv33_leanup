@@ -86,7 +86,7 @@ export class SpotsController {
     type: ErrorResponseDto,
   })
   @Get('recommend/:planId')
-  @UseGuards(LoggedInGuard)
+  //@UseGuards(LoggedInGuard)
   async getRecommend(@Param('planId') planId: number) {
     // 지금까지 제출한 관광지 설문을 바탕으로 추천 결과를 보내주기
     // 현재 planId에 속하는 모든 spotResponse의 score를 합산해서 내림차순으로 정렬해서 보내주기
