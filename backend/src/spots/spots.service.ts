@@ -230,8 +230,9 @@ export class SpotsService {
         const spotResponseStatus = JSON.parse(plan.spotResponseStatus);
         spotResponseStatus[index] = true;
         plan.spotResponseStatus = JSON.stringify(spotResponseStatus);
-        plan.spotParticipations += 1;
-        if (plan.spotParticipations === plan.group_num) {
+        if (
+          spotResponseStatus.filter((it) => it == true).length == plan.group_num
+        ) {
           plan.status = PlanStatus.PLANNIG;
         }
         await queryRunner.manager.getRepository(Plans).save(plan);
