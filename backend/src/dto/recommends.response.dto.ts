@@ -24,6 +24,9 @@ export class RecommendsResponseDto {
   @IsNotEmpty()
   isInSchedule: boolean;
 
+  @ApiProperty({
+    type: Spots,
+  })
   @IsNotEmpty()
   Spot: Spots;
 }
