@@ -1,6 +1,5 @@
 import React, {useState} from "react";
 import "./Page5.css";
-import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import Prev_btn from "./prev_btn";
 import { Link } from 'react-router-dom';
 import kakaoLogo from './images/kakaotalk.png';
