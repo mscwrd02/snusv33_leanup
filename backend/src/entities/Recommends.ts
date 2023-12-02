@@ -21,6 +21,9 @@ export class Recommends {
   @Column('int', { primary: true, name: 'SpotId' })
   SpotId: number;
 
+  @Column('boolean', { default: false })
+  isInSchedule: boolean;
+
   @ManyToOne(() => Plans, (plans) => plans.Recommends, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',

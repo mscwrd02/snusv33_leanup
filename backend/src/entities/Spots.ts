@@ -9,7 +9,6 @@ import {
 } from 'typeorm';
 import { SpotImages } from './SpotImages';
 import { Categories } from './Categories';
-import { Plans } from './Plans';
 import { Region } from './common/Region';
 import { Recommends } from './Recommends';
 import { ApiProperty } from '@nestjs/swagger';

@@ -16,7 +16,6 @@ import {
   ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { DeleteScheduleDto } from 'src/dto/delete.schedule.dto';
 
 @ApiTags('SCHEDULE')
 @Controller('api/schedules')
@@ -57,7 +56,7 @@ export class SchedulesController {
     description: '일정 삭제 실패',
   })
   @Delete()
-  async deleteSchedule(@Body() schedule: DeleteScheduleDto) {
+  async deleteSchedule(@Body() schedule: ScheduleRequestDto) {
     await this.schedulesService.deleteSchedule(schedule);
     return 'ok';
   }
