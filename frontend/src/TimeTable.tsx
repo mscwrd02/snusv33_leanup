@@ -63,7 +63,9 @@ let date = 1;
 let spot_arr = new Array(n_day);  // 3개의 원소를 가진 배열 생성
 let spot_arr_count = new Array(n_day+1).fill(0);
 let spot_id = 0;
-
+const color_array = ["rgba(0, 122, 255, 0.14)", "rgba(255, 204, 0, 0.14)", "rgba(255, 59, 48, 0.14)", "rgba(175, 82, 222, 0.14)", "rgba(255, 149, 0, 0.14)"];
+const text_color_array = ["rgba(0, 122, 255, 1)", "rgba(255, 204, 0, 1)", "rgba(255, 59, 48, 1)", "rgba(175, 82, 222, 1)", "rgba(255, 149, 0, 1)"];
+// 6개 색
 function TimeTable() {
   const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
   const [brightness, setBrightness] = useState(Array(n_day).fill(1));
@@ -276,7 +278,7 @@ function TimeTable() {
     <TimeTableContainer>
       <Body>
         <Top>
-            <Back to="/Page7">
+            <Back to="/Page6_1">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="27" viewBox="0 0 14 27" fill="none">
                     <path d="M13.1699 0L0 13.1699L13.1699 26.3397L13.9999 25.442L1.43203 13.1699L14 0.904566L13.1699 0Z" fill="black"/>
                 </svg>                
@@ -312,16 +314,16 @@ function TimeTable() {
                   <div className="n_th_day_title" style={day_title_style}>
                     {day}일차
                   </div>
-                  <div className="ojeon" style={each_time_block_style} onTouchEnd={() => handle_eachday({day, block:1})}>
+                  <div className="ojeon" style={{...each_time_block_style, background: planData[day-1][0] ? color_array[(day+1)%5] : 'white', color: planData[day-1][0] ? text_color_array[(day+1)%5] : '#9E9E9E', paddingTop: '15px', borderLeft: planData[day-1][0] ? ' 2px solid' : 'none'}} onTouchEnd={() => handle_eachday({day, block:1})}>
                     {planData[day-1][0]}
                   </div>
-                  <div className="ohu1" style={each_time_block_style} onTouchEnd={() => handle_eachday({day, block:2})}>
+                  <div className="ohu1" style={{...each_time_block_style, background: planData[day-1][1] ? color_array[(day+2)%5] : 'white', color: planData[day-1][1] ? text_color_array[(day+2)%5] : '#9E9E9E', paddingTop: '15px', borderLeft: planData[day-1][1] ? ' 2px solid' : 'none'}} onTouchEnd={() => handle_eachday({day, block:2})}>
                     {planData[day-1][1]}
                   </div>
-                  <div className="ohu2" style={each_time_block_style} onTouchEnd={() => handle_eachday({day, block:3})}>
+                  <div className="ohu2" style={{...each_time_block_style, background: planData[day-1][2] ? color_array[(day+3)%5] : 'white', color: planData[day-1][2] ? text_color_array[(day+3)%5] : '#9E9E9E', paddingTop: '15px', borderLeft: planData[day-1][2] ? ' 2px solid' : 'none'}} onTouchEnd={() => handle_eachday({day, block:3})}>
                     {planData[day-1][2]}
                   </div>
-                  <div className="jeonyeok" style={day_last_block_style} onTouchEnd={() => handle_eachday({day, block:4})}>
+                  <div className="jeonyeok" style={{...each_time_block_style, background: planData[day-1][3] ? color_array[(day+4)%5] : 'white', color: planData[day-1][3] ? text_color_array[(day+4)%5] : '#9E9E9E', paddingTop: '15px', borderLeft: planData[day-1][3] ? ' 2px solid' : 'none'}} onTouchEnd={() => handle_eachday({day, block:4})}>
                     {planData[day-1][3]}
                   </div>
                 </div>
@@ -413,6 +415,7 @@ const each_day_style: React.CSSProperties = {
   lineHeight: '120%',
   letterSpacing: '-0.36px',
   textAlign: 'center',
+
 };
 const n_th_day_title_style: React.CSSProperties = {
   zIndex: '5',
@@ -427,20 +430,25 @@ const n_th_day_title_style: React.CSSProperties = {
   lineHeight: '120%',
   letterSpacing: '-0.36px',
   textAlign: 'center',
+  
 };
 const each_time_block_style: React.CSSProperties = {
   zIndex: '5',
   flex: '1',
   backgroundColor: "white",
   border: "0.7px solid #E0E0E0",
-  color: '#9E9E9E',
+  // color: '#9E9E9E',
   fontFamily: 'Noto Sans KR',
-  fontSize: '14px',
+  fontSize: '15px',
   fontStyle: 'normal',
-  fontWeight: 400,
-  lineHeight: '120%',
-  letterSpacing: '-0.36px',
+  fontWeight: 700,
+  lineHeight: '16px',
+  letterSpacing: '-0.45px',
   textAlign: 'center',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  marginBottom: '1.5px',
 };
 const first_day_title_style: React.CSSProperties = {
   zIndex: '5',
