@@ -6,13 +6,15 @@ import kakaoLogo from './images/kakaotalk.png';
 
 function Page5() {
   const location = useLocation();
-  
+
   const generateStringToCopy = () => {
     // 여기에서 원하는 로직에 따라 새로운 문자열을 생성합니다.
     return location.state.link;
   };
 
   const Sharing_Link = generateStringToCopy();
+
+  localStorage.setItem('myData', 'Hello, World!');
 
   let box_size: number = 100;
 

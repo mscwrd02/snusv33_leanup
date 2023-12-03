@@ -229,7 +229,7 @@ function TimeTable() {
   }, []);
 
   useEffect(() => {
-    axios.get(backend_url + '/api/schedules/1', { withCredentials: true })
+    axios.get(backend_url + '/api/schedules/all/1', { withCredentials: true })
     .then(response => {
         console.log(response.data);
         const dayNum = 3; //////////// 재혁이가 넘겨줄 예정
