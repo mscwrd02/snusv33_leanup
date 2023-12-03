@@ -1,9 +1,7 @@
-import {Link} from 'react-router-dom';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 import {useState, useEffect} from 'react';
 import styled from "styled-components";
 import axios from 'axios';
-
-import { exportPlanId } from './Page4';
 
 const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
 
@@ -112,10 +110,10 @@ const Component = styled.div<ComponentProps>`
     line-height: 120%; /* 21.6px */
     letter-spacing: -0.9px;
 
-    padding: 5px;
+    padding: 8px;
 `
 
-const Ok = styled(Link)`
+const Ok = styled.div`
     width: 356px;
     height: 54px;
     flex-shrink: 0;
@@ -142,17 +140,20 @@ const Ok = styled(Link)`
 function Page6_1(){
     const [componentClickedArray, setComponentClickedArray] = useState<boolean[]>(new Array(15).fill(false));
     const [categoryArray, setCategoryArray] = useState<String[]>(new Array(15).fill(""));
+
+    const navigate = useNavigate();
+    const location = useLocation();
     
     let preferenceArray: number[] = [];
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-              const response = await axios.get(backend_url+"/api/categories", {});
+              const response = await axios.get(backend_url+"/api/categories", { withCredentials: true});
               for(let i=0; i<15; i++){
                 setCategoryArray(prevState => {
                     const updatedArray = [...prevState];
-                    updatedArray[i] = response['data'][i+10]['name'];
+                    updatedArray[i] = response['data'][i].name;
                     return updatedArray;
                 });
               }
@@ -175,18 +176,23 @@ function Page6_1(){
     }
 
     function sendPreference(){
+        console.log(String(componentClickedArray.map((value, index) => (value === true ? index + 1 : undefined)).filter((value) => value !== undefined)));
         axios.post(backend_url+"/api/categories", {
-            "participantName": "양재혁",
-            "categoryList": "[1, 4, 7]",
-            "planId" : exportPlanId
+            "categoryList": JSON.stringify(componentClickedArray.map((value, index) => (value === true ? index + 1 : undefined)).filter((value) => value !== undefined)),
+            "planId" : location.state.planId
         }, { withCredentials: true })
         .then(function (response) {
             console.log(response);
-            
         }).catch(function (error) {
             // 오류발생시 실행
         }).then(function() {
             // 항상 실행
+        });
+
+        navigate('/page6', {
+            state: {
+              planId: location.state.planId
+            }
         });
     }
 
@@ -225,7 +231,7 @@ function Page6_1(){
                 <Component componentClicked={componentClickedArray[14]} onClick={() => componentClick(14)}>{categoryArray[14]}</Component>
             </Selection>
 
-            <Ok to="/page6" style={{ textDecoration: "none"}} onClick={sendPreference}>완료</Ok>
+            <Ok style={{ textDecoration: "none"}} onClick={sendPreference}>완료</Ok>
         </Page6_1Container>
     )
 }

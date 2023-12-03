@@ -1,4 +1,4 @@
-import {BrowserRouter, Route, Routes, Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import {useState, useEffect} from 'react';
 import styled from "styled-components";
 import axios from 'axios';
@@ -105,7 +105,7 @@ const Below = styled.div`
 `;
 
 const Planning = styled.div`
-    width: 94px;
+    width: 100px;
     height: 34px;
     flex-shrink: 0;
 
@@ -212,13 +212,13 @@ export let participantsName: string[] = [];
 
 const days: string[] = ['일', '월', '화', '수', '목', '금', '토'];
 
-function pageReturn(havePlan: boolean, myResponse: Array<string[]>){
+function PageReturn(havePlan: boolean, myResponse: Array<string[]>){
+    const navigate = useNavigate();
     if(havePlan===true){
         return(
             <Body2_1>
                 {myResponse.map((response, index) => (
-                    <Location key={index}>
-                        <Link to="/page3" style={{ textDecoration: "none"}}>
+                    <Location key={index} onClick={() => navigate('/page6', { state: { planId: response[4]  } })}>
                         {response.length === 0 ? (
                             <a>a</a>
                         ) : (
@@ -237,7 +237,6 @@ function pageReturn(havePlan: boolean, myResponse: Array<string[]>){
                             </Below>
                             </div>
                         )}
-                        </Link>
                     </Location>
                 ))}
                 <Decoration>Tripwiz</Decoration>
@@ -274,10 +273,10 @@ export function Page2_1() {
                     tempArray.push(response['data'][i]['endDate']);
                     tempArray.push(response['data'][i]['status']);
                     tempArray.push(response['data'][i]['participantsName']);
+                    tempArray.push(String(response['data'][i]['planId']));
 
                     tempResponse.push(tempArray);
                 }
-                console.log(tempResponse);
                 setMyResponse(tempResponse);
               }
             } catch (error) {
@@ -292,7 +291,7 @@ export function Page2_1() {
     return (
         <Page2_1Container>
             <Logo to="/page2_2" style={{ textDecoration: "none"}}>Tripwiz</Logo>
-            {pageReturn(havePlan, myResponse)}
+            {PageReturn(havePlan, myResponse)}
             <Add>
                 <Link to="/page3">
                     <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60" fill="none">
