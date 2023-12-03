@@ -2,17 +2,20 @@ import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import Page1 from "./Page1";
 import Page1_1 from './Page1_1';
 import Page1_2 from './Page1_2';
-import Page2_1 from "./Page2_1";
+import {Page2_1} from "./Page2_1";
 import Page2_2 from "./Page2_2";
 import {Page3} from "./Page3";
-import Page4 from "./Page4";
+import {Page4} from "./Page4";
 import Page5 from './Page5';
 import Page6 from "./Page6";
+import Page6_1 from "./Page6_1";
 import PageforGuest from "./PageforGuest";
 
 import PlannerMap from './PlannerMap';
 import TimeTable from './TimeTable';
 
+import Page8 from "./Page8";
+import Page9 from "./Page9";
 
 function App(){
   return(
@@ -29,10 +32,14 @@ function App(){
                   <Route path="page4" element={<Page4 />} />
                   <Route path="page5" element={<Page5 />} />
                   <Route path="page6" element={<Page6 />} />
-                  <Route path="pageforguest" element={<PageforGuest />} />\
 
                   <Route path="plannermap" element={<PlannerMap />} />
                   <Route path="timetable" element={<TimeTable />} />
+
+                  <Route path="page6_1" element={<Page6_1 />} />
+                  <Route path="pageforguest" element={<PageforGuest />} />
+                  <Route path="page8" element={<Page8 />} />
+                  <Route path="page9" element={<Page9 />} />
               </Route>
           </Routes>
       </BrowserRouter>

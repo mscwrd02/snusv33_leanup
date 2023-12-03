@@ -161,7 +161,7 @@ const Preferencetop = styled.div`
     margin-bottom: 17px;
 `
 
-const Go = styled.div`
+const Go = styled(Link)`
     width: 78px;
     height: 30px;
     flex-shrink: 0;
@@ -258,10 +258,8 @@ function Page6() {
     const fetchData = async () => {
 
         try {
-          const response = await axios.post(backend_url+"/api/plans", {
-
-
-          }, { withCredentials: true });
+          const response = await axios.get(backend_url+"/api/plans/all", {
+          });
         
           console.log(response);
         } catch (error) {
@@ -300,7 +298,7 @@ function Page6() {
             <Preference>
                 <Preferencetop>
                     <Text>취향 고르기</Text>
-                    <Go>하러 가기</Go>
+                    <Go to="/page6_1" style={{ textDecoration: "none"}}>하러 가기</Go>
                 </Preferencetop>
                 <Surveyrate>
                     50%
@@ -331,6 +329,7 @@ function Page6() {
                         경준
                     </Friend>
                     <Friend>
+                        <a ></a>
                         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
                             <circle cx="14" cy="14" r="9" fill="#969696"/>
                             <path d="M10.5 13L13.2118 16.8284C13.2713 16.9124 13.3959 16.9128 13.456 16.8291L18 10.5" stroke="white" stroke-width="1.2"/>

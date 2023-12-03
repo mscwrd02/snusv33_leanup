@@ -1,6 +1,5 @@
 import React, {useState} from "react";
 import "./Page5.css";
-import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import Prev_btn from "./prev_btn";
 import { Link } from 'react-router-dom';
 import kakaoLogo from './images/kakaotalk.png';
@@ -84,7 +83,7 @@ function Page5() {
     <div className="page1_1">
       <div className="title">
         <div className="prev"> 
-          <Link to="/Page6">
+          <Link to="/Page2_1">
             <button style={buttonStyle}>
               <Prev_btn />
             </button> 
