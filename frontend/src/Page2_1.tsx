@@ -290,7 +290,7 @@ export function Page2_1() {
 
     return (
         <Page2_1Container>
-            <Logo to="/page2_2" style={{ textDecoration: "none"}}>Tripwiz</Logo>
+            <Logo to="/page2_1" style={{ textDecoration: "none"}}>Tripwiz</Logo>
             {PageReturn(havePlan, myResponse)}
             <Add>
                 <Link to="/page3">

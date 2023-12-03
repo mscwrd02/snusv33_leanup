@@ -1,4 +1,4 @@
-import {BrowserRouter, Route, Routes, Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import {useState} from 'react';
 import styled from "styled-components";
 import axios from 'axios';
@@ -253,7 +253,7 @@ interface OkProps {
     isActive: boolean;
 }
 
-const Ok = styled(Link)<OkProps>`
+const Ok = styled.div<OkProps>`
     width: 356px;
     height: 54px;
     flex-shrink: 0;
@@ -286,6 +286,8 @@ export function Page4(){
     const [checkClicked, setCheckClicked] = useState(false);
     let directions: string[] = [];
 
+    const navigate = useNavigate();
+
     function cardClick(index: number){
         setCardClickedArray(prevState => {
             const updatedArray = [...prevState];
@@ -311,9 +313,14 @@ export function Page4(){
             "endDate": String(exportEndDate?.getFullYear()) + "-" + String((exportEndDate?.getMonth() ?? 0)+1) + "-" + String(exportEndDate?.getDate())
         }, { withCredentials: true })
         .then(function (response) {
+            navigate('/page5', {
+                state: {
+                  link: response.data.link
+                }
+            })
             console.log(response);
             console.log(response['data']['planId'])
-            exportPlanId = response['data']['planId']
+            
         }).catch(function (error) {
             // 오류발생시 실행
         }).then(function() {
@@ -453,7 +460,7 @@ export function Page4(){
                     </Bottom>
                 </Card>
             </Selection>
-            <Ok to="/page5" style={{ textDecoration: "none"}} isActive={checkClicked} onClick={createTrip}>공유링크 만들기</Ok>
+            <Ok style={{ textDecoration: "none"}} isActive={checkClicked} onClick={createTrip}>공유링크 만들기</Ok>
         </Page4Container>
     )
 }
