@@ -28,7 +28,7 @@ export class SchedulesController {
     @Inject(SchedulesService) private schedulesService: SchedulesService,
   ) {}
 
-  @ApiOperation({ summary: '일정 조회하기' })
+  @ApiOperation({ summary: '시간표 일정 조회하기' })
   @ApiOkResponse({
     description: '일정 조회 성공',
     type: ScheduleResponseDto,
@@ -42,7 +42,7 @@ export class SchedulesController {
     return await this.schedulesService.getScheduleByPlanId(+planId);
   }
 
-  @ApiOperation({ summary: '일정 생성하기' })
+  @ApiOperation({ summary: '시간표 일정 생성하기' })
   @ApiCreatedResponse({
     description: '일정 생성 성공',
   })
@@ -55,7 +55,7 @@ export class SchedulesController {
     return 'ok';
   }
 
-  @ApiOperation({ summary: '일정 삭제하기' })
+  @ApiOperation({ summary: '시간표 일정 삭제하기' })
   @ApiCreatedResponse({
     description: '일정 삭제 성공',
   })
@@ -68,7 +68,7 @@ export class SchedulesController {
     return 'ok';
   }
 
-  @ApiOperation({ summary: '일차에 장소 추가하기' })
+  @ApiOperation({ summary: 'n일차에 여행지 리스트에 장소 추가하기' })
   @ApiCreatedResponse({
     description: '해당일차에 장소를 추가하는데 성공했습니다',
   })
@@ -81,7 +81,7 @@ export class SchedulesController {
     return 'ok';
   }
 
-  @ApiOperation({ summary: '일차에 장소 삭제하기' })
+  @ApiOperation({ summary: 'n일차 여행지 리스트에 존재하는 장소 삭제하기' })
   @ApiCreatedResponse({
     description: '해당일차에 장소를 삭제하는데 성공했습니다',
   })
@@ -94,7 +94,7 @@ export class SchedulesController {
     return 'ok';
   }
 
-  @ApiOperation({ summary: '여행에 추가된 일차 장소 정보 조회하기' })
+  @ApiOperation({ summary: '여행지 리스트에 추가된 장소 조회하기' })
   @ApiOkResponse({
     description: '일차 장소 정보 조회 성공',
     type: DayResponseDto,
