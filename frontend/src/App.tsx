@@ -10,6 +10,9 @@ import Page5 from './Page5';
 import Page6 from "./Page6";
 import PageforGuest from "./PageforGuest";
 
+import PlannerMap from './PlannerMap';
+import TimeTable from './TimeTable';
+
 
 function App(){
   return(
@@ -26,7 +29,10 @@ function App(){
                   <Route path="page4" element={<Page4 />} />
                   <Route path="page5" element={<Page5 />} />
                   <Route path="page6" element={<Page6 />} />
-                  <Route path="pageforguest" element={<PageforGuest />} />
+                  <Route path="pageforguest" element={<PageforGuest />} />\
+
+                  <Route path="plannermap" element={<PlannerMap />} />
+                  <Route path="timetable" element={<TimeTable />} />
               </Route>
           </Routes>
       </BrowserRouter>
