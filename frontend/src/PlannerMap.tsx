@@ -39,7 +39,7 @@ const Map = styled.div`
   width: 430px;
   height: 932px;
 `
-
+let is_first = true;
 let n_day = 5;
 let spot_name: any;
 let spot_content: any;
@@ -48,7 +48,12 @@ let spot_isInSchedule: any;
 let spot_Image: any;
 let spot_id: any;
 let isAddedList = new Array(300).fill(false);
-
+let isSelected = new Array(300).fill(false);
+let map_level = 11;
+let map_center: any;
+let map: any;
+let newLng:any;
+let newLat:any;
 function PlannerMap() {
   const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
   const [responseData, setResponseData] = useState<any[]>([]);
@@ -111,8 +116,6 @@ function PlannerMap() {
     .catch(error => {
       console.error('Error fetching data: ', error);
     });
-
-
   };
 
   let backgroundColor;
@@ -140,14 +143,19 @@ function PlannerMap() {
     letterSpacing: '-0.25px',
   };
   
+  map_center = new window.kakao.maps.LatLng(33.12, 126.7);
+
+  // map_center.getLng();
   useEffect(() => {
+    console.log(newLat, newLng);
     const container = document.getElementById('map')
     const options = {
-      center: new window.kakao.maps.LatLng(33.12, 126.7), // 지도의 중심 좌표
-      level: 11, // 지도의 레벨(확대, 축소 정도)
+      center: is_first ? new window.kakao.maps.LatLng(33.12, 126.7) : new window.kakao.maps.LatLng(newLat, newLng), // 지도의 중심 좌표
+      level: map_level, // 지도의 레벨(확대, 축소 정도)
     }
+
+    map = new window.kakao.maps.Map(container, options);
     
-    const map = new window.kakao.maps.Map(container, options)
     if (Array.isArray(responseData)) {
       if (responseData) {
         let marker;
@@ -160,35 +168,35 @@ function PlannerMap() {
           let imageSrc: any;
           switch (score) {
             case 100:
-              imageSrc = unsel_100;
+              imageSrc = isSelected[data.Spot.id] ? sel_100 : unsel_100;
               backgroundColor = '#AF52DE';
               break;
             case 200:
-              imageSrc = unsel_200;
+              imageSrc = isSelected[data.Spot.id] ? sel_200 : unsel_200;
               backgroundColor = '#5856D6';
               break;
             case 300:
-              imageSrc = unsel_300;
+              imageSrc = isSelected[data.Spot.id] ? sel_300 : unsel_300;
               backgroundColor = '#007AFF';
               break;
             case 400:
-              imageSrc = unsel_400;
+              imageSrc = isSelected[data.Spot.id] ? sel_400 : unsel_400;
               backgroundColor = '#5AC8FA';
               break;
             case 500:
-              imageSrc = unsel_500;
+              imageSrc = isSelected[data.Spot.id] ? sel_500 : unsel_500;
               backgroundColor = '#34C759';
               break;
             case 600:
-              imageSrc = unsel_600;
+              imageSrc = isSelected[data.Spot.id] ? sel_600 : unsel_600;
               backgroundColor = '#FC0';
               break;
             case 700:
-              imageSrc = unsel_700;
+              imageSrc = isSelected[data.Spot.id] ? sel_700 : unsel_700;
               backgroundColor = '#FF9500';
               break;
             case 800:
-              imageSrc = unsel_800;
+              imageSrc = isSelected[data.Spot.id] ? sel_800 : unsel_800;
               backgroundColor = '#FF3B30';
               break;
             default:
@@ -202,7 +210,7 @@ function PlannerMap() {
             if (status === window.kakao.maps.services.Status.OK) {
               markerPosition = new window.kakao.maps.LatLng(result[0].y, result[0].x);
               // console.log(markerPosition);///
-              const imageSize = new window.kakao.maps.Size(25, 25); // 마커이미지의 크기입니다
+              const imageSize = new window.kakao.maps.Size(30, 30); // 마커이미지의 크기입니다
               const imageOption = {offset: new window.kakao.maps.Point(0, 0)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
               const markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
               
@@ -215,7 +223,6 @@ function PlannerMap() {
 
               marker.setMap(map);
               window.kakao.maps.event.addListener(marker, 'click', function() {
-                setIsVisible(prevIsVisible => !prevIsVisible);
                 spot_name = data.Spot.name;
                 spot_content = data.Spot.overview;
                 spot_score = data.score;
@@ -226,6 +233,23 @@ function PlannerMap() {
                 spot_id = data.Spot.id;
                 setSpotId(data.Spot.id);
                 if (isVisibleSpotPlus) setIsVisibleSpotPlus(prevIsVisibleSpotPlus => !prevIsVisibleSpotPlus);
+                if (isSelected[data.Spot.id]){
+                  isSelected = new Array(300).fill(false);
+                  setIsVisible(false);
+                }
+                else{
+                  setIsVisible(true);
+                  isSelected = new Array(300).fill(false);
+                  isSelected[data.Spot.id] = true;
+                }
+                map_level = map.getLevel();
+                // console.log(map_level);
+                map_center = map.getCenter();
+                newLat = map.getCenter().getLat();
+                newLng = map.getCenter().getLng();
+                console.log(map_center);
+                console.log(newLat, newLng);
+                is_first = false;
               });
             }
           });
