@@ -4,7 +4,7 @@ import { DayRequestDto } from 'src/dto/day.request.dto';
 import { ScheduleRequestDto } from 'src/dto/schedule.request.dto';
 import { Recommends } from 'src/entities/Recommends';
 import { Schedules } from 'src/entities/Schedule';
-import { DataSource, QueryBuilder, Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 
 @Injectable()
 export class SchedulesService {
@@ -83,7 +83,7 @@ export class SchedulesService {
         });
       recommend.isInSchedule = false;
 
-      Promise.all([
+      await Promise.all([
         queryRunner.manager.getRepository(Schedules).delete({
           PlanId: schedule.planId,
           SpotId: schedule.spotId,
