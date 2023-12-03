@@ -9,12 +9,12 @@ function Page5() {
 
   const generateStringToCopy = () => {
     // 여기에서 원하는 로직에 따라 새로운 문자열을 생성합니다.
-    return location.state.link;
+    return "tripwiz.space/PageforGuest?id=" + location.state.link;
   };
 
   const Sharing_Link = generateStringToCopy();
 
-  localStorage.setItem('myData', 'Hello, World!');
+  // localStorage.setItem('guestID', location.state.link);
 
   let box_size: number = 100;
 
@@ -32,7 +32,7 @@ function Page5() {
     } else {
       // execCommand 사용
       const textArea = document.createElement('textarea');
-      textArea.value = `복사할 텍스트`;
+      textArea.value = Sharing_Link;
       document.body.appendChild(textArea);
       textArea.select();
       textArea.setSelectionRange(0, 99999);
@@ -57,12 +57,12 @@ function Page5() {
     kakao.Share.sendDefault({
       objectType: 'feed',
       content: {
-        title: 'hi',
+        title: 'Tripwiz 함께 여행 계획 짜자!',
         imageUrl:
           'http://via.placeholder.com/500.jpg/',
         link: {
-          webUrl: 'hihi',
-          mobileWebUrl: 'hihi',
+          webUrl: Sharing_Link,
+          mobileWebUrl: Sharing_Link,
         },
       },
     })

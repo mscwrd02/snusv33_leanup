@@ -5,24 +5,46 @@ import Prev_btn from "./prev_btn";
 import { Link } from 'react-router-dom';
 import kakaoLogo from './images/kakaotalk.png';
 import invitationImg from './images/invitation.png';
+import { useLocation } from 'react-router-dom';
+import axios from 'axios';
+
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
 
 function PageforGuest() {
+  const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
+  const query = useQuery();
+  const id = query.get('id');
+
+
+  const [responseData, setResponseData] = useState<any>(null);
+  axios.get(backend_url + '/api/plans/hashId/' + id, { withCredentials: true })
+  .then(response => {
+    setResponseData(response.data);
+  })
+  .catch(error => {
+    console.error('Error fetching data: ', error);
+  });
 
   const generateStringToCopy = () => {
     // 여기에서 원하는 로직에 따라 새로운 문자열을 생성합니다.
-    return '김광진';
+    let name = '';
+    if (responseData && responseData.participantsName) {
+      name = responseData.participantsName[0];
+    }
+    localStorage.setItem('guestID', responseData.planId);
+    return name;
   };
 
   const inviterName:string = generateStringToCopy();
-
-
-  const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
 
   const handlekakaoLogin = async () => {
     // API 호출 예시 (fetch 사용)
     //console.log('hi');
   //    const response = await axios.get(backend_url+'/api/auth/login/kakao', {
   //})
+
   window.location.href = backend_url + "/api/auth/login/kakao";
   
   }
