@@ -12,6 +12,7 @@ function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
+let inviterName: any;
 function PageforGuest() {
   const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
   const query = useQuery();
@@ -19,25 +20,29 @@ function PageforGuest() {
 
 
   const [responseData, setResponseData] = useState<any>(null);
+  //console.log(id);
   axios.get(backend_url + '/api/plans/hashId/' + id, { withCredentials: true })
   .then(response => {
     setResponseData(response.data);
+    // console.log(response.data);
+
+    inviterName = generateStringToCopy();
+
   })
   .catch(error => {
     console.error('Error fetching data: ', error);
   });
 
   const generateStringToCopy = () => {
-    // 여기에서 원하는 로직에 따라 새로운 문자열을 생성합니다.
     let name = '';
     if (responseData && responseData.participantsName) {
-      name = responseData.participantsName[0];
+      name = responseData.participantsName;
     }
     localStorage.setItem('guestID', responseData.planId);
     return name;
   };
 
-  const inviterName:string = generateStringToCopy();
+  
 
   const handlekakaoLogin = async () => {
     // API 호출 예시 (fetch 사용)

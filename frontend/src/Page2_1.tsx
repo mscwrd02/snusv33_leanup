@@ -212,6 +212,20 @@ export let participantsName: string[] = [];
 
 const days: string[] = ['일', '월', '화', '수', '목', '금', '토'];
 
+if (localStorage.getItem('guestID')){
+    axios.post(backend_url+"/api/plans/join/" + localStorage.getItem('guestID'), {
+    }, { withCredentials: true })
+    .then(function (response) {
+        console.log(response);
+        console.log(" join done !!! ");
+        //redirect
+    }).catch(function (error) {
+        // 오류발생시 실행
+    }).then(function() {
+        // 항상 실행
+    });
+}
+
 function PageReturn(havePlan: boolean, myResponse: Array<string[]>){
     const navigate = useNavigate();
     if(havePlan===true){
