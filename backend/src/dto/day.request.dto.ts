@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsDate, IsNotEmpty, IsNumber } from 'class-validator';
 
-export class DayRequestDto {
+export class PostDayRequestDto {
   @ApiProperty({
     example: '1',
     description: '여행계획 아이디',
@@ -28,4 +28,24 @@ export class DayRequestDto {
   @IsNumber()
   @IsNotEmpty()
   day: number;
+}
+
+export class DeleteDayRequestDto {
+  @ApiProperty({
+    example: '1',
+    description: '여행계획 아이디',
+    required: true,
+  })
+  @IsNumber()
+  @IsNotEmpty()
+  planId: number;
+
+  @ApiProperty({
+    example: '1',
+    description: '장소 아이디',
+    required: true,
+  })
+  @IsNumber()
+  @IsNotEmpty()
+  spotId: number;
 }

@@ -17,7 +17,10 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { DayRequestDto } from 'src/dto/day.request.dto';
+import {
+  PostDayRequestDto,
+  DeleteDayRequestDto,
+} from 'src/dto/day.request.dto';
 import { DayResponseDto } from 'src/dto/day.response.dto';
 import { ScheduleResponseDto } from 'src/dto/schedule.response.dto';
 
@@ -28,16 +31,16 @@ export class SchedulesController {
     @Inject(SchedulesService) private schedulesService: SchedulesService,
   ) {}
 
-  @ApiOperation({ summary: '시간표 일정 조회하기' })
+  @ApiOperation({ summary: '전체 시간표 일정 조회하기' })
   @ApiOkResponse({
-    description: '일정 조회 성공',
+    description: '전체 일정 조회 성공',
     type: ScheduleResponseDto,
     isArray: true,
   })
   @ApiBadRequestResponse({
-    description: '일정 조회 실패',
+    description: '전체 일정 조회 실패',
   })
-  @Get(':planId')
+  @Get('all/:planId')
   async getScheduleByPlanId(@Param('planId') planId: string) {
     return await this.schedulesService.getScheduleByPlanId(+planId);
   }
@@ -76,7 +79,7 @@ export class SchedulesController {
     description: '추천목록에 없는 장소를 일정에 추가할 수 없습니다',
   })
   @Post('/day')
-  async updateDay(@Body() dayRequest: DayRequestDto) {
+  async updateDay(@Body() dayRequest: PostDayRequestDto) {
     await this.schedulesService.addDay(dayRequest);
     return 'ok';
   }
@@ -89,7 +92,7 @@ export class SchedulesController {
     description: '존재하지 않는 일차입니다',
   })
   @Delete('/day')
-  async deleteDay(@Body() dayRequest: DayRequestDto) {
+  async deleteDay(@Body() dayRequest: DeleteDayRequestDto) {
     await this.schedulesService.deleteDay(dayRequest);
     return 'ok';
   }

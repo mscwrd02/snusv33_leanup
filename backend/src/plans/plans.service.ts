@@ -81,7 +81,7 @@ export class PlansService {
     ) {
       return Promise.reject('이미 참여하셨습니다.');
     }
-
+    console.log('여기까지는 왔다');
     plan.ParticipantsList.push(user);
     plan.participantsName = JSON.stringify(
       JSON.parse(plan.participantsName).concat(user.nickname),

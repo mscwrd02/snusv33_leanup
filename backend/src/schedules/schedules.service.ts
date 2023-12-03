@@ -1,6 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DayRequestDto } from 'src/dto/day.request.dto';
+import {
+  PostDayRequestDto,
+  DeleteDayRequestDto,
+} from 'src/dto/day.request.dto';
 import { ScheduleRequestDto } from 'src/dto/schedule.request.dto';
 import { Recommends } from 'src/entities/Recommends';
 import { Schedules } from 'src/entities/Schedule';
@@ -49,17 +52,8 @@ export class SchedulesService {
       newSchedule.SpotId = schedule.spotId;
       newSchedule.time = schedule.time;
 
-      const recommend = await queryRunner.manager
-        .getRepository(Recommends)
-        .findOne({
-          where: { SpotId: schedule.spotId, PlanId: schedule.planId },
-        });
-      recommend.isInSchedule = true;
+      await queryRunner.manager.getRepository(Schedules).save(newSchedule);
 
-      await Promise.all([
-        queryRunner.manager.getRepository(Schedules).save(newSchedule),
-        queryRunner.manager.getRepository(Recommends).save(recommend),
-      ]);
       await queryRunner.commitTransaction();
       return true;
     } catch (err) {
@@ -76,22 +70,10 @@ export class SchedulesService {
     queryRunner.connect();
     queryRunner.startTransaction();
     try {
-      const recommend = await queryRunner.manager
-        .getRepository(Recommends)
-        .findOne({
-          where: { SpotId: schedule.spotId, PlanId: schedule.planId },
-        });
-      recommend.isInSchedule = false;
-
-      await Promise.all([
-        queryRunner.manager.getRepository(Schedules).delete({
-          PlanId: schedule.planId,
-          SpotId: schedule.spotId,
-          date: schedule.date,
-          time: schedule.time,
-        }),
-        queryRunner.manager.getRepository(Recommends).save(recommend),
-      ]);
+      await queryRunner.manager.getRepository(Schedules).delete({
+        PlanId: schedule.planId,
+        SpotId: schedule.spotId,
+      });
       await queryRunner.commitTransaction();
       return true;
     } catch (err) {
@@ -145,7 +127,7 @@ export class SchedulesService {
     }
   }
 
-  async addDay(dayRequest: DayRequestDto) {
+  async addDay(dayRequest: PostDayRequestDto) {
     const recommend = await this.recommendRepository.findOne({
       where: { PlanId: dayRequest.planId, SpotId: dayRequest.spotId },
     });
@@ -154,16 +136,16 @@ export class SchedulesService {
         '추천목록에 없는 장소를 일정에 추가할 수 없습니다',
       );
     recommend.day = dayRequest.day;
+    recommend.isInSchedule = true;
     await this.recommendRepository.save(recommend);
     return true;
   }
 
-  async deleteDay(dayRequest: DayRequestDto) {
+  async deleteDay(dayRequest: DeleteDayRequestDto) {
     const recommend = await this.recommendRepository.findOne({
       where: {
         PlanId: dayRequest.planId,
         SpotId: dayRequest.spotId,
-        day: dayRequest.day,
       },
     });
     if (!recommend)
@@ -171,6 +153,7 @@ export class SchedulesService {
         '추천목록에 없는 장소를 일정에서 삭제할 수 없습니다',
       );
     recommend.day = 0;
+    recommend.isInSchedule = false;
     await this.recommendRepository.save(recommend);
     return true;
   }
