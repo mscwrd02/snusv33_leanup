@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PlanDetailResponseDto } from 'src/dto/plan.detail.response.dto';
 import { Plans } from 'src/entities/Plans';
@@ -73,13 +73,13 @@ export class PlansService {
       relations: ['ParticipantsList'],
     });
     if (plan.group_num === plan.ParticipantsList.length) {
-      return Promise.reject('이미 참여인원이 꽉 찼습니다.');
+      throw new BadRequestException('이미 참여인원이 꽉 찼습니다.');
     } else if (
       plan.ParticipantsList.map((participant) => participant.id).includes(
         userId,
       )
     ) {
-      return Promise.reject('이미 참여하셨습니다.');
+      throw new BadRequestException('이미 참여하셨습니다.');
     }
     console.log('여기까지는 왔다');
     plan.ParticipantsList.push(user);
