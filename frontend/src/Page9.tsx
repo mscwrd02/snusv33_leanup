@@ -115,7 +115,7 @@ const Score = styled.div`
     justify-content: center;
 `
 
-const Spot = styled.div`
+const SpotContainer = styled.div`
     width: 100%;
     height: 97px;
     box-sizing: border-box;
@@ -264,64 +264,141 @@ const ShowMap = styled.div`
     letter-spacing: -0.48px;
 `
 
+class Image {
+    id: number = 0;
+    path: string = "";
+    SpotId: number = 0;
+}
+  
+class Spot {
+    id: number = 0;
+    name: string = "";
+    address: string = "";
+    hours: string = "";
+    fee: string = "";
+    takenTime: string = "";
+    overview: string = "";
+    feature1: string = "";
+    feature2: string = "";
+    feature3: string = "";
+    reviews: number = 0;
+    region: string = "";
+    link: string = "";
+    Images: Image[] = [new Image()];
+}
+  
+class ResponseType {
+    score: number = 0;
+    comments: string = "[]";
+    isInSchedule: boolean = false;
+    Spot: Spot = new Spot();
+}
+
+let scoreSet : number[] = [];
+const referenceDaysArray : string[] = ["첫째날", "둘째날", "셋째날", "넷째날", "다섯째날", "여섯째날", "일곱째날", "여덟째날", "아홉째날", "열째날"];
+
 function Page9(){
     const navigate = useNavigate();
     const location = useLocation();
 
-    const [isChoosingArray, setIsChoosingArray] = useState<boolean[][]>(() => Array.from({ length: 7 }, () => Array(7).fill(false))); // 이거 7x7로 그냥 크게 만들어놓고 현황 따라 뒤에 7은 채울만큼만 채우는 방식으로 가자.
-    const [isCheckedArray, setIsCheckedArray] = useState<boolean[][]>(() => Array.from({ length: 7 }, () => Array(7).fill(false)))
+    const [isChoosingArray, setIsChoosingArray] = useState<boolean[]>([]);
+    const [isCheckedArray, setIsCheckedArray] = useState<boolean[]>([]);
+    const [responseArray, setResponseArray] = useState<ResponseType[]>([]);
 
+    const [daysArray, setDaysArray] = useState<string[]>(referenceDaysArray.slice(0, 4));
+    // 4를 location.state.howMuchDays로 바꿔야 함
+    
     useEffect(() => {
-        console.log(location.state.planId);
-        console.log(location.state.howMuchDays);
         const fetchData = async () => {
             try {
-              const response = await axios.get(backend_url+"/api/spots/recommend/"+location.state.planId, { withCredentials: true });
-              console.log(response.data);
-              /*const arr : boolean[][][] = Array.from({ length: 3 }, () => Array.from({ length: 7 }, () => Array(7).fill(false)));
-              setIsCheckedArray(arr);*/
-            } catch (error) {
-              // 오류 발생시 실행
-            } finally {
-              // 항상 실행
+                const response = await axios.get(backend_url+"/api/spots/recommend/"+"1", { withCredentials: true });
+                // 1을 location.state.planId로 바꿔야 함
+                console.log(response.data.length);
+                scoreSet = response.data.map((item : any) => item.score);
+                scoreSet = Array.from(new Set(scoreSet));
+                console.log(scoreSet);
+            
+                setIsChoosingArray(Array(response.data.length).fill(false));
+                let tempIsCheckedArray : boolean[] = Array(response.data.length).fill(false);
+                for(let i = 0; i < response.data.length; i++){
+                    if(response.data[i].isInSchedule){
+                        tempIsCheckedArray[i] = true;
+                    }
+                }
+                setIsCheckedArray(tempIsCheckedArray);
+                setResponseArray(response.data);
+            }   catch (error) {
+                // 오류 발생시 실행
+            }   finally {
+                // 항상 실행
             }
         };
         fetchData();
     }, []);
 
-    const handleClickPlus = (row: number, column: number) => {
+    const handleClickPlus = (index: number) => {
         setIsChoosingArray((prevArray) => {
-            const newArray : boolean[][] = [...prevArray];
-            newArray[row][column] = !newArray[row][column];
+            const newArray : boolean[] = [...prevArray];
+            newArray[index] = !newArray[index];
             return newArray;
         });
     }
 
-    const handleClickDay = (row: number, column: number) => {
+    const handleClickDay = (dayindex: number, index: number) => {
         setIsCheckedArray((prevArray) => {
-            const newArray : boolean[][] = [...prevArray];
-            newArray[row][column] = !newArray[row][column];
+            const newArray : boolean[] = [...prevArray];
+            newArray[index] = !newArray[index];
             return newArray;
         });
 
         setIsChoosingArray((prevArray) => {
-            const newArray : boolean[][] = [...prevArray];
-            newArray[row][column] = !newArray[row][column];
+            const newArray : boolean[] = [...prevArray];
+            newArray[index] = !newArray[index];
             return newArray;
         });
+
+        //planId를 1에서 location.state.planId로 바꿔야 함
+        const fetchData = async () => {
+            try {
+                const response = await axios.post(backend_url+"/api/schedules/day/", {
+                    "planId": 1,
+                    "spotId": responseArray[index].Spot.id,
+                    "day": dayindex+1
+                }, { withCredentials: true });
+            }   catch (error) {
+                // 오류 발생시 실행
+            }   finally {
+                // 항상 실행
+            }
+        };
+        fetchData();
     }
 
-    const handleClickChecked = (row: number, column: number) => {
+    const handleClickChecked = (index: number) => {
         setIsCheckedArray((prevArray) => {
-            const newArray : boolean[][] = [...prevArray];
-            newArray[row][column] = !newArray[row][column];
+            const newArray : boolean[] = [...prevArray];
+            newArray[index] = !newArray[index];
             return newArray;
+        });
+
+        axios.delete(backend_url+"/api/schedules/day/", {
+            withCredentials: true,
+            data: {
+                planId: 1,
+                spotId: responseArray[index].Spot.id
+            }
+            })
+          .then(response => {
+            console.log("page9 장바구니 delete 성공")
+          })
+          .catch(error => {
+            console.error('Error fetching data: ', error);
         });
     }
 
     function giveMore(){        
         axios.post(backend_url+"/api/spots/more", {
-            "planId" : location.state.planId
+            "planId" : 1
         }, { withCredentials: true })
         .then(function (response) {
             console.log(response);
@@ -333,7 +410,7 @@ function Page9(){
 
         navigate('/page6', {
             state: {
-              planId: location.state.planId
+              planId: 1
             }
         });
     }
@@ -341,7 +418,7 @@ function Page9(){
     return(
         <Page9Container>
             <Top>
-                <Back onClick={() => navigate('/page6', { state: { planId: location.state.planId} })}>
+                <Back onClick={() => navigate('/page6', { state: { planId: 1} })}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="27" viewBox="0 0 14 27" fill="none">
                         <path d="M13.1699 0L0 13.1699L13.1699 26.3397L13.9999 25.442L1.43203 13.1699L14 0.904566L13.1699 0Z" fill="black"/>
                     </svg>                
@@ -358,74 +435,49 @@ function Page9(){
                     20개 설문 더 하기
                 </More>
 
-                <Result>
-                    <Score>800/800점</Score>
-                    <Spot>
-                        <img src={example1Img} width={'72px'} height={'72px'}></img>
-                        <Explanation>
-                            <p>새별오름</p>
-                            제주 오름 추천 리스트에 빠지지 않고 등장하는 핫플레이스 오름
-                        </Explanation>
-                        {isCheckedArray[0][0] ? (
-                            <Checked onClick={() => handleClickChecked(0, 0)}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                    <rect width="24" height="24" rx="7" fill="#0D99FF"/>
-                                    <path d="M7 10.4615L11.0364 15.8412C11.0961 15.9208 11.2155 15.9212 11.2758 15.8419L18 7" stroke="white" stroke-width="3"/>
-                                </svg>
-                            </Checked>
-                        ) : (
-                            <Plus onClick={() => handleClickPlus(0, 0)}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 60 60" fill="none">
-                                <path d="M30 44.5714L30 14.5714" stroke="white" stroke-width="7" stroke-linecap="round"/>
-                                <path d="M14.5713 30H44.5713" stroke="white" stroke-width="7" stroke-linecap="round"/>
-                            </svg>   
-                            </Plus>
-                        )
-                        }
-                        {isChoosingArray[0][0]&& 
-                        <PlusMenu>
-                            <EachDaySection>첫째날 일정에 추가<span onClick={() => handleClickDay(0, 0)}>+</span></EachDaySection>
-                            <RowSeparator/>
-                            <EachDaySection>둘째날 일정에 추가<span onClick={() => handleClickDay(0, 0)}>+</span></EachDaySection>
-                            <RowSeparator/>
-                            <EachDaySection>셋째날 일정에 추가<span onClick={() => handleClickDay(0, 0)}>+</span></EachDaySection>
-                        </PlusMenu>}
-                    </Spot>
-                    <Spot>
-                        <img src={example1Img} width={'72px'} height={'72px'}></img>
-                        <Explanation>
-                            <p>새별오름</p>
-                            제주 오름 추천 리스트에 빠지지 않고 등장하는 핫플레이스 오름
-                        </Explanation>
-                        {isCheckedArray[0][1] ? (
-                            <Checked onClick={() => handleClickChecked(0, 1)}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                    <rect width="24" height="24" rx="7" fill="#0D99FF"/>
-                                    <path d="M7 10.4615L11.0364 15.8412C11.0961 15.9208 11.2155 15.9212 11.2758 15.8419L18 7" stroke="white" stroke-width="3"/>
-                                </svg>
-                            </Checked>
-                        ) : (
-                            <Plus onClick={() => handleClickPlus(0, 1)}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 60 60" fill="none">
-                                <path d="M30 44.5714L30 14.5714" stroke="white" stroke-width="7" stroke-linecap="round"/>
-                                <path d="M14.5713 30H44.5713" stroke="white" stroke-width="7" stroke-linecap="round"/>
-                            </svg>   
-                            </Plus>
-                        )
-                        }
-                        {isChoosingArray[0][1]&& 
-                        <PlusMenu>
-                            <EachDaySection>첫째날 일정에 추가<span onClick={() => handleClickDay(0, 1)}>+</span></EachDaySection>
-                            <RowSeparator/>
-                            <EachDaySection>둘째날 일정에 추가<span onClick={() => handleClickDay(0, 1)}>+</span></EachDaySection>
-                            <RowSeparator/>
-                            <EachDaySection>셋째날 일정에 추가<span onClick={() => handleClickDay(0, 1)}>+</span></EachDaySection>
-                        </PlusMenu>}
-                    </Spot>
-                </Result>
+                {scoreSet.map((score: number, scoreindex: number) => (
+                    <Result>
+                        <Score>{score}/{scoreSet[0]}점</Score>
+                        {responseArray.map((response: ResponseType, index: number) => (
+                            (response.score === score) && (
+                            <SpotContainer>
+                                <img src={responseArray[index].Spot.Images[0].path} width={'72px'} height={'72px'}></img>
+                                <Explanation>
+                                    <p>{responseArray[index].Spot.name}</p>
+                                    {responseArray[index].Spot.overview}
+                                </Explanation>
+                                {isCheckedArray[index] ? (
+                                    <Checked onClick={() => handleClickChecked(index)}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                            <rect width="24" height="24" rx="7" fill="#0D99FF"/>
+                                            <path d="M7 10.4615L11.0364 15.8412C11.0961 15.9208 11.2155 15.9212 11.2758 15.8419L18 7" stroke="white" stroke-width="3"/>
+                                        </svg>
+                                    </Checked>
+                                ) : (
+                                    <Plus onClick={() => handleClickPlus(index)}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 60 60" fill="none">
+                                        <path d="M30 44.5714L30 14.5714" stroke="white" stroke-width="7" stroke-linecap="round"/>
+                                        <path d="M14.5713 30H44.5713" stroke="white" stroke-width="7" stroke-linecap="round"/>
+                                    </svg>   
+                                    </Plus>
+                                )
+                                }
+                                {isChoosingArray[index]&& 
+                                <PlusMenu>
+                                    {daysArray.map((day: string, dayindex: number) => (
+                                        <div>
+                                            <EachDaySection>{day} 일정에 추가<span onClick={() => handleClickDay(dayindex, index)}>+</span></EachDaySection>
+                                            <RowSeparator/>
+                                        </div>
+                                    ))}
+                                </PlusMenu>}
+                            </SpotContainer>
+                        )))}
+                    </Result>
+                ))}
             </Body>
 
-            <ShowMap onClick={() => navigate('/page10', { state: { planId: location.state.planId, howMuchDays: location.state.howMuchDays } })}>
+            <ShowMap onClick={() => navigate('/page10', { state: { planId: 1, howMuchDays: location.state.howMuchDays } })}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21" fill="none">
                     <path d="M10.9009 15.551L10.4359 14.6657L10.4359 14.6657L10.9009 15.551ZM10.0991 15.551L9.63413 16.4363L9.63414 16.4363L10.0991 15.551ZM15.625 7.875C15.625 9.68329 14.7173 11.1863 13.5589 12.3698C12.4007 13.553 11.0713 14.332 10.4359 14.6657L11.3659 16.4363C12.092 16.055 13.6247 15.1618 14.9882 13.7688C16.3514 12.376 17.625 10.3985 17.625 7.875H15.625ZM10.5 2.75C13.3305 2.75 15.625 5.04454 15.625 7.875H17.625C17.625 3.93997 14.435 0.75 10.5 0.75V2.75ZM5.375 7.875C5.375 5.04454 7.66954 2.75 10.5 2.75V0.75C6.56497 0.75 3.375 3.93997 3.375 7.875H5.375ZM10.5641 14.6657C9.92865 14.332 8.59926 13.553 7.44112 12.3698C6.28269 11.1863 5.375 9.68329 5.375 7.875H3.375C3.375 10.3985 4.64859 12.376 6.01183 13.7688C7.37535 15.1618 8.90801 16.055 9.63413 16.4363L10.5641 14.6657ZM10.4359 14.6657C10.4749 14.6452 10.5251 14.6452 10.5641 14.6657L9.63414 16.4363C10.1774 16.7217 10.8226 16.7217 11.3659 16.4363L10.4359 14.6657ZM12.125 7.875C12.125 8.77246 11.3975 9.5 10.5 9.5V11.5C12.502 11.5 14.125 9.87703 14.125 7.875H12.125ZM10.5 6.25C11.3975 6.25 12.125 6.97754 12.125 7.875H14.125C14.125 5.87297 12.502 4.25 10.5 4.25V6.25ZM8.875 7.875C8.875 6.97754 9.60254 6.25 10.5 6.25V4.25C8.49797 4.25 6.875 5.87297 6.875 7.875H8.875ZM10.5 9.5C9.60254 9.5 8.875 8.77246 8.875 7.875H6.875C6.875 9.87703 8.49797 11.5 10.5 11.5V9.5Z" fill="white"/>
                     <path d="M17.3199 15.3125C18.0111 15.7115 18.375 16.1642 18.375 16.625C18.375 17.0858 18.0111 17.5384 17.32 17.9375C16.6288 18.3366 15.6347 18.6679 14.4375 18.8983C13.2403 19.1287 11.8824 19.25 10.5 19.25C9.11765 19.25 7.75965 19.1287 6.5625 18.8983C5.36535 18.6679 4.37123 18.3366 3.68005 17.9375C2.98887 17.5384 2.625 17.0858 2.625 16.625C2.625 16.1642 2.98887 15.7116 3.68005 15.3125" stroke="white" stroke-width="2" stroke-linecap="round"/>
