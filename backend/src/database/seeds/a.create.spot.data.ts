@@ -11,7 +11,7 @@ export default class CSVSpotSeeder implements Seeder {
     const parseOptions = {
       columns: true,
     };
-    fs.createReadStream('src/database/seeds/spots.csv')
+    fs.createReadStream(process.env.CSV_PATH + '/spots.csv')
       .pipe(parse(parseOptions))
       .on('data', (row) => {
         const spot = new Spots();

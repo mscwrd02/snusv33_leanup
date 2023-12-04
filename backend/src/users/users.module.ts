@@ -11,6 +11,7 @@ import { CategoryResponses } from 'src/entities/CategoryResponses';
 import { Categories } from 'src/entities/Categories';
 import { Recommends } from 'src/entities/Recommends';
 import { Schedules } from 'src/entities/Schedule';
+import { SpotCategories } from 'src/entities/SpotCategories';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { Schedules } from 'src/entities/Schedule';
       Categories,
       Recommends,
       Schedules,
+      SpotCategories,
     ]),
   ],
   providers: [UsersService],

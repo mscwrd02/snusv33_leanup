@@ -3,10 +3,12 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Spots } from './Spots';
 import { ApiProperty } from '@nestjs/swagger';
+import { SpotCategories } from './SpotCategories';
 
 @Entity({ schema: 'frienvel', name: 'categories' })
 export class Categories {
@@ -39,4 +41,7 @@ export class Categories {
     },
   })
   Spots: Spots[];
+
+  @OneToMany(() => SpotCategories, (spotCategories) => spotCategories.Category)
+  SpotCategories: SpotCategories[];
 }

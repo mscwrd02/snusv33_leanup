@@ -10,6 +10,7 @@ import { Spots } from './entities/Spots';
 import { Recommends } from './entities/Recommends';
 import { Schedules } from './entities/Schedule';
 import { SeederOptions } from 'typeorm-extension';
+import { SpotCategories } from './entities/SpotCategories';
 dotenv.config();
 
 const options: DataSourceOptions & SeederOptions = {
@@ -29,6 +30,7 @@ const options: DataSourceOptions & SeederOptions = {
     Spots,
     Recommends,
     Schedules,
+    SpotCategories,
   ],
   charset: 'utf8mb4_general_ci',
   synchronize: false,

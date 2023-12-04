@@ -13,6 +13,7 @@ import { Region } from './common/Region';
 import { Recommends } from './Recommends';
 import { ApiProperty } from '@nestjs/swagger';
 import { Schedules } from './Schedule';
+import { SpotCategories } from './SpotCategories';
 
 @Entity({ schema: 'frienvel', name: 'spots' })
 export class Spots {
@@ -70,21 +71,21 @@ export class Spots {
     example: '제주 오름 추천 리스트에 빠지지 않고 등장하는 핫플레이스 오름',
     description: '특징 1',
   })
-  @Column('varchar', { name: 'feature1', length: 100, nullable: true })
+  @Column('varchar', { name: 'feature1', length: 200, nullable: true })
   feature1: string;
 
   @ApiProperty({
     example: '제주 오름 추천 리스트에 빠지지 않고 등장하는 핫플레이스 오름',
     description: '특징 2',
   })
-  @Column('varchar', { name: 'feature2', length: 100, nullable: true })
+  @Column('varchar', { name: 'feature2', length: 200, nullable: true })
   feature2: string;
 
   @ApiProperty({
     example: '제주 오름 추천 리스트에 빠지지 않고 등장하는 핫플레이스 오름',
     description: '특징 3',
   })
-  @Column('varchar', { name: 'feature3', length: 100, nullable: true })
+  @Column('varchar', { name: 'feature3', length: 200, nullable: true })
   feature3: string;
 
   @ApiProperty({
@@ -125,4 +126,7 @@ export class Spots {
 
   @OneToMany(() => Schedules, (schedules) => schedules.Spot)
   Schedules: Schedules[];
+
+  @OneToMany(() => SpotCategories, (spotCategories) => spotCategories.Spot)
+  SpotCategories: SpotCategories[];
 }
