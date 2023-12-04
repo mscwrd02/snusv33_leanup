@@ -36,10 +36,14 @@ export class CategoriesService {
 
   async submitCategories(userId: number, body: CategoryResponseDto) {
     await this.plansRepository
-      .findOne({ where: { id: body.planId } })
+      .findOne({ where: { id: body.planId }, relations: ['ParticipantsList'] })
       .then((plan) => {
         if (plan.status != PlanStatus.CATEGORYING)
           throw new BadRequestException('이미 취향 설문이 완료되었습니다');
+        if (plan.ParticipantsList.filter((it) => it.id == userId).length == 0)
+          throw new BadRequestException(
+            '이 여행 계획에 참여하지 않은 사용자입니다',
+          );
       });
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
