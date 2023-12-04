@@ -2,7 +2,6 @@ import React, {useState} from "react";
 import "./Page5.css";
 import {BrowserRouter, Route, Routes, useLocation, useNavigate} from 'react-router-dom';
 import Prev_btn from "./prev_btn";
-import { Link } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components'
 import { useEffect } from 'react'
@@ -40,7 +39,7 @@ const Map = styled.div`
   height: 932px;
 `
 let is_first = true;
-let n_day = 5;
+//let n_day = 5;
 let spot_name: any;
 let spot_content: any;
 let spot_score: any;
@@ -54,6 +53,7 @@ let map_center: any;
 let map: any;
 let newLng:any;
 let newLat:any;
+
 function PlannerMap() {
   const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
   const [responseData, setResponseData] = useState<any[]>([]);
@@ -315,7 +315,7 @@ function PlannerMap() {
             </div>
             {isVisibleSpotPlus && (
               <div className="popup_spot_plus" style={popup_spot_plus_style}>
-                {Array.from({ length: n_day }, (_, i) => i + 1).map(day => (
+                {Array.from({ length: location.state.howMuchDays }, (_, i) => i + 1).map(day => (
                   <button style={spot_plus_to_plan_style} key={day} onClick={() => handle_spotplusinmyplan(day)}>{day}일차 일정에 추가</button>
                 ))}
               </div>

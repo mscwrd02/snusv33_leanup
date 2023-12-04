@@ -305,8 +305,7 @@ function Page9(){
     const [isCheckedArray, setIsCheckedArray] = useState<boolean[]>([]);
     const [responseArray, setResponseArray] = useState<ResponseType[]>([]);
 
-    const [daysArray, setDaysArray] = useState<string[]>(referenceDaysArray.slice(0, 4));
-    // 4를 location.state.howMuchDays로 바꿔야 함
+    const [daysArray, setDaysArray] = useState<string[]>(referenceDaysArray.slice(0, location.state.howMuchDays));
     
     useEffect(() => {
         const fetchData = async () => {
@@ -465,7 +464,7 @@ function Page9(){
                                 <PlusMenu>
                                     {daysArray.map((day: string, dayindex: number) => (
                                         <div>
-                                            <EachDaySection>{day} 일정에 추가<span onClick={() => handleClickDay(dayindex, index)}>+</span></EachDaySection>
+                                            <EachDaySection onClick={() => handleClickDay(dayindex, index)}>{day} 일정에 추가<span>+</span></EachDaySection>
                                             <RowSeparator/>
                                         </div>
                                     ))}
