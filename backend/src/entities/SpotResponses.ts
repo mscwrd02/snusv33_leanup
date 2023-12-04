@@ -25,7 +25,7 @@ export class SpotResponses {
   @Column('int', { name: 'PlanId', nullable: true })
   PlanId: number;
 
-  @Column('varchar', { name: 'comment', nullable: true, length: 100 })
+  @Column('text', { name: 'comment', nullable: true })
   comment: string;
 
   @ManyToOne(() => Plans, (plans) => plans.SpotResponses, {

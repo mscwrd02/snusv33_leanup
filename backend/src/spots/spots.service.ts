@@ -1,6 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { RecommendsResponseDto } from 'src/dto/recommends.response.dto';
+import {
+  CommentDto,
+  RecommendsResponseDto,
+} from 'src/dto/recommends.response.dto';
 import { SpotResponseDto } from 'src/dto/spot.response.dto';
 import { Categories } from 'src/entities/Categories';
 import { CategoryResponses } from 'src/entities/CategoryResponses';
@@ -203,10 +206,14 @@ export class SpotsService {
         // 수정해서 다시 제출
         recommendSpot.score +=
           this.convertScore(body.score) - this.convertScore(spotResponse.score); // 기존에 잘못 더해진 score 고려해서 update
-        const comments = JSON.parse(recommendSpot.comments);
-        const index = comments.indexOf(spotResponse.comment);
-        comments[index] = body.comment;
-        recommendSpot.comments = JSON.stringify(comments);
+        const comments: CommentDto[] = JSON.parse(recommendSpot.comments);
+        const newComments = comments.map((it) => {
+          if (it.UserId == userId) {
+            return new CommentDto(it.UserId, it.name, body.comment);
+          }
+          return it;
+        });
+        recommendSpot.comments = JSON.stringify(newComments);
 
         await Promise.all([
           queryRunner.manager.getRepository(Recommends).save(recommendSpot),
@@ -219,8 +226,10 @@ export class SpotsService {
         ]);
       } else {
         recommendSpot.score += this.convertScore(body.score);
+
+        const comment = new CommentDto(userId, user.nickname, body.comment);
         const comments = JSON.parse(recommendSpot.comments);
-        comments.push(body.comment);
+        comments.push(comment);
         recommendSpot.comments = JSON.stringify(comments);
 
         await Promise.all([
@@ -275,7 +284,7 @@ export class SpotsService {
         recommends.map((recommend) => {
           return {
             score: recommend.score,
-            comments: recommend.comments,
+            comments: JSON.parse(recommend.comments),
             isInSchedule: recommend.isInSchedule,
             Spot: recommend.Spot,
           };
