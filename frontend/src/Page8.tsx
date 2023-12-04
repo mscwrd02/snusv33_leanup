@@ -1,4 +1,4 @@
-import {useLocation, useNavigate} from 'react-router-dom';
+import {useLocation, useNavigate, Link} from 'react-router-dom';
 import {useState, useEffect, useRef} from 'react';
 import styled from "styled-components";
 import axios from 'axios';
@@ -22,6 +22,10 @@ const Page8Container = styled.div<Page8ContainerProps>`
 
     position: relative;
     background: ${(props) => (props.isPopupOpen ? 'rgba(0, 0, 0, 0.5)' : '#FFF')};
+    
+    overflow: hidden;
+
+    padding-bottom: 10px;
 `
 
 const LogoContainer = styled.div`
@@ -43,7 +47,7 @@ const LogoContainer = styled.div`
     padding-left: 40px;
 `
 
-const LinkContainer = styled.div`
+const LinkContainer = styled(Link)`
     width: fill;
     height: 32px;
     flex-shrink: 0;
@@ -65,6 +69,8 @@ const LinkContainer = styled.div`
     padding-left: 5px;
     padding-right: 5px;
     margin-top: 12px;
+
+    text-decoration: none;
 `
 
 const Body = styled.div`
@@ -569,7 +575,7 @@ function Page8(){
     return(
         <Page8Container isPopupOpen={isPopupOpen}>
             <LogoContainer>Tripwiz</LogoContainer>
-            <LinkContainer>
+            <LinkContainer to={myResponse.spotForm[currentSpotId].link !== undefined ? myResponse.spotForm[currentSpotId].link : "https://www.naver.com/"} target="_blank">
                 <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none">
                     <path d="M9.91634 7.08335L7.08301 9.91669" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                     <path d="M11.3337 9.20835L12.7503 7.79169C13.7283 6.81368 13.7283 5.22802 12.7503 4.25002V4.25002C11.7723 3.27202 10.1867 3.27202 9.20866 4.25002L7.79199 5.66669M5.66699 7.79169L4.25033 9.20835C3.27232 10.1864 3.27232 11.772 4.25033 12.75V12.75C5.22833 13.728 6.81399 13.728 7.79199 12.75L9.20866 11.3334" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
