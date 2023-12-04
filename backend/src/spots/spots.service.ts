@@ -93,7 +93,7 @@ export class SpotsService {
             availableSpotId.push(it),
           );
 
-        const spot = await queryRunner.manager
+        let spot = await queryRunner.manager
           .getRepository(Spots)
           .createQueryBuilder('spot')
           .where('spot.region IN (:...availableRegion)', { availableRegion })
@@ -103,6 +103,15 @@ export class SpotsService {
           .andWhere('spot.id IN (:...availableSpotId)', { availableSpotId })
           .orderBy('spot.reviews', 'DESC')
           .getOne();
+        if (!spot)
+          spot = await queryRunner.manager
+            .getRepository(Spots)
+            .createQueryBuilder('spot')
+            .where('spot.id NOT IN (:...recommendedSpotIds)', {
+              recommendedSpotIds,
+            })
+            .orderBy('spot.reviews', 'DESC')
+            .getOne();
         await queryRunner.manager
           .getRepository(Recommends)
           .save({ PlanId: planId, SpotId: spot.id });
