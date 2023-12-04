@@ -6,7 +6,7 @@ import { SpotImages } from '../../entities/SpotImages';
 import { SpotCategories } from '../../entities/SpotCategories';
 import { Spots } from '../../entities/Spots';
 
-export default class CSVSpotImageSeeder implements Seeder {
+export default class CSVSpotSeeder implements Seeder {
   public async run(dataSource: DataSource): Promise<any> {
     const spotsRepository = dataSource.getRepository(Spots);
     const spots: Spots[] = [];
@@ -41,7 +41,8 @@ export default class CSVSpotImageSeeder implements Seeder {
     const spotImagesRepository = dataSource.getRepository(SpotImages);
     const spotCategoryRepository = dataSource.getRepository(SpotCategories);
     const spotImages: SpotImages[] = [];
-    fs.createReadStream(process.env.CSV_PATH + '/spot_images.csv')
+    await fs
+      .createReadStream(process.env.CSV_PATH + '/spot_images.csv')
       .pipe(parse(parseOptions))
       .on('data', (row) => {
         const spotImage = new SpotImages();
@@ -56,7 +57,8 @@ export default class CSVSpotImageSeeder implements Seeder {
         );
       });
     const spotCategories: SpotCategories[] = [];
-    fs.createReadStream(process.env.CSV_PATH + '/spot_category.csv')
+    await fs
+      .createReadStream(process.env.CSV_PATH + '/spot_category.csv')
       .pipe(parse(parseOptions))
       .on('data', (row) => {
         const spotCategory = new SpotCategories();
