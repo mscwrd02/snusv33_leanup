@@ -6,7 +6,7 @@ const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
 
 const Page1Container = styled.div`
     width: 430px;
-    height: 932px;
+    height: 100%;
     background: #FFF; 
 `;
 
@@ -132,22 +132,6 @@ const Start = styled(Link)`
   margin-left: 44px;
   margin-top: 41px;
 `;
-
-/*
-function newPerson(){
-  axios.post(backend_url+"/api/users", {
-    "email": "cjuz89@naver.com",
-    "password": "gdgdgdgd",
-    "nickname": "양재혁"
-  })
-  .then(function (response) {
-      console.log(response)
-  }).catch(function (error) {
-      // 오류발생시 실행
-  }).then(function() {
-      // 항상 실행
-  });
-}*/
 
 function Page1() {
   return (

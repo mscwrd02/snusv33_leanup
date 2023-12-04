@@ -246,7 +246,7 @@ const ShowMap = styled.div`
     background: #000000;
 
     border-radius: 30px;
-    position: absolute;
+    position: fixed;
     bottom: 45px;
 
     display: flex;
@@ -311,10 +311,10 @@ function Page9(){
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(backend_url+"/api/spots/recommend/"+"1", { withCredentials: true });
+                const response = await axios.get(backend_url+"/api/spots/recommend/"+String(location.state.planId), { withCredentials: true });
                 // 1을 location.state.planId로 바꿔야 함
                 console.log(response.data.length);
-                scoreSet = response.data.map((item : any) => item.score);
+                scoreSet = response.data.map((item : any) => (item.score >= 100 ? item.score : 100));
                 scoreSet = Array.from(new Set(scoreSet));
                 console.log(scoreSet);
             
@@ -361,7 +361,7 @@ function Page9(){
         const fetchData = async () => {
             try {
                 const response = await axios.post(backend_url+"/api/schedules/day/", {
-                    "planId": 1,
+                    "planId": location.state.planId,
                     "spotId": responseArray[index].Spot.id,
                     "day": dayindex+1
                 }, { withCredentials: true });
@@ -380,11 +380,11 @@ function Page9(){
             newArray[index] = !newArray[index];
             return newArray;
         });
-
+        ////////////////// axois planId
         axios.delete(backend_url+"/api/schedules/day/", {
             withCredentials: true,
             data: {
-                planId: 1,
+                planId: location.state.planId,
                 spotId: responseArray[index].Spot.id
             }
             })
@@ -395,10 +395,10 @@ function Page9(){
             console.error('Error fetching data: ', error);
         });
     }
-
+    ////////////////// axois planId
     function giveMore(){        
         axios.post(backend_url+"/api/spots/more", {
-            "planId" : 1
+            "planId" : location.state.planId
         }, { withCredentials: true })
         .then(function (response) {
             console.log(response);
@@ -406,12 +406,11 @@ function Page9(){
             // 오류발생시 실행
         }).then(function() {
             // 항상 실행
-        });
-
-        navigate('/page6', {
-            state: {
-              planId: 1
-            }
+            navigate('/page6', {
+                state: {
+                  planId: 1
+                }
+            });
         });
     }
 
@@ -477,7 +476,7 @@ function Page9(){
                 ))}
             </Body>
 
-            <ShowMap onClick={() => navigate('/page10', { state: { planId: 1, howMuchDays: location.state.howMuchDays } })}>
+            <ShowMap onClick={() => navigate('/plannermap', { state: { planId: 1, howMuchDays: location.state.howMuchDays } })}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21" fill="none">
                     <path d="M10.9009 15.551L10.4359 14.6657L10.4359 14.6657L10.9009 15.551ZM10.0991 15.551L9.63413 16.4363L9.63414 16.4363L10.0991 15.551ZM15.625 7.875C15.625 9.68329 14.7173 11.1863 13.5589 12.3698C12.4007 13.553 11.0713 14.332 10.4359 14.6657L11.3659 16.4363C12.092 16.055 13.6247 15.1618 14.9882 13.7688C16.3514 12.376 17.625 10.3985 17.625 7.875H15.625ZM10.5 2.75C13.3305 2.75 15.625 5.04454 15.625 7.875H17.625C17.625 3.93997 14.435 0.75 10.5 0.75V2.75ZM5.375 7.875C5.375 5.04454 7.66954 2.75 10.5 2.75V0.75C6.56497 0.75 3.375 3.93997 3.375 7.875H5.375ZM10.5641 14.6657C9.92865 14.332 8.59926 13.553 7.44112 12.3698C6.28269 11.1863 5.375 9.68329 5.375 7.875H3.375C3.375 10.3985 4.64859 12.376 6.01183 13.7688C7.37535 15.1618 8.90801 16.055 9.63413 16.4363L10.5641 14.6657ZM10.4359 14.6657C10.4749 14.6452 10.5251 14.6452 10.5641 14.6657L9.63414 16.4363C10.1774 16.7217 10.8226 16.7217 11.3659 16.4363L10.4359 14.6657ZM12.125 7.875C12.125 8.77246 11.3975 9.5 10.5 9.5V11.5C12.502 11.5 14.125 9.87703 14.125 7.875H12.125ZM10.5 6.25C11.3975 6.25 12.125 6.97754 12.125 7.875H14.125C14.125 5.87297 12.502 4.25 10.5 4.25V6.25ZM8.875 7.875C8.875 6.97754 9.60254 6.25 10.5 6.25V4.25C8.49797 4.25 6.875 5.87297 6.875 7.875H8.875ZM10.5 9.5C9.60254 9.5 8.875 8.77246 8.875 7.875H6.875C6.875 9.87703 8.49797 11.5 10.5 11.5V9.5Z" fill="white"/>
                     <path d="M17.3199 15.3125C18.0111 15.7115 18.375 16.1642 18.375 16.625C18.375 17.0858 18.0111 17.5384 17.32 17.9375C16.6288 18.3366 15.6347 18.6679 14.4375 18.8983C13.2403 19.1287 11.8824 19.25 10.5 19.25C9.11765 19.25 7.75965 19.1287 6.5625 18.8983C5.36535 18.6679 4.37123 18.3366 3.68005 17.9375C2.98887 17.5384 2.625 17.0858 2.625 16.625C2.625 16.1642 2.98887 15.7116 3.68005 15.3125" stroke="white" stroke-width="2" stroke-linecap="round"/>

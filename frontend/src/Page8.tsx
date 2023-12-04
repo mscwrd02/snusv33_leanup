@@ -14,7 +14,7 @@ interface Page8ContainerProps {
 
 const Page8Container = styled.div<Page8ContainerProps>`
     width: 430px;
-    height: 932px;
+    height: 100%;
 
     display: flex;
     flex-direction: column;
@@ -515,7 +515,6 @@ function Page8(){
                     "comment": commentArray[currentSpotId],
                     "isLast": currentSpotId === 19
                 }, { withCredentials: true });
-                
             } catch (error) {
               // 오류 발생시 실행
             } finally {
@@ -523,7 +522,7 @@ function Page8(){
             }
         };
         fetchData();
-        if(currentSpotId < 4){ //19
+        if(currentSpotId < 19){
             setCurrentSpotId(currentSpotId + 1);
         }
         else{
@@ -534,7 +533,8 @@ function Page8(){
     useEffect(() => {
         const fetchData = async () => {
             try {
-              const response = await axios.get(backend_url+"/api/spots/survey/"+"1", { withCredentials: true });
+              const response = await axios.get(backend_url+"/api/spots/survey/"+String(location.state.planId), { withCredentials: true });
+              console.log("으앙", response.data);
               setMyResponse(response.data);
               if(response.data.alreadySubmitResponses.length > 0){
                 setCurrentSpotId(response.data.alreadySubmitResponses[0].length);

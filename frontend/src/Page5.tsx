@@ -1,11 +1,12 @@
 import React, {useState} from "react";
 import "./Page5.css";
 import Prev_btn from "./prev_btn";
-import { Link, useLocation} from 'react-router-dom';
+import { Link, useLocation, useNavigate} from 'react-router-dom';
 import kakaoLogo from './images/kakaotalk.png';
 
 function Page5() {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const generateStringToCopy = () => {
     // 여기에서 원하는 로직에 따라 새로운 문자열을 생성합니다.
@@ -69,7 +70,12 @@ function Page5() {
   };
 
   const handleNextBtn = async () => {
-    window.location.href = "/page6";
+    //window.location.href = "/page6";
+    navigate('/page6', {
+      state: {
+        planId: location.state.planId
+      }
+  })
   };
   
   const boxStyle: React.CSSProperties = {

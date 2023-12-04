@@ -7,10 +7,11 @@ const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
 
 
 const Page2_1Container = styled.div`
-    width: 430px;
-    height: 932px;
+    width: 100%;
+    height: 100%;
     background: #FFF;
     padding-top: 6px;
+    padding-bottom: 50px;
 
     display: flex;
     flex-direction: column;

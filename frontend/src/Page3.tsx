@@ -21,7 +21,7 @@ const Link: React.FC<LinkProps> = ({ isActive, children, ...props }) => {
 
 const Page3Container = styled.div`
     width: 430px;
-    height: 932px;
+    height: 100%;
     background: #FFF;    
 `;
 

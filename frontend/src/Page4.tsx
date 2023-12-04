@@ -9,7 +9,7 @@ const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
 
 const Page4Container = styled.div`
     width: 100%;
-    height: 932px;
+    height: 100%;
     background: #FFF;
     padding-top: 30px;
 
@@ -302,20 +302,21 @@ export function Page4(){
 
     function createTrip(){
         console.log(exportCounter);
-        console.log(String(directions));
+        console.log("방향", JSON.stringify(directions));
         console.log(String(exportStartDate?.getFullYear()) + "-" + String((exportStartDate?.getMonth() ?? 0)+1) + "-" + String(exportStartDate?.getDate()));
         console.log(String(exportEndDate?.getFullYear()) + "-" + String((exportEndDate?.getMonth() ?? 0)+1) + "-" + String(exportEndDate?.getDate()));
 
         axios.post(backend_url+"/api/plans", {
             "groupNum": exportCounter,
-            "regionList": String(directions),
+            "regionList": JSON.stringify(directions),
             "startDate": String(exportStartDate?.getFullYear()) + "-" + String((exportStartDate?.getMonth() ?? 0)+1) + "-" + String(exportStartDate?.getDate()),
             "endDate": String(exportEndDate?.getFullYear()) + "-" + String((exportEndDate?.getMonth() ?? 0)+1) + "-" + String(exportEndDate?.getDate())
         }, { withCredentials: true })
         .then(function (response) {
             navigate('/page5', {
                 state: {
-                  link: response.data.link
+                  link: response.data.link,
+                  planId: response.data.planId
                 }
             })
             console.log(response);

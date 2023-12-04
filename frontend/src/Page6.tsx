@@ -8,7 +8,7 @@ const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
 
 const Page6Container = styled.div`
   width: 100%;
-  height: 932px;
+  height: 100%;
   background: #FFF;
   padding-top: 11px;
 `;
@@ -402,6 +402,10 @@ function Page6() {
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+  }, [location.state.planId]);
+
   return (
     (finishedSurvey) ? (
     <Page6Container>
@@ -438,7 +442,7 @@ function Page6() {
                 </UnfoldContainer>
             </SpotResult>
 
-            <TimeTable onClick={() => navigate('/page10', { state: { planId: myResponse.planId, howMuchDays: howMuchDays } })}>
+            <TimeTable onClick={() => navigate('/timetable', { state: { planId: myResponse.planId, howMuchDays: howMuchDays } })}>
                 <Text>여행 일정표</Text>
                 <UnfoldContainer>
                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="22" viewBox="0 0 15 25" fill="none">

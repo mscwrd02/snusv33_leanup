@@ -187,12 +187,11 @@ function Page6_1(){
             // 오류발생시 실행
         }).then(function() {
             // 항상 실행
-        });
-
-        navigate('/page6', {
-            state: {
-              planId: location.state.planId
-            }
+            navigate('/page6', {
+                state: {
+                  planId: location.state.planId
+                }
+            });
         });
     }
 

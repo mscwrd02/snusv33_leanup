@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import "./Page5.css";
-import {BrowserRouter, Route, Routes} from 'react-router-dom';
+import {BrowserRouter, Route, Routes, useLocation, useNavigate} from 'react-router-dom';
 import Prev_btn from "./prev_btn";
 import { Link } from 'react-router-dom';
 import axios from 'axios';
@@ -60,6 +60,8 @@ function PlannerMap() {
   const [responseDataPost, setResponseDataPost] = useState<any[]>([]);
   const [spotId, setSpotId] = useState(0);
   const [spotIsAdded, setSpotIsAdded] = useState(new Array(300).fill(false));
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const handleSpotAdd = (index: number) => {
     // spotIsAdded 배열의 복사본을 만들어옴
@@ -75,7 +77,7 @@ function PlannerMap() {
   //get DATA!!!
   useEffect(() => {
     // API 호출
-    axios.get(backend_url + '/api/spots/recommend/1', { withCredentials: true })
+    axios.get(backend_url + '/api/spots/recommend/' + String(location.state.planId), { withCredentials: true })
       .then(response => {
         setResponseData(response.data);
         console.log(response.data);
@@ -105,7 +107,7 @@ function PlannerMap() {
     handleSpotAdd(spotId);
     console.log(spotId, " spot added");
     axios.post(backend_url + '/api/schedules/day', {
-      "planId": 1,
+      "planId": location.state.planId,
       "spotId": spotId,
       "day": day
     },{ withCredentials: true })
@@ -284,11 +286,9 @@ function PlannerMap() {
         <Map id="map" />
       </div>
       <div className="hi" style={my_style}> 
-        <Link to="/Page1">
-          <button style={{background: 'None', border:'None'}}>
-            <img src={prev_btn_x} style={{width: '74px', height: '60px'}} alt="이전" /> 
-          </button>
-        </Link>
+        <button style={{background: 'None', border:'None'}} onClick={() => navigate('/page9', { state: { planId: location.state.planId} })}>
+          <img src={prev_btn_x} style={{width: '74px', height: '60px'}} alt="이전" /> 
+        </button>
       </div>
       {isVisible && (
         <div className="explain_popup" style={center_align}>

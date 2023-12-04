@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import "./Page5.css";
-import {BrowserRouter, Route, Routes} from 'react-router-dom';
+import {BrowserRouter, Route, Routes, useLocation, useNavigate} from 'react-router-dom';
 import Prev_btn from "./prev_btn";
 import { Link } from 'react-router-dom';
 import prev_btn_x from './images/prev_btn_x.png';
@@ -33,7 +33,7 @@ const Top = styled.div`
     color: #292929;
 `;
 
-const Back = styled(Link)`
+const Back = styled.div`
     margin-left: 22px;
     width: auto;
     height: auto;
@@ -83,6 +83,9 @@ function TimeTable() {
   // responseData를 객체로 관리
   const [responseData_totalplan, setResponseData_totalplan] = useState(initialResponseData);
 
+  const location = useLocation();
+  const navigate = useNavigate();
+
 
   let get_flag = 0;
   const handleSpotClick = (index: number) => {
@@ -126,7 +129,7 @@ function TimeTable() {
         axios.delete(backend_url + '/api/schedules', { ///day
           withCredentials: true,
           data: {
-            planId: 1,
+            planId: location.state.planId,
             spotId: spot_id,
             date: day,
             time: time,
@@ -163,7 +166,7 @@ function TimeTable() {
     else{
       if (day == selected_day){
         axios.post(backend_url + '/api/schedules', {
-          "planId": 1,
+          "planId": location.state.planId,
           "spotId": spot_id,
           "date": day,
           "time": time,
@@ -201,7 +204,7 @@ function TimeTable() {
 
   useEffect(() => {
     // API 호출
-    axios.get(backend_url + '/api/schedules/day/1', { withCredentials: true })
+    axios.get(backend_url + '/api/schedules/day/' + String(location.state.planId), { withCredentials: true })
       .then(response => {
         setResponseData(response.data);
         //console.log(response.data);
@@ -229,7 +232,7 @@ function TimeTable() {
   }, []);
 
   useEffect(() => {
-    axios.get(backend_url + '/api/schedules/all/1', { withCredentials: true })
+    axios.get(backend_url + '/api/schedules/all/' + String(location.state.planId), { withCredentials: true })
     .then(response => {
         console.log(response.data);
         const dayNum = 3; //////////// 재혁이가 넘겨줄 예정
@@ -263,7 +266,7 @@ function TimeTable() {
         //     if (!newPlanData[day]) {
         //         newPlanData[day] = {};
         //     }
-        //     newPlanData[day][time] = name;
+        //     newPlanData[day][time] page= name;
         // });
         setPlanData(newPlanData);
         setnewPostFlag(0);
@@ -278,7 +281,7 @@ function TimeTable() {
     <TimeTableContainer>
       <Body>
         <Top>
-            <Back to="/Page6_1">
+            <Back onClick={() => navigate('/page6', { state: { planId: location.state.planId } })}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="27" viewBox="0 0 14 27" fill="none">
                     <path d="M13.1699 0L0 13.1699L13.1699 26.3397L13.9999 25.442L1.43203 13.1699L14 0.904566L13.1699 0Z" fill="black"/>
                 </svg>                
