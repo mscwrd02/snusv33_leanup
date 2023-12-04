@@ -72,6 +72,7 @@ function TimeTable() {
   const [selected, setSelected] = useState<any>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [isLoadingDone, setIsLoadingDone] = useState(false);
+  const [isDeleteEnable, setIsDeleteEnable] = useState(false);
   const [selectedSpot, setSelectedSpot] = useState<number | null>(null);
   const [nSpot, setNSpot] = useState(0); // nSpot을 상태로 관리
   const [newPostFlag, setnewPostFlag] = useState(0);
@@ -112,8 +113,10 @@ function TimeTable() {
     else if (block == 4) time = "evening";
     else time = "morning";
 
+
     if (selectedSpot === null && isLoadingDone){
-      if (planData[day-1][block-1]) { // delete
+      if (planData[day-1][block-1] && isDeleteEnable) { // delete
+        setIsDeleteEnable(false);
         selected_day = day;
         const selectedDayData = spot_arr[selected_day];
         console.log('prev spot id is ', spot_id, selectedDayData, selected_day);
@@ -145,6 +148,9 @@ function TimeTable() {
           console.error('Error fetching data: ', error);
         });
       }
+      else if(planData[day-1][block-1]){
+        setIsDeleteEnable(true);
+      }
       else{
         setBrightness(prevBrightness => prevBrightness.map((b, i) => {
           if (i === day-1) {
@@ -164,6 +170,9 @@ function TimeTable() {
       }
     }
     else{
+      if (planData[day-1][block-1]){
+        return ;
+      }
       if (day == selected_day){
         axios.post(backend_url + '/api/schedules', {
           "planId": location.state.planId,
