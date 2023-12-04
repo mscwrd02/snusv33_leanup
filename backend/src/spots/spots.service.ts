@@ -43,7 +43,7 @@ export class SpotsService {
     const presentRecommends = await this.recommendsRepository.find({
       where: { PlanId: planId },
     });
-    if (presentRecommends.length > 2) {
+    if (presentRecommends.length > 20) {
       throw new BadRequestException('이미 장소 추천이 완료되었습니다');
     }
     const queryRunner = this.dataSource.createQueryRunner();
@@ -67,7 +67,7 @@ export class SpotsService {
     );
 
     const categoryRecommendResults: Array<number> = [];
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 20; i++) {
       const randomIndex = Math.floor(Math.random() * parsedResponses.length);
       const randomElement = parsedResponses[randomIndex];
       categoryRecommendResults.push(randomElement);
@@ -87,6 +87,11 @@ export class SpotsService {
           relations: ['Spots'],
         });
         const availableSpotId = wow.Spots.map((it) => it.id);
+
+        if (availableSpotId.length == 0)
+          Array.from({ length: 100 }, (_, index) => index + 1).map((it) =>
+            availableSpotId.push(it),
+          );
 
         const spot = await queryRunner.manager
           .getRepository(Spots)

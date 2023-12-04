@@ -126,7 +126,7 @@ export class CategoriesService {
     );
 
     const categoryRecommendResults: Array<number> = [];
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 20; i++) {
       const randomIndex = Math.floor(Math.random() * parsedResponses.length);
       const randomElement = parsedResponses[randomIndex];
       categoryRecommendResults.push(randomElement);
@@ -146,6 +146,10 @@ export class CategoriesService {
           relations: ['Spots'],
         });
         const availableSpotId = wow.Spots.map((it) => it.id);
+        if (availableSpotId.length == 0)
+          Array.from({ length: 100 }, (_, index) => index + 1).map((it) =>
+            availableSpotId.push(it),
+          );
 
         if (recommendedSpotIds.length == 0) {
           const spot = await queryRunner.manager
