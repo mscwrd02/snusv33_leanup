@@ -1,19 +1,33 @@
-import {BrowserRouter, Route, Routes, Link} from 'react-router-dom';
+import {Link} from 'react-router-dom';
+import {useState} from 'react';
 import styled from "styled-components";
-import axios from 'axios';
+
+import landingpage1 from './images/landingpage1.png';
+import landingpage2 from './images/landingpage2.png';
+import landingpage3 from './images/landingpage3.png';
+import landingpage4 from './images/landingpage4.png';
+import landingpage5 from './images/landingpage5.png';
+import landingpage6 from './images/landingpage6.png';
+
+import left from './images/left.png';
+import right from './images/right.png';
 
 const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
 
 const Page1Container = styled.div`
     width: 430px;
-    height: 932px;
+    height: 100%;
     background: #FFF; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 `;
 
 const Page1Header = styled.div`
+  width: 100%;
   display:flex;
-  margin-top:58px;
-  padding-left: 20px;
+  margin-top: 4px;
+  margin-left: 18px;
 `;
 
 const Logo = styled.div`
@@ -86,24 +100,26 @@ const Introduce = styled.div`
   line-height: 120%; 
 
   margin-top: 60.5px;
+  margin-bottom: 31px;
 `;
 
-const Choose = styled.div`
+interface ChooseProp {
+  currentImg: String;
+}
+
+const Choose = styled.div<ChooseProp>`
   width: 215px;
-  height: 32px;
-
+  height: 461px;
+  box-sizing: border-box;
+  
   border-radius: 20px;
-  background: #D9D9D9;
 
-  margin-top: 31px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0px;
+  
+  background-image: ${(props) => `url(${props.currentImg})`};
+  background-repeat: no-repeat;
 
-  padding-top:429px;
-`;
-
-const Circles = styled.div`
-  margin-left:70px;
+  position: relative;
 `;
 
 const Start = styled(Link)`
@@ -128,28 +144,52 @@ const Start = styled(Link)`
   font-style: normal;
   font-weight: 700;
   line-height: normal;
-
-  margin-left: 44px;
   margin-top: 41px;
 `;
 
-/*
-function newPerson(){
-  axios.post(backend_url+"/api/users", {
-    "email": "cjuz89@naver.com",
-    "password": "gdgdgdgd",
-    "nickname": "양재혁"
-  })
-  .then(function (response) {
-      console.log(response)
-  }).catch(function (error) {
-      // 오류발생시 실행
-  }).then(function() {
-      // 항상 실행
-  });
-}*/
+const LeftContainer = styled.div`
+  position: absolute;
+  left : -70px;
+  top : 40%;
+`
+
+const RightContainer = styled.div`
+  position: absolute;
+  right : -70px;
+  top : 40%;
+`
 
 function Page1() {
+  const [currentImgNum, setCurrentImgNum] = useState<number>(0);
+  const [isFirst, setIsFirst] = useState<boolean>(true);
+  const [isLast, setIsLast] = useState<boolean>(false);
+
+  const imgArray = [landingpage1, landingpage2, landingpage3, landingpage4, landingpage5, landingpage6];
+
+  const handleLeftClick = (event : any) => {
+    //landingpage 뒤에 숫자는 currentImgNum이 되도록
+    if(currentImgNum === 1){
+      setIsFirst(true);
+      setCurrentImgNum(currentImgNum-1);
+    }
+    else{
+      setIsLast(false);
+      setCurrentImgNum(currentImgNum-1);
+    }
+  }; 
+
+  const handleRightClick = (event : any) => {
+    //landingpage 뒤에 숫자는 currentImgNum이 되도록
+    if(currentImgNum === 4){
+      setIsLast(true);
+      setCurrentImgNum(currentImgNum+1);
+    }
+    else{
+      setIsFirst(false);
+      setCurrentImgNum(currentImgNum+1);
+    }
+  }; 
+
   return (
     <Page1Container>
         <Page1Header>
@@ -158,17 +198,15 @@ function Page1() {
         <Introduce>
           함께 여행 계획 짜는<br></br>가장 쉬운 방법,<br></br>Tripwiz.
         </Introduce>
-        <Choose>
-          <Circles>
-            <svg xmlns="http://www.w3.org/2000/svg" width="75" height="12" viewBox="0 0 75 12" fill="none">
-              <circle cx="6" cy="6" r="6" fill="#0D99FF"/>
-              <circle cx="27" cy="6" r="6" fill="white"/>
-              <circle cx="48" cy="6" r="6" fill="white"/>
-              <circle cx="69" cy="6" r="6" fill="white"/>
-            </svg>
-          </Circles>
+        <Choose currentImg={imgArray[currentImgNum]}>
+          {!isFirst && (<LeftContainer onClick={handleLeftClick}>
+            <img src={left}/>
+          </LeftContainer>)}
+          {!isLast && (<RightContainer onClick={handleRightClick}>
+            <img src={right}/>
+          </RightContainer>)}
         </Choose>
-        <Start to="/page1_1" style={{ textDecoration: "none"}}>
+        <Start to="/login" style={{ textDecoration: "none"}}>
           시작하기
         </Start>
     </Page1Container>

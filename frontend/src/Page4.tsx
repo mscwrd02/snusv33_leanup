@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
@@ -8,7 +8,7 @@ const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
 
 const Page4Container = styled.div`
   width: 100%;
-  height: 932px;
+  height: 100%;
   background: #fff;
   padding-top: 30px;
 
@@ -251,7 +251,7 @@ interface OkProps {
   isActive: boolean;
 }
 
-const Ok = styled(Link)<OkProps>`
+const Ok = styled.div<OkProps>`
   width: 356px;
   height: 54px;
   flex-shrink: 0;
@@ -288,6 +288,8 @@ export function Page4() {
   const [checkClicked, setCheckClicked] = useState(false);
   let directions: string[] = [];
 
+  const navigate = useNavigate();
+
   function cardClick(index: number) {
     setCardClickedArray((prevState) => {
       const updatedArray = [...prevState];
@@ -307,29 +309,12 @@ export function Page4() {
   }
 
   function createTrip() {
-    console.log(exportCounter);
-    console.log(String(directions));
-    console.log(
-      String(exportStartDate?.getFullYear()) +
-        "-" +
-        String((exportStartDate?.getMonth() ?? 0) + 1) +
-        "-" +
-        String(exportStartDate?.getDate())
-    );
-    console.log(
-      String(exportEndDate?.getFullYear()) +
-        "-" +
-        String((exportEndDate?.getMonth() ?? 0) + 1) +
-        "-" +
-        String(exportEndDate?.getDate())
-    );
-
     axios
       .post(
         backend_url + "/api/plans",
         {
           groupNum: exportCounter,
-          regionList: String(directions),
+          regionList: JSON.stringify(directions),
           startDate:
             String(exportStartDate?.getFullYear()) +
             "-" +
@@ -346,9 +331,12 @@ export function Page4() {
         { withCredentials: true }
       )
       .then(function (response) {
-        console.log(response);
-        console.log(response["data"]["planId"]);
-        exportPlanId = response["data"]["planId"];
+        navigate("/sharelink", {
+          state: {
+            link: response.data.link,
+            planId: response.data.planId,
+          },
+        });
       })
       .catch(function (error) {
         // 오류발생시 실행
@@ -368,7 +356,7 @@ export function Page4() {
   return (
     <Page4Container>
       <Top>
-        <Back to="/page3">
+        <Back to="/makeplan">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="14"
@@ -727,7 +715,6 @@ export function Page4() {
         </Card>
       </Selection>
       <Ok
-        to="/page5"
         style={{ textDecoration: "none" }}
         isActive={checkClicked}
         onClick={createTrip}

@@ -24,12 +24,7 @@ function Page1_2() {
   };
 
   const handlekakaoLogin = async () => {
-    // API 호출 예시 (fetch 사용)
-    //console.log('hi');
-//    const response = await axios.get(backend_url+'/api/auth/login/kakao', {
-  //})
-  window.location.href = backend_url + "/api/auth/login/kakao";
-  
+    window.location.href = backend_url + "/api/auth/login/kakao";
   }
 
   const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
@@ -44,12 +39,9 @@ function Page1_2() {
         },{ withCredentials: true })
         .then(function (response) {
           const res = JSON.stringify(response);
-          console.log(res);
-          console.log("Done");
           window.location.href = "/page1_1";
         }) 
         .catch(function (error){
-          console.log("error");
           window.alert('회원가입에 실패하였습니다.');
         }) 
 

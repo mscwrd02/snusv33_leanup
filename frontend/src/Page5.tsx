@@ -1,27 +1,28 @@
 import React, {useState} from "react";
 import "./Page5.css";
-import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import Prev_btn from "./prev_btn";
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate} from 'react-router-dom';
 import kakaoLogo from './images/kakaotalk.png';
 
 function Page5() {
-  
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const generateStringToCopy = () => {
     // 여기에서 원하는 로직에 따라 새로운 문자열을 생성합니다.
-    return 'https://choigangminseok';
+    return "https://www.tripwiz.space/PageforGuest?id=" + location.state.link;
   };
 
-  const Sharing_Link = generateStringToCopy();
-
+  // localStorage.setItem('guestID', location.state.link);
   let box_size: number = 100;
 
+  const Sharing_Link = generateStringToCopy();
+  
   const handleLinkCopy = async () => {
     if (navigator.clipboard !== undefined) {
-      
       navigator.clipboard.writeText(Sharing_Link)
       .then(() => {
-        console.log('클립보드에 복사되었습니다.');
+        //alert('텍스트가 복사되었습니다.');
       })
       .catch((error) => {
         console.error('클립보드 복사 실패:', error);
@@ -30,7 +31,7 @@ function Page5() {
     } else {
       // execCommand 사용
       const textArea = document.createElement('textarea');
-      textArea.value = `복사할 텍스트`;
+      textArea.value = Sharing_Link;
       document.body.appendChild(textArea);
       textArea.select();
       textArea.setSelectionRange(0, 99999);
@@ -55,19 +56,33 @@ function Page5() {
     kakao.Share.sendDefault({
       objectType: 'feed',
       content: {
-        title: 'hi',
+        title: 'Tripwiz 함께 여행 계획 짜자!',
         imageUrl:
-          'http://via.placeholder.com/500.jpg/',
+          kakaoLogo,
         link: {
-          webUrl: 'hihi',
-          mobileWebUrl: 'hihi',
+          webUrl: Sharing_Link,
+          mobileWebUrl: Sharing_Link,
         },
       },
+      buttons: [
+        {
+          title: '웹으로 보기',
+          link: {
+            mobileWebUrl: Sharing_Link,
+            webUrl: Sharing_Link,
+          },
+        },
+      ],
     })
   };
 
   const handleNextBtn = async () => {
-    window.location.href = "/page6";
+    navigate('/planstatus', {
+      state: {
+        planId: location.state.planId,
+        link: location.state.link
+      }
+  })
   };
   
   const boxStyle: React.CSSProperties = {
@@ -84,7 +99,7 @@ function Page5() {
     <div className="page1_1">
       <div className="title">
         <div className="prev"> 
-          <Link to="/Page2_1">
+          <Link to="/planlist">
             <button style={buttonStyle}>
               <Prev_btn />
             </button> 
