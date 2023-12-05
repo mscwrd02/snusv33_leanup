@@ -58,12 +58,7 @@ const Title = styled.div`
     padding-right: 36px;
 `;
 
-let n_day = 3;
-let selected_day: any;
-let date = 1;
-let spot_arr = new Array(n_day);  // 3개의 원소를 가진 배열 생성
-let spot_arr_count = new Array(n_day+1).fill(0);
-let spot_id = 0;
+
 const color_array = ["rgba(0, 122, 255, 0.14)", "rgba(255, 204, 0, 0.14)", "rgba(255, 59, 48, 0.14)", "rgba(175, 82, 222, 0.14)", "rgba(255, 149, 0, 0.14)"];
 const text_color_array = ["rgba(0, 122, 255, 1)", "rgba(255, 204, 0, 1)", "rgba(255, 59, 48, 1)", "rgba(175, 82, 222, 1)", "rgba(255, 149, 0, 1)"];
 // 6개 색
@@ -83,12 +78,18 @@ function TimeTable() {
 
   const initialResponseData = {}; // 초기 responseData 값
 
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  let n_day = location.state.howMuchDays;
+  let selected_day: any;
+  let spot_arr = new Array(n_day);  // 3개의 원소를 가진 배열 생성
+  let spot_arr_count = new Array(n_day+1).fill(0);
+  let spot_id = 0;
   // responseData를 객체로 관리
   const [responseData_totalplan, setResponseData_totalplan] = useState(initialResponseData);
 
-  const location = useLocation();
-  const navigate = useNavigate();
-  n_day = location.state.howMuchDays;
+ 
 
   let get_flag = 0;
   const handleSpotClick = (index: number) => {
