@@ -1,7 +1,6 @@
-import {BrowserRouter, Route, Routes, Link} from 'react-router-dom';
-import {useState, useEffect} from 'react';
+import {Link} from 'react-router-dom';
+import {useState} from 'react';
 import styled from "styled-components";
-import axios from 'axios';
 
 import landingpage1 from './images/landingpage1.png';
 import landingpage2 from './images/landingpage2.png';
@@ -207,7 +206,7 @@ function Page1() {
             <img src={right}/>
           </RightContainer>)}
         </Choose>
-        <Start to="/page1_1" style={{ textDecoration: "none"}}>
+        <Start to="/login" style={{ textDecoration: "none"}}>
           시작하기
         </Start>
     </Page1Container>

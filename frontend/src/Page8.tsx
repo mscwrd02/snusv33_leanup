@@ -2,9 +2,6 @@ import {useLocation, useNavigate, Link} from 'react-router-dom';
 import {useState, useEffect, useRef} from 'react';
 import styled from "styled-components";
 import axios from 'axios';
-import example1Img from './images/example1.png';
-
-import { exportPlanId } from './Page4';
 
 const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
 
@@ -468,7 +465,6 @@ function Page8(){
     };
 
     const handleSubmit = () => {
-        console.log("끝?");
         const fetchData = async () => {
             try {
                 const response = await axios.post(backend_url+"/api/spots", {
@@ -485,7 +481,7 @@ function Page8(){
             }
         };
         setIsPopupOpen(false);
-        navigate('/page6', { state: { planId: location.state.planId } });
+        navigate('/planstatus', { state: { planId: location.state.planId } });
     };
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -512,12 +508,7 @@ function Page8(){
     }
 
     function nextFunction(){
-
         const fetchData = async () => {
-            console.log("내 planId", location.state.planId);
-            console.log(myResponse.spotForm[currentSpotId].id);
-            console.log(scoreArray[currentSpotId]);
-            console.log(commentArray[currentSpotId]);
             try {
                 const response = await axios.post(backend_url+"/api/spots", {
                     "planId": location.state.planId,
@@ -545,7 +536,6 @@ function Page8(){
         const fetchData = async () => {
             try {
               const response = await axios.get(backend_url+"/api/spots/survey/"+String(location.state.planId), { withCredentials: true });
-              console.log("으앙", response.data);
               setMyResponse(response.data);
               if(response.data.alreadySubmitResponses.length > 0){
                 setCurrentSpotId(response.data.alreadySubmitResponses[0].length);
@@ -573,13 +563,10 @@ function Page8(){
 
     useEffect(() => {
     }, [currentSpotId, scoreArray]);
-
-    console.log(myResponse);
-    console.log(currentSpotId);
-    console.log(scoreArray);
+    
     return(
         <Page8Container isPopupOpen={isPopupOpen}>
-            <LogoContainer onClick={() => navigate('/page2_1')}>Tripwiz</LogoContainer>
+            <LogoContainer onClick={() => navigate('/planlist')}>Tripwiz</LogoContainer>
             <LinkContainer to={myResponse.spotForm[currentSpotId].link !== undefined ? myResponse.spotForm[currentSpotId].link : "https://www.naver.com/"} target="_blank">
                 <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none">
                     <path d="M9.91634 7.08335L7.08301 9.91669" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>

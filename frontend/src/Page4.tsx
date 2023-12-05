@@ -301,11 +301,6 @@ export function Page4(){
     }
 
     function createTrip(){
-        console.log(exportCounter);
-        console.log("방향", JSON.stringify(directions));
-        console.log(String(exportStartDate?.getFullYear()) + "-" + String((exportStartDate?.getMonth() ?? 0)+1) + "-" + String(exportStartDate?.getDate()));
-        console.log(String(exportEndDate?.getFullYear()) + "-" + String((exportEndDate?.getMonth() ?? 0)+1) + "-" + String(exportEndDate?.getDate()));
-
         axios.post(backend_url+"/api/plans", {
             "groupNum": exportCounter,
             "regionList": JSON.stringify(directions),
@@ -313,15 +308,12 @@ export function Page4(){
             "endDate": String(exportEndDate?.getFullYear()) + "-" + String((exportEndDate?.getMonth() ?? 0)+1) + "-" + String(exportEndDate?.getDate())
         }, { withCredentials: true })
         .then(function (response) {
-            navigate('/page5', {
+            navigate('/sharelink', {
                 state: {
                   link: response.data.link,
                   planId: response.data.planId
                 }
-            })
-            console.log(response);
-            console.log(response['data']['planId'])
-            
+            })  
         }).catch(function (error) {
             // 오류발생시 실행
         }).then(function() {
@@ -339,7 +331,7 @@ export function Page4(){
     return(
         <Page4Container>
             <Top>
-                <Back to="/page3">
+                <Back to="/makeplan">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="27" viewBox="0 0 14 27" fill="none">
                         <path d="M13.1699 0L0 13.1699L13.1699 26.3397L13.9999 25.442L1.43203 13.1699L14 0.904566L13.1699 0Z" fill="black"/>
                     </svg>                

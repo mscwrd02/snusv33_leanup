@@ -13,18 +13,16 @@ function Page5() {
     return "https://www.tripwiz.space/PageforGuest?id=" + location.state.link;
   };
 
-  const Sharing_Link = generateStringToCopy();
-
   // localStorage.setItem('guestID', location.state.link);
-
   let box_size: number = 100;
 
+  const Sharing_Link = generateStringToCopy();
+  
   const handleLinkCopy = async () => {
     if (navigator.clipboard !== undefined) {
-      
       navigator.clipboard.writeText(Sharing_Link)
       .then(() => {
-        console.log('클립보드에 복사되었습니다.');
+        //alert('텍스트가 복사되었습니다.');
       })
       .catch((error) => {
         console.error('클립보드 복사 실패:', error);
@@ -79,10 +77,10 @@ function Page5() {
   };
 
   const handleNextBtn = async () => {
-    //window.location.href = "/page6";
-    navigate('/page6', {
+    navigate('/planstatus', {
       state: {
-        planId: location.state.planId
+        planId: location.state.planId,
+        link: location.state.link
       }
   })
   };
@@ -101,7 +99,7 @@ function Page5() {
     <div className="page1_1">
       <div className="title">
         <div className="prev"> 
-          <Link to="/Page2_1">
+          <Link to="/planlist">
             <button style={buttonStyle}>
               <Prev_btn />
             </button> 

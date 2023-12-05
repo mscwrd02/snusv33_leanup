@@ -18,16 +18,11 @@ function PageforGuest() {
   const query = useQuery();
   const id = query.get('id');
 
-
   const [responseData, setResponseData] = useState<any>(null);
-  //console.log(id);
   axios.get(backend_url + '/api/plans/hashId/' + id, { withCredentials: true })
   .then(response => {
     setResponseData(response.data);
-    // console.log(response.data);
-
     inviterName = generateStringToCopy();
-
   })
   .catch(error => {
     console.error('Error fetching data: ', error);
@@ -45,13 +40,7 @@ function PageforGuest() {
   
 
   const handlekakaoLogin = async () => {
-    // API 호출 예시 (fetch 사용)
-    //console.log('hi');
-  //    const response = await axios.get(backend_url+'/api/auth/login/kakao', {
-  //})
-
-  window.location.href = backend_url + "/api/auth/login/kakao";
-  
+    window.location.href = backend_url + "/api/auth/login/kakao";
   }
 
   return (

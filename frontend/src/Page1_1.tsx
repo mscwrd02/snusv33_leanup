@@ -29,9 +29,7 @@ function Page1_1() {
       }, { withCredentials: true })
       .then(function (response) {
         const res = JSON.stringify(response);
-        console.log(res);
-        console.log("Done");
-        window.location.href = "/page2_1";
+        window.location.href = "/planlist";
       })
       .catch(function (error){
         window.alert('로그인에 실패하였습니다.');
@@ -40,10 +38,6 @@ function Page1_1() {
     }
   };
   const handlekakaoLogin = async () => {
-      // API 호출 예시 (fetch 사용)
-      //console.log('hi');
-//    const response = await axios.get(backend_url+'/api/auth/login/kakao', {
-    //})
     window.location.href = backend_url + "/api/auth/login/kakao";
     
   }
@@ -52,7 +46,7 @@ function Page1_1() {
     <div className="page1_1">
       <div className="title">
         <div className="prev"> 
-          <Link to="/Page1">
+          <Link to="/home">
             <button style={buttonStyle}>
               <Prev_btn />
             </button> 
@@ -89,7 +83,7 @@ function Page1_1() {
         </button>
       </div>
       <div className="Join_btn">
-        <Link to="/page1_2">
+        <Link to="/join">
         <button onClick={handleLogin} style={join_btn_style}>
           회원가입
         </button>

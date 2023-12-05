@@ -80,7 +80,6 @@ function PlannerMap() {
     axios.get(backend_url + '/api/spots/recommend/' + String(location.state.planId), { withCredentials: true })// { withCredentials: true })
       .then(response => {
         setResponseData(response.data);
-        console.log(response.data);
       })
       .catch(error => {
         console.error('Error fetching data: ', error);
@@ -100,12 +99,10 @@ function PlannerMap() {
   };
 
   const handle_spotplusinmyplan = async (day: number) => {
-    console.log(`${day}일차 일정에 추가: ${spot_name}`);
     setIsVisibleSpotPlus(prevIsVisibleSpotPlus => !prevIsVisibleSpotPlus);
     // spot_isInSchedule = true;
     isAddedList[spotId] = true;
     handleSpotAdd(spotId);
-    console.log(spotId, " spot added");
     axios.post(backend_url + '/api/schedules/day', {
       "planId": location.state.planId, //location.state.planId,
       "spotId": spotId,
@@ -113,7 +110,6 @@ function PlannerMap() {
     },{ withCredentials: true })
     .then(response => {
       setResponseDataPost(response.data);
-      console.log(response.data);
     })
     .catch(error => {
       console.error('Error fetching data: ', error);
@@ -149,7 +145,6 @@ function PlannerMap() {
 
   // map_center.getLng();
   useEffect(() => {
-    console.log(newLat, newLng);
     const container = document.getElementById('map')
     const options = {
       center: is_first ? new window.kakao.maps.LatLng(33.12, 126.7) : new window.kakao.maps.LatLng(newLat, newLng), // 지도의 중심 좌표
@@ -208,10 +203,8 @@ function PlannerMap() {
 
           const geocoder = new window.kakao.maps.services.Geocoder();
           geocoder.addressSearch(data.Spot.address, function(result:any, status:any) {
-            // console.log("mapping restart");
             if (status === window.kakao.maps.services.Status.OK) {
               markerPosition = new window.kakao.maps.LatLng(result[0].y, result[0].x);
-              // console.log(markerPosition);///
               const imageSize = new window.kakao.maps.Size(30, 30); // 마커이미지의 크기입니다
               const imageOption = {offset: new window.kakao.maps.Point(0, 0)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
               const markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
@@ -245,12 +238,9 @@ function PlannerMap() {
                   isSelected[data.Spot.id] = true;
                 }
                 map_level = map.getLevel();
-                // console.log(map_level);
                 map_center = map.getCenter();
                 newLat = map.getCenter().getLat();
                 newLng = map.getCenter().getLng();
-                console.log(map_center);
-                console.log(newLat, newLng);
                 is_first = false;
               });
             }
@@ -267,7 +257,7 @@ function PlannerMap() {
     fontSize: '20px',
     fontStyle: 'normal',
     fontWeight: 700,
-    lineHeight: '120%', // 24px
+    lineHeight: '120%',
     letterSpacing: '-0.6px',
   };
   
@@ -287,7 +277,7 @@ function PlannerMap() {
         <Map id="map" />
       </div>
       <div className="hi" style={my_style}> 
-        <button style={{background: 'None', border:'None'}} onClick={() => navigate('/page9', { state: { planId: location.state.planId} })}>
+        <button style={{background: 'None', border:'None'}} onClick={() => navigate('/surveyresult', { state: { planId: location.state.planId} })}>
           <img src={prev_btn_x} style={{width: '74px', height: '60px'}} alt="이전" /> 
         </button>
       </div>

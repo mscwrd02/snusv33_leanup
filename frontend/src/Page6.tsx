@@ -389,9 +389,7 @@ function Page6() {
                 tempFinishedSurvey = (tempFinishedSurvey && JSON.parse(response.data.spotResponseStatus)[i]);
             }
             setFinishedSurvey(tempFinishedSurvey);
-            
             const response2 = await axios.get(backend_url+"/api/users", { withCredentials: true });
-            console.log(response2.data.nickname);
             setMyNickname(response2.data.nickname);
             setHowMuchDays((new Date(response.data.endDate).getTime() - new Date(response.data.startDate).getTime()) / (1000 * 60 * 60 * 24) + 1);
         } catch (error) {
@@ -406,12 +404,47 @@ function Page6() {
   useEffect(() => {
   }, [location.state.planId]);
 
+  const generateStringToCopy = () => {
+    // 여기에서 원하는 로직에 따라 새로운 문자열을 생성합니다.
+    return "https://www.tripwiz.space/PageforGuest?id=" + location.state.link;
+  };
+
+  const Sharing_Link = generateStringToCopy();
+  
+  const handleLinkCopy = async () => {
+    if (navigator.clipboard !== undefined) {
+      navigator.clipboard.writeText(Sharing_Link)
+      .then(() => {
+        //alert('텍스트가 복사되었습니다.');
+      })
+      .catch((error) => {
+        console.error('클립보드 복사 실패:', error);
+      });
+
+    } else {
+      // execCommand 사용
+      const textArea = document.createElement('textarea');
+      textArea.value = Sharing_Link;
+      document.body.appendChild(textArea);
+      textArea.select();
+      textArea.setSelectionRange(0, 99999);
+      try {
+        document.execCommand('copy');
+      } catch (err) {
+        console.error('복사 실패', err);
+      }
+      textArea.setSelectionRange(0, 0);
+      document.body.removeChild(textArea);
+      alert('텍스트가 복사되었습니다.');
+    }
+  };
+
   return (
     (finishedSurvey) ? (
     <Page6Container>
         <Body>
             <Top>
-                <Back to="/page2_1">
+                <Back to="/planlist">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="27" viewBox="0 0 14 27" fill="none">
                         <path d="M13.1699 0L0 13.1699L13.1699 26.3397L13.9999 25.442L1.43203 13.1699L14 0.904566L13.1699 0Z" fill="black"/>
                     </svg>                
@@ -430,7 +463,7 @@ function Page6() {
                 </People>
             </With>
 
-            <SpotResult onClick={() => navigate('/page9', { state: { planId: myResponse.planId, howMuchDays: howMuchDays } })}>
+            <SpotResult onClick={() => navigate('/surveyresult', { state: { planId: myResponse.planId, howMuchDays: howMuchDays } })}>
                 <Text>여행지 고르기 결과</Text>
                 <FirstSpot>
                     1등 여행지는?
@@ -457,7 +490,7 @@ function Page6() {
     <Page6Container>
       <Body>
         <Top>
-            <Back to="/page2_1">
+            <Back to="/planlist">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="27" viewBox="0 0 14 27" fill="none">
                     <path d="M13.1699 0L0 13.1699L13.1699 26.3397L13.9999 25.442L1.43203 13.1699L14 0.904566L13.1699 0Z" fill="black"/>
                 </svg>                
@@ -468,7 +501,7 @@ function Page6() {
             {myResponse['startDate'].replace(/-/g, "/")}({days[new Date(myResponse['startDate']).getDay()]}) ~ {String(myResponse['endDate']).replace(/-/g, "/")}({days[new Date(myResponse['endDate']).getDay()]})
         </DateContainer>
 
-        <LinkContainer>
+        <LinkContainer onClick={handleLinkCopy}>
             <img width={40} height={40} src={friend_icon}/>
         </LinkContainer>
 
@@ -486,7 +519,7 @@ function Page6() {
                     {JSON.parse(myResponse.categoryResponseStatus)[JSON.parse(myResponse.participantsName).indexOf(myNickname)] ? (
                         <Go done={JSON.parse(myResponse.categoryResponseStatus)[JSON.parse(myResponse.participantsName).indexOf(myNickname)]}>완료</Go>
                     ) : (
-                        <Go done={JSON.parse(myResponse.categoryResponseStatus)[JSON.parse(myResponse.participantsName).indexOf(myNickname)]} onClick={() => navigate('/page6_1', { state: { planId: myResponse.planId } })}>하러 가기</Go>
+                        <Go done={JSON.parse(myResponse.categoryResponseStatus)[JSON.parse(myResponse.participantsName).indexOf(myNickname)]} onClick={() => navigate('/typesurvey', { state: { planId: myResponse.planId } })}>하러 가기</Go>
                     )}
                 </Preferencetop>
                 <Surveyrate status={JSON.parse(myResponse.categoryResponseStatus).filter((value:boolean) => value === true).length / myResponse.groupNum * 100}>
@@ -521,7 +554,7 @@ function Page6() {
                         {JSON.parse(myResponse.spotResponseStatus)[JSON.parse(myResponse.participantsName).indexOf(myNickname)] ? (
                             <Go done={JSON.parse(myResponse.spotResponseStatus)[JSON.parse(myResponse.participantsName).indexOf(myNickname)]}>완료</Go>
                         ) : (
-                            <Go done={JSON.parse(myResponse.spotResponseStatus)[JSON.parse(myResponse.participantsName).indexOf(myNickname)]} onClick={() => navigate('/page8', { state: { planId: myResponse.planId } })}>하러 가기</Go>
+                            <Go done={JSON.parse(myResponse.spotResponseStatus)[JSON.parse(myResponse.participantsName).indexOf(myNickname)]} onClick={() => navigate('/spotsurvey', { state: { planId: myResponse.planId } })}>하러 가기</Go>
                         )}
 
                     </Preferencetop>

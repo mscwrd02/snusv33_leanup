@@ -38,23 +38,23 @@ function App(){
           <Routes>
               <Route path="/">
                   <Route index element={<Page1 />} />
-                  <Route path="page1" element={<Page1 />} />
-                  <Route path="page1_1" element={<Page1_1 />} />
-                  <Route path="page1_2" element={<Page1_2 />} />
-                  <Route path="page2_1" element={<Page2_1 />} />
+                  <Route path="home" element={<Page1 />} />
+                  <Route path="login" element={<Page1_1 />} />
+                  <Route path="join" element={<Page1_2 />} />
+                  <Route path="planlist" element={<Page2_1 />} />
                   <Route path="page2_2" element={<Page2_2 />} />
-                  <Route path="page3" element={<Page3 />} />
-                  <Route path="page4" element={<Page4 />} />
-                  <Route path="page5" element={<Page5 />} />
-                  <Route path="page6" element={<Page6 />} />
+                  <Route path="makeplan" element={<Page3 />} />
+                  <Route path="selectlocation" element={<Page4 />} />
+                  <Route path="sharelink" element={<Page5 />} />
+                  <Route path="planstatus" element={<Page6 />} />
 
                   <Route path="plannermap" element={<PlannerMap />} />
                   <Route path="timetable" element={<TimeTable />} />
 
-                  <Route path="page6_1" element={<Page6_1 />} />
+                  <Route path="typesurvey" element={<Page6_1 />} />
                   <Route path="pageforguest" element={<PageforGuest />} />
-                  <Route path="page8" element={<Page8 />} />
-                  <Route path="page9" element={<Page9 />} />
+                  <Route path="spotsurvey" element={<Page8 />} />
+                  <Route path="surveyresult" element={<Page9 />} />
               </Route>
           </Routes>
       </BrowserRouter>

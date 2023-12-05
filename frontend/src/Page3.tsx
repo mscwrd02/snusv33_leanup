@@ -243,7 +243,7 @@ export function Page3() {
     return (
       <Page3Container>
         <Top>
-            <Back to="/page2_1">
+            <Back to="/planlist">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="27" viewBox="0 0 14 27" fill="none">
                     <path d="M13.1699 0L0 13.1699L13.1699 26.3397L13.9999 25.442L1.43203 13.1699L14 0.904566L13.1699 0Z" fill="black"/>
                 </svg>                
@@ -299,11 +299,9 @@ export function Page3() {
             </div>
         </Input>
 
-        <Nextpage to="/page4" isActive={isCompleted()}>
+        <Nextpage to="/selectlocation" isActive={isCompleted()}>
             다음
         </Nextpage>
       </Page3Container>
     );
-  }
-  
-//export default Page3;
+}

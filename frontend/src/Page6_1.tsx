@@ -157,7 +157,6 @@ function Page6_1(){
                     return updatedArray;
                 });
               }
-              console.log(response);
             } catch (error) {
               // 오류 발생시 실행
             } finally {
@@ -176,18 +175,17 @@ function Page6_1(){
     }
 
     function sendPreference(){
-        console.log(String(componentClickedArray.map((value, index) => (value === true ? index + 1 : undefined)).filter((value) => value !== undefined)));
         axios.post(backend_url+"/api/categories", {
             "categoryList": JSON.stringify(componentClickedArray.map((value, index) => (value === true ? index + 1 : undefined)).filter((value) => value !== undefined)),
             "planId" : location.state.planId
         }, { withCredentials: true })
         .then(function (response) {
-            console.log(response);
+            // 요청 성공시 실행
         }).catch(function (error) {
             // 오류발생시 실행
         }).then(function() {
             // 항상 실행
-            navigate('/page6', {
+            navigate('/planstatus', {
                 state: {
                   planId: location.state.planId
                 }
@@ -202,7 +200,7 @@ function Page6_1(){
     return(
         <Page6_1Container>
             <Top>
-                <Back to="/page6">
+                <Back to="/planstatus">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="27" viewBox="0 0 14 27" fill="none">
                         <path d="M13.1699 0L0 13.1699L13.1699 26.3397L13.9999 25.442L1.43203 13.1699L14 0.904566L13.1699 0Z" fill="black"/>
                     </svg>                

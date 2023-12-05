@@ -25,6 +25,8 @@ const Top = styled.div`
     display: flex;
 
     color: #292929;
+
+    margin-bottom: 35px;
 `
 
 const Back = styled.div`
@@ -96,12 +98,37 @@ const Result = styled.div`
     gap: 12px;
 `
 
-const Score = styled.div`
+interface ScoreProps {
+    scoreProp: number;
+}
+
+const Score = styled.div<ScoreProps>`
     width: 101.441px;
     height: 29px;
     flex-shrink: 0;
     border-radius: 8px;
-    background: #FF3B30;
+
+    background: ${(props) => {
+    if (props.scoreProp === 800) {
+      return '#FF3B30';
+    } else if (props.scoreProp === 700) {
+      return '#FF9500;';
+    } else if (props.scoreProp === 600) {
+      return '#FFCC00';
+    } else if (props.scoreProp === 500) {
+      return '#34C759';
+    } else if (props.scoreProp === 400) {
+      return '#5AC8FA';
+    } else if (props.scoreProp === 300) {
+      return '#007AFF';
+    } else if (props.scoreProp === 200) {
+      return '#5856D6';
+    } else if (props.scoreProp === 100) {
+      return '#AF52DE';
+    } else {
+      return '#000000'; 
+    }
+  }};
 
     color: #FFF;
     font-family: Noto Sans KR;
@@ -438,8 +465,6 @@ function Page9(){
         const fetchData = async () => {
             try {
                 const response = await axios.get(backend_url+"/api/spots/recommend/"+String(location.state.planId), { withCredentials: true });
-                // 1을 location.state.planId로 바꿔야 함
-                console.log(response.data);
                 scoreSet = response.data.map((item : any) => (item.score >= 100 ? item.score : 100));
                 scoreSet = Array.from(new Set(scoreSet));
             
@@ -522,7 +547,6 @@ function Page9(){
             }
             })
           .then(response => {
-            console.log("page9 장바구니 delete 성공")
           })
           .catch(error => {
             console.error('Error fetching data: ', error);
@@ -530,7 +554,6 @@ function Page9(){
     }
     
     const handleCommentChecked = (index: number) => {
-        console.log(isCommentCheckedArray[index]);
         setIsCommentCheckedArray((prevArray) => {
             const newArray : boolean[] = [...prevArray];
             newArray[index] = !newArray[index];
@@ -543,12 +566,11 @@ function Page9(){
             "planId" : location.state.planId
         }, { withCredentials: true })
         .then(function (response) {
-            console.log(response);
-        }).catch(function (error) {
+            }).catch(function (error) {
             // 오류발생시 실행
         }).then(function() {
             // 항상 실행
-            navigate('/page6', {
+            navigate('/planstatus', {
                 state: {
                   planId: location.state.planId,
                 }
@@ -559,7 +581,7 @@ function Page9(){
     return(
         <Page9Container>
             <Top>
-                <Back onClick={() => navigate('/page6', { state: { planId: location.state.planId} })}>
+                <Back onClick={() => navigate('/planstatus', { state: { planId: location.state.planId} })}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="27" viewBox="0 0 14 27" fill="none">
                         <path d="M13.1699 0L0 13.1699L13.1699 26.3397L13.9999 25.442L1.43203 13.1699L14 0.904566L13.1699 0Z" fill="black"/>
                     </svg>                
@@ -568,17 +590,9 @@ function Page9(){
             </Top>
 
             <Body>
-                <More onClick={giveMore}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
-                        <path d="M6 11L6 1" stroke="#0D99FF" stroke-width="2" stroke-linecap="round"/>
-                        <path d="M1 6L11 6" stroke="#0D99FF" stroke-width="2" stroke-linecap="round"/>
-                    </svg>
-                    20개 설문 더 하기
-                </More>
-
                 {scoreSet.map((score: number, scoreindex: number) => (
                     <Result>
-                        <Score>{score}/{scoreSet[0]}점</Score>
+                        <Score scoreProp={score}>{score}/{scoreSet[0]}점</Score>
                         {responseArray.map((response: ResponseType, index: number) => (
                             (response.score === score) && (
                             <SpotContainer>
@@ -658,3 +672,13 @@ function Page9(){
 }
 
 export default Page9
+
+/* 20개 더 받게 하고 싶으면 Body 태그 안에 아래 코드 추가
+<More onClick={giveMore}>
+    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+        <path d="M6 11L6 1" stroke="#0D99FF" stroke-width="2" stroke-linecap="round"/>
+        <path d="M1 6L11 6" stroke="#0D99FF" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    20개 설문 더 하기
+</More>
+*/

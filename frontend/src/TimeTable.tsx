@@ -106,10 +106,7 @@ function TimeTable() {
 
   const handle_eachday = async ({day, block}: {day: number, block: number}) => {
     // 버튼 클릭 시 실행될 코드
-    // console.log('n일차 시간표 클릭');
     let time: string;
-    console.log("hi")
-    console.log(day, block);
     if (block == 1) time = "morning";
     else if (block == 2) time = "afternoon1";
     else if (block == 3) time = "afternoon2";
@@ -121,16 +118,13 @@ function TimeTable() {
         setIsDeleteEnable(false);
         selected_day = day;
         const selectedDayData = spot_arr[selected_day];
-        console.log('prev spot id is ', spot_id, selectedDayData, selected_day);
         if (selectedDayData) {
           // if (!spot_id) {
             let index = spot_arr[selected_day].findIndex((item: { name: string }) => item.name === planData[day-1][block-1]);
             // if (spot_arr[selected_day][index]) 
             spot_id = spot_arr[selected_day][index].spotId;
-            console.log('spot id is ', spot_id);
           // }
         }
-        console.log(1, spot_id, day, time);
         axios.delete(backend_url + '/api/schedules', { ///day
           withCredentials: true,
           data: {
@@ -142,8 +136,6 @@ function TimeTable() {
           })
         .then(response => {
           setResponseData(response.data);
-          console.log(response.data);
-          console.log(day, block);
           setnewPostFlag(1);
         })
         .catch(error => {
@@ -184,7 +176,6 @@ function TimeTable() {
         }));
         setSelected(day-1);
         selected_day = day;
-        console.log(selected_day);
         setNSpot(spot_arr_count[selected_day]);
         if (!isVisible) setIsVisible(prevIsVisible => !prevIsVisible);
         setSelectedSpot(null)
@@ -210,8 +201,6 @@ function TimeTable() {
         },{ withCredentials: true })
         .then(response => {
           setResponseData(response.data);
-          console.log(response.data);
-          console.log(day, block);
           setnewPostFlag(1);
         })
         .catch(error => {
@@ -230,7 +219,6 @@ function TimeTable() {
         }));
         setSelected(day-1);
         selected_day = day;
-        console.log(selected_day);
         if (!isVisible) setIsVisible(prevIsVisible => !prevIsVisible);
         setSelectedSpot(null)
         setNSpot(spot_arr_count[selected_day]);
@@ -244,13 +232,11 @@ function TimeTable() {
     axios.get(backend_url + '/api/schedules/day/' + String(location.state.planId), { withCredentials: true })// String(location.state.planId), { withCredentials: true })
       .then(response => {
         setResponseData(response.data);
-        console.log("day data" + response.data);
         let tempNSpot = nSpot; // 임시 변수에 현재 nSpot 값 저장
         let day: any;
         if (!get_flag){
           for(let data of response.data){
             day = data.day;  // day 속성 값 가져오기
-            // console.log(day);
             // arr의 day번째 원소가 아직 배열로 초기화되지 않았다면 초기화
             if(!spot_arr[day]) spot_arr[day] = [];
             tempNSpot = tempNSpot + 1; // 임시 변수 값 증가
@@ -261,7 +247,6 @@ function TimeTable() {
         }
         get_flag = 1;
         setNSpot(spot_arr_count[day]); // nSpot 상태 업데이트
-        console.log(spot_arr);
       })
       .catch(error => {
         console.error('Error fetching data: ', error);
@@ -271,7 +256,6 @@ function TimeTable() {
   useEffect(() => {
     axios.get(backend_url + '/api/schedules/all/' + String(location.state.planId), { withCredentials: true }) //+ String(location.state.planId), { withCredentials: true })
     .then(response => {
-        console.log("recieved data"+response.data);
         // const dayNum = 3; //////////// 재혁이가 넘겨줄 예정
         let newPlanData: string[][] = [];
         let newIsBlockChoosed: boolean[][] = [];
@@ -321,7 +305,7 @@ function TimeTable() {
     <TimeTableContainer>
       <Body>
         <Top>
-            <Back onClick={() => navigate('/page6', { state: { planId: location.state.planId } })}>
+            <Back onClick={() => navigate('/planstatus', { state: { planId: location.state.planId } })}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="27" viewBox="0 0 14 27" fill="none">
                     <path d="M13.1699 0L0 13.1699L13.1699 26.3397L13.9999 25.442L1.43203 13.1699L14 0.904566L13.1699 0Z" fill="black"/>
                 </svg>                

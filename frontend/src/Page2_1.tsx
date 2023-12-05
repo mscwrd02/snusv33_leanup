@@ -258,8 +258,6 @@ if (localStorage.getItem('guestID')){
     axios.post(backend_url+"/api/plans/join/" + localStorage.getItem('guestID'), {
     }, { withCredentials: true })
     .then(function (response) {
-        console.log(response);
-        console.log(" join done !!! ");
         //redirect
     }).catch(function (error) {
         // 오류발생시 실행
@@ -273,16 +271,19 @@ export function Page2_1() {
 
     const [havePlan, setHavePlan] = useState(true);
     const [myResponse, setMyResponse] = useState(Array<string[]>());
-    const [isClickDeleteMenu, setIsClickDeleteMenu] = useState(false);
+    const [isClickDeleteMenuArray, setIsClickDeleteMenuArray] = useState<boolean[]>([]);
 
-    const deletePlan = (event: any, planId: string) => {
+    const deletePlan = (event: any, planId: string, index: number) => {
         event.stopPropagation();
         axios.delete(backend_url+"/api/plans/"+planId, {
             withCredentials: true,
             })
           .then(response => {
-            console.log("page2_1 plan delete 성공")
-            setIsClickDeleteMenu(false);
+            setIsClickDeleteMenuArray((prevArray) => {
+                const newArray : boolean[] = [...prevArray];
+                newArray[index] = false;
+                return newArray;
+            });
             window.location.reload();
           })
           .catch(error => {
@@ -290,17 +291,20 @@ export function Page2_1() {
         });
     }
 
-    const handleClick = (event : any) => {
+    const handleClick = (event : any, index: number) => {
         event.stopPropagation();
-        console.log("click");
-        setIsClickDeleteMenu(!isClickDeleteMenu);
+        setIsClickDeleteMenuArray((prevArray) => {
+            const newArray : boolean[] = [...prevArray];
+            newArray[index] = !newArray[index];
+            return newArray;
+        });
     };
+
 
     useEffect(() => {
         const fetchData = async () => {
             try {
               const response = await axios.get(backend_url+"/api/plans/all", { withCredentials: true });
-              console.log(response);
               if(response['data'].length==0){
                 setHavePlan(false);
               }
@@ -327,14 +331,14 @@ export function Page2_1() {
         fetchData();
     }, []); // 최초 한번
 
-    useEffect(() => {}, [isClickDeleteMenu]);
+    useEffect(() => {}, [isClickDeleteMenuArray]);
 
     return (
         <Page2_1Container>
-            <Logo to="/page2_1" style={{ textDecoration: "none"}}>Tripwiz</Logo>
+            <Logo to="/planlist" style={{ textDecoration: "none"}}>Tripwiz</Logo>
             {havePlan===true ? (<Body2_1>
                 {myResponse.map((response, index) => (
-                    <Location onClick={() => navigate('/page6', { state: { planId: response[4] } })}>
+                    <Location onClick={() => navigate('/planstatus', { state: { planId: response[4] } })}>
                         {response.length === 0 ? (
                             <a>a</a>
                         ) : (
@@ -343,15 +347,15 @@ export function Page2_1() {
                                     <DateContainer>
                                         {response[0].replace(/-/g, "/")}({days[new Date(response[0]).getDay()]}) ~ {response[1].replace(/-/g, "/")}({days[new Date(response[1]).getDay()]})
                                     </DateContainer>
-                                    <DotDotDot onClick={handleClick}>
+                                    <DotDotDot onClick={(event) => handleClick(event, index)}>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="5" height="23" viewBox="0 0 5 23" fill="none">
                                             <circle cx="2.5" cy="2.5" r="2.5" fill="black" fill-opacity="0.7"/>
                                             <circle cx="2.5" cy="11.5" r="2.5" fill="black" fill-opacity="0.7"/>
                                             <circle cx="2.5" cy="20.5" r="2.5" fill="black" fill-opacity="0.7"/>
                                         </svg>
                                     </DotDotDot>
-                                    {isClickDeleteMenu&& 
-                                    <DeleteMenu onClick={(event) => deletePlan(event, response[4])}>
+                                    {isClickDeleteMenuArray[index]&& 
+                                    <DeleteMenu onClick={(event) => deletePlan(event, response[4], index)}>
                                         <div>계획 삭제하기</div>
                                         <div>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none">
@@ -379,7 +383,7 @@ export function Page2_1() {
             </Body2_2>
             )}
             <Add>
-                <Link to="/page3">
+                <Link to="/makeplan">
                     <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60" fill="none">
                         <circle cx="30" cy="30" r="30" fill="#0D99FF"/>
                         <path d="M30 44.5714L30 14.5714" stroke="white" stroke-width="7" stroke-linecap="round"/>
