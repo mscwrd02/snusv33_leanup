@@ -77,7 +77,7 @@ function PlannerMap() {
   //get DATA!!!
   useEffect(() => {
     // API 호출
-    axios.get(backend_url + '/api/spots/recommend/' + String(location.state.planId), { withCredentials: true })
+    axios.get(backend_url + '/api/spots/recommend/' + String(location.state.planId), { withCredentials: true })// { withCredentials: true })
       .then(response => {
         setResponseData(response.data);
         console.log(response.data);
@@ -107,7 +107,7 @@ function PlannerMap() {
     handleSpotAdd(spotId);
     console.log(spotId, " spot added");
     axios.post(backend_url + '/api/schedules/day', {
-      "planId": location.state.planId,
+      "planId": location.state.planId, //location.state.planId,
       "spotId": spotId,
       "day": day
     },{ withCredentials: true })
@@ -272,6 +272,7 @@ function PlannerMap() {
   };
   
   const textStyle = {
+    // width: '10px',
     color: '#8E8E8E',
     fontFamily: 'Noto Sans KR',
     fontSize: '13px',
@@ -315,7 +316,7 @@ function PlannerMap() {
             </div>
             {isVisibleSpotPlus && (
               <div className="popup_spot_plus" style={popup_spot_plus_style}>
-                {Array.from({ length: location.state.howMuchDays }, (_, i) => i + 1).map(day => (
+                {Array.from({ length: location.state.howMuchDays }, (_, i) => i + 1).map(day => ( //location.state.howMuchDays
                   <button style={spot_plus_to_plan_style} key={day} onClick={() => handle_spotplusinmyplan(day)}>{day}일차 일정에 추가</button>
                 ))}
               </div>
@@ -398,7 +399,7 @@ const content_explain_style: React.CSSProperties = {
   zIndex: '2',
   background: 'None', 
   border:'None',
-  width: '225px',
+  width: '200px',
   height: '135px',
   left: '145px',
   top: '15px',
@@ -406,28 +407,37 @@ const content_explain_style: React.CSSProperties = {
 
 const popup_spot_plus_style: React.CSSProperties = {
   position: 'absolute',
-  left: '125px',
+  left: '200px',
   top: '40px',
   zIndex: '4',
-  width: '235px',
-  height: '135px',
+  width: '150px',
+  // height: '135px',/
   display: 'flex',
   flexDirection: 'column',
   //justifyContent: 'center',
   //alignItems: 'center',
-  backgroundColor: "None",
+  // backgroundColor: "None",
+  boxShadow: '0px 8px 64px 0px rgba(0, 0, 0, 0.10)',
   borderRadius: '12px',
+  background: 'rgba(237, 237, 237, 0.80)',
+  alignItems: 'flex-start'
 };
 
 const spot_plus_to_plan_style: React.CSSProperties = {
   zIndex: '5',
   // // width: '177px',
+  width: '100%',
   height: '25px',
   backgroundColor: "white",
   // borderRadius: '12px',
-  boxShadow: '0px 8px 64px 0px rgba(0, 0, 0, 0.10)',
+  textAlign: 'center',
   backdropFilter: 'blur(40px)',
   border: "#5AC8FA",
+  borderRadius: '12px',
+  display: 'flex',
+  background: 'rgba(237, 237, 237, 0.80)',
+  alignItems: 'center',
+  justifyContent: 'center',
 };
 export default PlannerMap;
 

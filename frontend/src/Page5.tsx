@@ -10,7 +10,7 @@ function Page5() {
 
   const generateStringToCopy = () => {
     // 여기에서 원하는 로직에 따라 새로운 문자열을 생성합니다.
-    return "tripwiz.space/PageforGuest?id=" + location.state.link;
+    return "https://www.tripwiz.space/PageforGuest?id=" + location.state.link;
   };
 
   const Sharing_Link = generateStringToCopy();
@@ -60,12 +60,21 @@ function Page5() {
       content: {
         title: 'Tripwiz 함께 여행 계획 짜자!',
         imageUrl:
-          'http://via.placeholder.com/500.jpg/',
+          kakaoLogo,
         link: {
           webUrl: Sharing_Link,
           mobileWebUrl: Sharing_Link,
         },
       },
+      buttons: [
+        {
+          title: '웹으로 보기',
+          link: {
+            mobileWebUrl: Sharing_Link,
+            webUrl: Sharing_Link,
+          },
+        },
+      ],
     })
   };
 

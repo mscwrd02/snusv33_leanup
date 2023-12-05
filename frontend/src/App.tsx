@@ -1,4 +1,4 @@
-import {BrowserRouter, Route, Routes} from 'react-router-dom';
+import {BrowserRouter, Route, Routes, useLocation} from 'react-router-dom';
 import Page1 from "./Page1";
 import Page1_1 from './Page1_1';
 import Page1_2 from './Page1_2';
@@ -17,7 +17,23 @@ import TimeTable from './TimeTable';
 import Page8 from "./Page8";
 import Page9 from "./Page9";
 
+import { useEffect } from 'react';
+import ReactGA from 'react-ga4';
+
+
 function App(){
+    // const location = useLocation();
+
+    // useEffect(() => {
+    //     const trackPageView = (page_path: string) => {
+    //         window.gtag('config', 'G-52K4E07LDY', {
+    //           page_path: page_path,
+    //         }); 
+    //       };
+      
+    //       trackPageView(location.pathname + location.search);
+    // }, [location]);
+
   return(
       <BrowserRouter>
           <Routes>
