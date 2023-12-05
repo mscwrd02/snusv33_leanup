@@ -15,7 +15,7 @@ import right from './images/right.png';
 const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
 
 const Page1Container = styled.div`
-    width: 430px;
+    width: 100%;
     height: 100%;
     background: #FFF; 
     display: flex;
