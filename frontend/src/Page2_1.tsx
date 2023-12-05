@@ -42,7 +42,6 @@ const Body2_1 = styled.div`
     align-items: center;
 
     margin-top: 25px;
-
     gap: 30px;
 ` 
 
@@ -57,9 +56,19 @@ const Location = styled.div`
     
     box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.20);
 
-    padding: 18px 14px 21px 19px;
+    padding: 18px 21px 13px 21px;
     box-sizing: border-box;
 `;
+
+const Top = styled.div`
+    width: 100%;
+    height: 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    position: relative;
+`
 
 const DateContainer = styled.div`
     width: 249px;
@@ -82,6 +91,38 @@ const DateContainer = styled.div`
     align-items: center;
 `;
 
+const DotDotDot = styled.div`
+`
+
+const DeleteMenu = styled.div`
+    display: flex;
+
+    width: 174px;
+    height: 40px;
+    padding: 11px 16px 11px 16px;
+    box-sizing: border-box;
+
+    align-items: center;
+    justify-content: space-between;
+
+    border-radius: 10px;
+    box-shadow: 0px 8px 64px 0px rgba(0, 0, 0, 0.10);
+    backdrop-filter: blur(40px);
+    background: #EDEDEDCC;
+
+    color: var(--label-color-light-primary, #000);
+    font-family: Noto Sans KR;
+    font-size: 17px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 22px; /* 129.412% */
+    letter-spacing: -0.408px;
+
+    position: absolute;
+    top: 33px;
+    right: -8px;
+`
+
 const Jeju = styled.div`
     color: var(--Black, #000);
 
@@ -90,7 +131,6 @@ const Jeju = styled.div`
     font-style: normal;
     font-weight: 700;
     line-height: normal;
-
     text-align: center;
 
     margin-top: 57px;
@@ -227,50 +267,33 @@ if (localStorage.getItem('guestID')){
     });
 }
 
-function PageReturn(havePlan: boolean, myResponse: Array<string[]>){
-    const navigate = useNavigate();
-    if(havePlan===true){
-        return(
-            <Body2_1>
-                {myResponse.map((response, index) => (
-                    <Location key={index} onClick={() => navigate('/page6', { state: { planId: response[4]  } })}>
-                        {response.length === 0 ? (
-                            <a>a</a>
-                        ) : (
-                            <div>
-                            <DateContainer>
-                                {response[0].replace(/-/g, "/")}({days[new Date(response[0]).getDay()]}) ~ {response[1].replace(/-/g, "/")}({days[new Date(response[1]).getDay()]})
-                            </DateContainer>
-                            <Jeju>제주도</Jeju>
-                            <Below>
-                                <Planning>{response[2]}</Planning>
-                                <ParticipantContainer>
-                                    {JSON.parse(response[3]).map((participant: string, index: number) => (
-                                        <Participant key={index} order={index+1}>{participant.slice(1)}</Participant>
-                                    ))}
-                                </ParticipantContainer>
-                            </Below>
-                            </div>
-                        )}
-                    </Location>
-                ))}
-                <Decoration>Tripwiz</Decoration>
-            </Body2_1>
-        )
-    }
-    else{
-        return(
-            <Body2_2>
-                플러스 버튼을 <span>눌러</span><br></br>여행 계획<span>을</span><br></br>시작해보세요!
-            </Body2_2>
-        )
-    }
-}
-
 export function Page2_1() {
-    const [havePlan, setHavePlan] = useState(true);
+    const navigate = useNavigate();
 
+    const [havePlan, setHavePlan] = useState(true);
     const [myResponse, setMyResponse] = useState(Array<string[]>());
+    const [isClickDeleteMenu, setIsClickDeleteMenu] = useState(false);
+
+    const deletePlan = (event: any, planId: string) => {
+        event.stopPropagation();
+        axios.delete(backend_url+"/api/plans/"+planId, {
+            withCredentials: true,
+            })
+          .then(response => {
+            console.log("page2_1 plan delete 성공")
+            setIsClickDeleteMenu(false);
+            window.location.reload();
+          })
+          .catch(error => {
+            console.error('Error fetching data: ', error);
+        });
+    }
+
+    const handleClick = (event : any) => {
+        event.stopPropagation();
+        console.log("click");
+        setIsClickDeleteMenu(!isClickDeleteMenu);
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -303,10 +326,57 @@ export function Page2_1() {
         fetchData();
     }, []); // 최초 한번
 
+    useEffect(() => {}, [isClickDeleteMenu]);
+
     return (
         <Page2_1Container>
             <Logo to="/page2_1" style={{ textDecoration: "none"}}>Tripwiz</Logo>
-            {PageReturn(havePlan, myResponse)}
+            {havePlan===true ? (<Body2_1>
+                {myResponse.map((response, index) => (
+                    <Location onClick={() => navigate('/page6', { state: { planId: response[4] } })}>
+                        {response.length === 0 ? (
+                            <a>a</a>
+                        ) : (
+                            <div>
+                                <Top>
+                                    <DateContainer>
+                                        {response[0].replace(/-/g, "/")}({days[new Date(response[0]).getDay()]}) ~ {response[1].replace(/-/g, "/")}({days[new Date(response[1]).getDay()]})
+                                    </DateContainer>
+                                    <DotDotDot onClick={handleClick}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="5" height="23" viewBox="0 0 5 23" fill="none">
+                                            <circle cx="2.5" cy="2.5" r="2.5" fill="black" fill-opacity="0.7"/>
+                                            <circle cx="2.5" cy="11.5" r="2.5" fill="black" fill-opacity="0.7"/>
+                                            <circle cx="2.5" cy="20.5" r="2.5" fill="black" fill-opacity="0.7"/>
+                                        </svg>
+                                    </DotDotDot>
+                                    {isClickDeleteMenu&& 
+                                    <DeleteMenu onClick={(event) => deletePlan(event, response[4])}>
+                                        <div>계획 삭제하기</div>
+                                        <div>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none">
+                                                <path d="M4.88889 3.0726V2.12986C4.88889 1.83235 4.88889 1.68359 5.11682 1.40669C5.34475 1.12979 5.41533 1.11597 5.5565 1.08833C6.00751 1 6.54569 1 6.83333 1H8.5L10.1667 1.00001C10.4666 1.00001 11.0389 1.00001 11.5007 1.10013C11.5738 1.11597 11.6103 1.12389 11.8182 1.33181C11.8446 1.35819 11.9318 1.46624 11.952 1.49762C12.1111 1.74486 12.1111 1.85372 12.1111 2.07143V2.07143V3.14286M1 3.63466H2.94444M2.94444 3.63466H14.0556M2.94444 3.63466L3.38889 14.8759C3.38889 15.4967 3.77028 16 4.24074 16H12.7593C13.2297 16 13.6111 15.4967 13.6111 14.8759L14.0556 3.63466M14.0556 3.63466H16M8.5 6.73529V12.9118M5.94444 6.73529V12.9118M11.0556 6.73529V12.9118" stroke="black" stroke-linecap="round"/>
+                                            </svg>
+                                        </div>
+                                    </DeleteMenu>}
+                                </Top>
+                                <Jeju>제주도</Jeju>
+                                <Below>
+                                    <Planning>{response[2]}</Planning>
+                                    <ParticipantContainer>
+                                        {JSON.parse(response[3]).map((participant: string, index: number) => (
+                                            <Participant key={index} order={index+1}>{participant.slice(1)}</Participant>
+                                        ))}
+                                    </ParticipantContainer>
+                                </Below>
+                            </div>
+                        )}
+                    </Location>
+                ))}
+                <Decoration>Tripwiz</Decoration>
+            </Body2_1>) : (<Body2_2>
+                플러스 버튼을 <span>눌러</span><br></br>여행 계획<span>을</span><br></br>시작해보세요!
+            </Body2_2>
+            )}
             <Add>
                 <Link to="/page3">
                     <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60" fill="none">

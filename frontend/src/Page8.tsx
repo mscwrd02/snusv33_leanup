@@ -512,7 +512,12 @@ function Page8(){
     }
 
     function nextFunction(){
+
         const fetchData = async () => {
+            console.log("내 planId", location.state.planId);
+            console.log(myResponse.spotForm[currentSpotId].id);
+            console.log(scoreArray[currentSpotId]);
+            console.log(commentArray[currentSpotId]);
             try {
                 const response = await axios.post(backend_url+"/api/spots", {
                     "planId": location.state.planId,
@@ -520,7 +525,7 @@ function Page8(){
                     "score": scoreArray[currentSpotId],
                     "comment": commentArray[currentSpotId],
                     "isLast": currentSpotId === 19
-                }, { withCredentials: true });
+                }, { withCredentials: true });       
             } catch (error) {
               // 오류 발생시 실행
             } finally {
@@ -574,7 +579,7 @@ function Page8(){
     console.log(scoreArray);
     return(
         <Page8Container isPopupOpen={isPopupOpen}>
-            <LogoContainer>Tripwiz</LogoContainer>
+            <LogoContainer onClick={() => navigate('/page2_1')}>Tripwiz</LogoContainer>
             <LinkContainer to={myResponse.spotForm[currentSpotId].link !== undefined ? myResponse.spotForm[currentSpotId].link : "https://www.naver.com/"} target="_blank">
                 <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none">
                     <path d="M9.91634 7.08335L7.08301 9.91669" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>

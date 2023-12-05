@@ -2,6 +2,7 @@ import {Link, useLocation, useNavigate} from 'react-router-dom';
 import { useRef, useState, useEffect } from 'react';
 import styled from "styled-components";
 import example1Img from './images/example1.png';
+import comment_img1 from './images/comment_img1.png';
 
 import axios from 'axios';
 const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
@@ -117,7 +118,7 @@ const Score = styled.div`
 
 const SpotContainer = styled.div`
     width: 100%;
-    height: 97px;
+    height: fit-content;
     box-sizing: border-box;
     fill: #FFF;
     border-radius: 15px;
@@ -128,11 +129,24 @@ const SpotContainer = styled.div`
     box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.20);
 
     display: flex;
-    grid-template-columns: 3fr 8.5fr 1fr;
-    padding-top: 12px;
-    padding-bottom: 12px;
+    padding-top: 0px;
+    padding-bottom: 0px;
     padding-left: 12px;
     padding-right: 21px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    
+    position: relative;
+`
+
+const SpotContainerBody = styled.div`
+    width: 100%;
+    height: 97px;
+
+    display: flex;
+    grid-template-columns: 3fr 8.5fr 1fr;
 
     align-items: center;
     justify-content: space-between;
@@ -140,7 +154,65 @@ const SpotContainer = styled.div`
     position: relative;
 `
 
-const Explanation = styled.div`
+const Arrow = styled.div`
+    width: 27px;
+    height: 24px;
+    flex-shrink: 0;
+    position: absolute;
+    top: 97px;
+    left: 18px;
+`
+
+const CommentContainer = styled.div`
+    width: 297px;
+    height: fit-content;
+
+    box-sizing: border-box;
+    flex-shrink: 0;
+    fill: #FFF;
+    stroke-width: 0.5px;
+    stroke: rgba(180, 180, 180, 0.45);
+    filter: drop-shadow(0px 0px 6px rgba(0, 0, 0, 0.20));
+
+    border-radius: 5px;
+    border: 0.5px solid rgba(180, 180, 180, 0.45);
+    background: #FFF;
+
+    /* drop blur */
+    box-shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.20);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 13px 9px 10px;
+    margin-bottom: 10px;
+
+    div{
+        width: 28px;
+        height: auto;
+        color: #616161;
+        font-family: Noto Sans KR;
+        font-size: 11px;
+        font-style: normal;
+        font-weight: 900;
+        line-height: 120%; /* 13.2px */
+        letter-spacing: -0.33px;
+    }
+
+    span{
+        width: 100%;
+        height: auto;
+        color: #8E8E8E;
+        font-family: Noto Sans KR;
+        font-size: 11px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 120%;
+        letter-spacing: -0.33px;
+    }
+`
+
+const ExplanationContainer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -166,6 +238,52 @@ const Explanation = styled.div`
         margin-bottom: 5px;
         margin-top: 0px;
     }
+`
+
+const ExplanationTop = styled.div`
+    width: fit-content;
+    height: 25px;
+    box-sizing: border-box;
+    display: flex;
+    gap: 7px;
+
+    p{  
+        height: fit-content;
+        color: var(--DARK-BLUE, #1D2029);
+        font-family: Noto Sans KR;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 120%; /* 19.2px */
+        letter-spacing: -0.48px;
+        margin-bottom: 0px;
+        margin-top: 2px;
+    }
+
+    position: relative;
+`
+
+const Ellipse = styled.div`
+    width: 10px;
+    height: 11px;
+    background-color: red;
+    border-radius: 50%; /* 이 부분이 타원 모양을 만들어줍니다. */
+
+    color: #FFF;
+    font-family: Noto Sans KR;
+    font-size: 7px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 120%; /* 8.4px */
+    letter-spacing: -0.21px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: absolute;
+    top:-2px;
+    right: 0px;
 `
 
 interface PlusProps {
@@ -198,7 +316,7 @@ const PlusMenu = styled.div`
 
     position: absolute;
     top: 68px;
-    right: 17px;
+    right: 0px;
 
     display: grid;
     flex-direction: column;
@@ -286,10 +404,16 @@ class Spot {
     link: string = "";
     Images: Image[] = [new Image()];
 }
+
+class Comments {
+    UserId: number = 0;
+    name: string = "";
+    comment: string = "";
+}
   
 class ResponseType {
     score: number = 0;
-    comments: string = "[]";
+    comments: Comments[] = [new Comments()];
     isInSchedule: boolean = false;
     Spot: Spot = new Spot();
 }
@@ -303,28 +427,39 @@ function Page9(){
 
     const [isChoosingArray, setIsChoosingArray] = useState<boolean[]>([]);
     const [isCheckedArray, setIsCheckedArray] = useState<boolean[]>([]);
+    const [isCommentCheckedArray, setIsCommentCheckedArray] = useState<boolean[]>([]);
     const [responseArray, setResponseArray] = useState<ResponseType[]>([]);
 
     const [daysArray, setDaysArray] = useState<string[]>(referenceDaysArray.slice(0, location.state.howMuchDays));
     
+    const [commentLengthArray, setCommentLengthArray] = useState<number[]>([]);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios.get(backend_url+"/api/spots/recommend/"+String(location.state.planId), { withCredentials: true });
                 // 1을 location.state.planId로 바꿔야 함
-                console.log(response.data.length);
+                console.log(response.data);
                 scoreSet = response.data.map((item : any) => (item.score >= 100 ? item.score : 100));
                 scoreSet = Array.from(new Set(scoreSet));
-                console.log(scoreSet);
             
                 setIsChoosingArray(Array(response.data.length).fill(false));
                 let tempIsCheckedArray : boolean[] = Array(response.data.length).fill(false);
+                let tempIsCommentCheckedArray : boolean[] = Array(response.data.length).fill(false);
+                let tempCommentLengthArray : number[] = Array(response.data.length).fill(0);
                 for(let i = 0; i < response.data.length; i++){
                     if(response.data[i].isInSchedule){
                         tempIsCheckedArray[i] = true;
                     }
+                    for(let j = 0 ; j < response.data[i].comments.length; j++){
+                        if(response.data[i].comments[j].comment !== ""){
+                            tempCommentLengthArray[i] += 1;
+                        }
+                    }
                 }
                 setIsCheckedArray(tempIsCheckedArray);
+                setIsCommentCheckedArray(tempIsCommentCheckedArray);
+                setCommentLengthArray(tempCommentLengthArray);
                 setResponseArray(response.data);
             }   catch (error) {
                 // 오류 발생시 실행
@@ -356,7 +491,6 @@ function Page9(){
             return newArray;
         });
 
-        //planId를 1에서 location.state.planId로 바꿔야 함
         const fetchData = async () => {
             try {
                 const response = await axios.post(backend_url+"/api/schedules/day/", {
@@ -394,7 +528,16 @@ function Page9(){
             console.error('Error fetching data: ', error);
         });
     }
-    ////////////////// axois planId
+    
+    const handleCommentChecked = (index: number) => {
+        console.log(isCommentCheckedArray[index]);
+        setIsCommentCheckedArray((prevArray) => {
+            const newArray : boolean[] = [...prevArray];
+            newArray[index] = !newArray[index];
+            return newArray;
+        });
+    }
+
     function giveMore(){        
         axios.post(backend_url+"/api/spots/more", {
             "planId" : location.state.planId
@@ -439,36 +582,62 @@ function Page9(){
                         {responseArray.map((response: ResponseType, index: number) => (
                             (response.score === score) && (
                             <SpotContainer>
-                                <img src={responseArray[index].Spot.Images[0].path} width={'72px'} height={'72px'}></img>
-                                <Explanation>
-                                    <p>{responseArray[index].Spot.name}</p>
-                                    {responseArray[index].Spot.overview}
-                                </Explanation>
-                                {isCheckedArray[index] ? (
-                                    <Checked onClick={() => handleClickChecked(index)}>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                            <rect width="24" height="24" rx="7" fill="#0D99FF"/>
-                                            <path d="M7 10.4615L11.0364 15.8412C11.0961 15.9208 11.2155 15.9212 11.2758 15.8419L18 7" stroke="white" stroke-width="3"/>
-                                        </svg>
-                                    </Checked>
-                                ) : (
-                                    <Plus onClick={() => handleClickPlus(index)}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 60 60" fill="none">
-                                        <path d="M30 44.5714L30 14.5714" stroke="white" stroke-width="7" stroke-linecap="round"/>
-                                        <path d="M14.5713 30H44.5713" stroke="white" stroke-width="7" stroke-linecap="round"/>
-                                    </svg>   
-                                    </Plus>
-                                )
-                                }
-                                {isChoosingArray[index]&& 
-                                <PlusMenu>
-                                    {daysArray.map((day: string, dayindex: number) => (
-                                        <div>
-                                            <EachDaySection onClick={() => handleClickDay(dayindex, index)}>{day} 일정에 추가<span>+</span></EachDaySection>
-                                            <RowSeparator/>
-                                        </div>
-                                    ))}
-                                </PlusMenu>}
+                                <SpotContainerBody>
+                                    <img src={responseArray[index].Spot.Images[0].path} width={'72px'} height={'72px'}></img>
+                                    <ExplanationContainer>
+                                        <ExplanationTop>
+                                            <p>{responseArray[index].Spot.name}</p>
+                                            {commentLengthArray[index] > 0 && (
+                                                <div onClick={() => handleCommentChecked(index)}>
+                                                    <img src={comment_img1} width={22} height={21}></img>
+                                                </div>)}
+                                            {commentLengthArray[index] > 0 && (
+                                                <Ellipse>{responseArray[index].comments.length}</Ellipse>)}
+                                        </ExplanationTop>
+                                        {responseArray[index].Spot.overview}
+                                    </ExplanationContainer>
+                                    {isCheckedArray[index] ? (
+                                        <Checked onClick={() => handleClickChecked(index)}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                                <rect width="24" height="24" rx="7" fill="#0D99FF"/>
+                                                <path d="M7 10.4615L11.0364 15.8412C11.0961 15.9208 11.2155 15.9212 11.2758 15.8419L18 7" stroke="white" stroke-width="3"/>
+                                            </svg>
+                                        </Checked>
+                                    ) : (
+                                        <Plus onClick={() => handleClickPlus(index)}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 60 60" fill="none">
+                                            <path d="M30 44.5714L30 14.5714" stroke="white" stroke-width="7" stroke-linecap="round"/>
+                                            <path d="M14.5713 30H44.5713" stroke="white" stroke-width="7" stroke-linecap="round"/>
+                                        </svg>   
+                                        </Plus>
+                                    )
+                                    }
+                                    {isChoosingArray[index]&& 
+                                    <PlusMenu>
+                                        {daysArray.map((day: string, dayindex: number) => (
+                                            <div>
+                                                <EachDaySection onClick={() => handleClickDay(dayindex, index)}>{day} 일정에 추가<span>+</span></EachDaySection>
+                                                <RowSeparator/>
+                                            </div>
+                                        ))}
+                                    </PlusMenu>}
+                                </SpotContainerBody>
+                                {isCommentCheckedArray[index] && (
+                                <Arrow>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="29" viewBox="0 0 30 29" fill="none">
+                                        <path d="M15.375 12.1515L16.1294 11.4951L16.7006 12.1515L16.1294 12.8079L15.375 12.1515ZM1.875 11.1515L0.875 11.1515V11.1515L1.875 11.1515ZM0.875 1C0.875 0.447716 1.32272 1.04011e-06 1.875 1.04907e-06C2.42728 1.05804e-06 2.875 0.447716 2.875 1L0.875 1ZM11.9106 6.64662L16.1294 11.4951L14.6206 12.8079L10.4019 7.95945L11.9106 6.64662ZM16.1294 12.8079L11.9107 17.6564L10.4019 16.3436L14.6206 11.4951L16.1294 12.8079ZM15.375 13.1515L2.875 13.1515L2.875 11.1515L15.375 11.1515L15.375 13.1515ZM0.875 11.1515L0.875 1L2.875 1L2.875 11.1515L0.875 11.1515ZM2.875 13.1515C1.77043 13.1515 0.875 12.2561 0.875 11.1515L2.875 11.1515L2.875 13.1515Z" fill="#33363F"/>
+                                    </svg>
+                                </Arrow>
+                                )}
+                                
+                                {responseArray[index].comments.map((currcomment: Comments, nameindex: number) => (
+                                    (isCommentCheckedArray[index]) &&
+                                    (currcomment.comment !== "") && (
+                                    <CommentContainer>
+                                        <div>{currcomment.name.slice(1,)}</div>
+                                        <span>{currcomment.comment}</span>
+                                    </CommentContainer>)
+                                ))}
                             </SpotContainer>
                         )))}
                     </Result>
