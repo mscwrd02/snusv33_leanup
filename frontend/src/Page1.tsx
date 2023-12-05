@@ -109,7 +109,7 @@ interface ChooseProp {
 
 const Choose = styled.div<ChooseProp>`
   width: 215px;
-  height: 461px;
+  height: 482px;
   box-sizing: border-box;
   
   border-radius: 20px;
@@ -118,6 +118,7 @@ const Choose = styled.div<ChooseProp>`
   
   background-image: ${(props) => `url(${props.currentImg})`};
   background-repeat: no-repeat;
+  background-size: cover;
 
   position: relative;
 `;
@@ -150,13 +151,13 @@ const Start = styled(Link)`
 const LeftContainer = styled.div`
   position: absolute;
   left : -70px;
-  top : 40%;
+  top : 44%;
 `
 
 const RightContainer = styled.div`
   position: absolute;
   right : -70px;
-  top : 40%;
+  top : 44%;
 `
 
 function Page1() {
