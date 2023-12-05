@@ -118,6 +118,7 @@ const With = styled.div`
 `
 
 const Text = styled.span`
+  width: fit-content;
   color: #000;
   text-align: center;
   font-family: Noto Sans KR;
