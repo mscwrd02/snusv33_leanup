@@ -8,6 +8,7 @@ import close_btn_x_black from './images/close_btn_x_black.png';
 import styled from 'styled-components'
 import { useEffect } from 'react'
 import axios from 'axios';
+import delete_btn from './images/delete_btn.png';
 
 const TimeTableContainer = styled.div`
   width: 100%;
@@ -78,6 +79,7 @@ function TimeTable() {
   const [newPostFlag, setnewPostFlag] = useState(0);
   const [isPlannedEachBlock, setisPlannedEachBlock] = useState(Array.from({ length: n_day }, () => Array(4).fill(0)));
   const [planData, setPlanData] = useState<string[][]>([]);
+  const [isBlockChoosed, setIsBlockChoosed] = useState<boolean[][]>([]); // for delete button visible
 
   const initialResponseData = {}; // 초기 responseData 값
 
@@ -86,7 +88,7 @@ function TimeTable() {
 
   const location = useLocation();
   const navigate = useNavigate();
-
+  n_day = location.state.howMuchDays;
 
   let get_flag = 0;
   const handleSpotClick = (index: number) => {
@@ -106,16 +108,16 @@ function TimeTable() {
     // 버튼 클릭 시 실행될 코드
     // console.log('n일차 시간표 클릭');
     let time: string;
-
+    console.log("hi")
+    console.log(day, block);
     if (block == 1) time = "morning";
     else if (block == 2) time = "afternoon1";
     else if (block == 3) time = "afternoon2";
     else if (block == 4) time = "evening";
     else time = "morning";
 
-
     if (selectedSpot === null && isLoadingDone){
-      if (planData[day-1][block-1] && isDeleteEnable) { // delete
+      if (planData[day-1][block-1] && isDeleteEnable &&isBlockChoosed[day-1][block-1]) { // delete
         setIsDeleteEnable(false);
         selected_day = day;
         const selectedDayData = spot_arr[selected_day];
@@ -132,7 +134,7 @@ function TimeTable() {
         axios.delete(backend_url + '/api/schedules', { ///day
           withCredentials: true,
           data: {
-            planId: location.state.planId,
+            planId: location.state.planId, //location.state.planId,
             spotId: spot_id,
             date: day,
             time: time,
@@ -147,11 +149,30 @@ function TimeTable() {
         .catch(error => {
           console.error('Error fetching data: ', error);
         });
+
+        let newIsBlockChoosed: boolean[][] = [];
+        for (let i = 0; i < n_day; i++) {
+          newIsBlockChoosed.push([false, false, false, false]);
+        }
+        setIsBlockChoosed(newIsBlockChoosed);
       }
       else if(planData[day-1][block-1]){
         setIsDeleteEnable(true);
+
+        let newIsBlockChoosed: boolean[][] = [];
+        for (let i = 0; i < n_day; i++) {
+          if (i != day-1)
+            newIsBlockChoosed.push([false, false, false, false]);
+          else{
+            let tmp_arr = [false, false, false, false];
+            tmp_arr[block-1] = true;
+            newIsBlockChoosed.push(tmp_arr);
+          }
+        }
+        setIsBlockChoosed(newIsBlockChoosed);
       }
       else{
+        setIsDeleteEnable(false);
         setBrightness(prevBrightness => prevBrightness.map((b, i) => {
           if (i === day-1) {
             return Math.max(b - 0.2, 0.8);
@@ -167,15 +188,22 @@ function TimeTable() {
         setNSpot(spot_arr_count[selected_day]);
         if (!isVisible) setIsVisible(prevIsVisible => !prevIsVisible);
         setSelectedSpot(null)
+
+        let newIsBlockChoosed: boolean[][] = [];
+        for (let i = 0; i < n_day; i++) {
+          newIsBlockChoosed.push([false, false, false, false]);
+        }
+        setIsBlockChoosed(newIsBlockChoosed);
       }
     }
     else{
+      setIsDeleteEnable(false);
       if (planData[day-1][block-1]){
         return ;
       }
       if (day == selected_day){
         axios.post(backend_url + '/api/schedules', {
-          "planId": location.state.planId,
+          "planId": location.state.planId, //location.state.planId,
           "spotId": spot_id,
           "date": day,
           "time": time,
@@ -213,10 +241,10 @@ function TimeTable() {
 
   useEffect(() => {
     // API 호출
-    axios.get(backend_url + '/api/schedules/day/' + String(location.state.planId), { withCredentials: true })
+    axios.get(backend_url + '/api/schedules/day/' + String(location.state.planId), { withCredentials: true })// String(location.state.planId), { withCredentials: true })
       .then(response => {
         setResponseData(response.data);
-        //console.log(response.data);
+        console.log("day data" + response.data);
         let tempNSpot = nSpot; // 임시 변수에 현재 nSpot 값 저장
         let day: any;
         if (!get_flag){
@@ -241,13 +269,15 @@ function TimeTable() {
   }, []);
 
   useEffect(() => {
-    axios.get(backend_url + '/api/schedules/all/' + String(location.state.planId), { withCredentials: true })
+    axios.get(backend_url + '/api/schedules/all/' + String(location.state.planId), { withCredentials: true }) //+ String(location.state.planId), { withCredentials: true })
     .then(response => {
-        console.log(response.data);
-        const dayNum = 3; //////////// 재혁이가 넘겨줄 예정
+        console.log("recieved data"+response.data);
+        // const dayNum = 3; //////////// 재혁이가 넘겨줄 예정
         let newPlanData: string[][] = [];
-        for (let i = 0; i < dayNum; i++) {
+        let newIsBlockChoosed: boolean[][] = [];
+        for (let i = 0; i < n_day; i++) {
           newPlanData.push(["", "", "", ""]);
+          newIsBlockChoosed.push([false, false, false, false]);
         }
         for(let i = 0; i < response.data.length; i++){
           switch (response.data[i].time) {
@@ -278,6 +308,7 @@ function TimeTable() {
         //     newPlanData[day][time] page= name;
         // });
         setPlanData(newPlanData);
+        setIsBlockChoosed(newIsBlockChoosed);
         setnewPostFlag(0);
         setIsLoadingDone(true);
     })
@@ -327,16 +358,36 @@ function TimeTable() {
                     {day}일차
                   </div>
                   <div className="ojeon" style={{...each_time_block_style, background: planData[day-1][0] ? color_array[(day+1)%5] : 'white', color: planData[day-1][0] ? text_color_array[(day+1)%5] : '#9E9E9E', paddingTop: '15px', borderLeft: planData[day-1][0] ? ' 2px solid' : 'none'}} onTouchEnd={() => handle_eachday({day, block:1})}>
-                    {planData[day-1][0]}
+                    {planData[day-1][0]} 
+                    {isBlockChoosed[day-1][0]? 
+                        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center',}}>
+                          <img src={delete_btn} style={{marginTop: '30px', width: '40px', height: '40px'}}></img>
+                        </div>
+                       : ""}
                   </div>
                   <div className="ohu1" style={{...each_time_block_style, background: planData[day-1][1] ? color_array[(day+2)%5] : 'white', color: planData[day-1][1] ? text_color_array[(day+2)%5] : '#9E9E9E', paddingTop: '15px', borderLeft: planData[day-1][1] ? ' 2px solid' : 'none'}} onTouchEnd={() => handle_eachday({day, block:2})}>
-                    {planData[day-1][1]}
+                    {planData[day-1][1]} 
+                    {isBlockChoosed[day-1][1]? 
+                        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center',}}>
+                          <img src={delete_btn} style={{marginTop: '30px', width: '40px', height: '40px'}}></img>
+                        </div>
+                       : ""}
                   </div>
                   <div className="ohu2" style={{...each_time_block_style, background: planData[day-1][2] ? color_array[(day+3)%5] : 'white', color: planData[day-1][2] ? text_color_array[(day+3)%5] : '#9E9E9E', paddingTop: '15px', borderLeft: planData[day-1][2] ? ' 2px solid' : 'none'}} onTouchEnd={() => handle_eachday({day, block:3})}>
-                    {planData[day-1][2]}
+                    {planData[day-1][2]} 
+                    {isBlockChoosed[day-1][2]? 
+                        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center',}}>
+                          <img src={delete_btn} style={{marginTop: '30px', width: '40px', height: '40px'}}></img>
+                        </div>
+                       : ""}
                   </div>
                   <div className="jeonyeok" style={{...each_time_block_style, background: planData[day-1][3] ? color_array[(day+4)%5] : 'white', color: planData[day-1][3] ? text_color_array[(day+4)%5] : '#9E9E9E', paddingTop: '15px', borderLeft: planData[day-1][3] ? ' 2px solid' : 'none'}} onTouchEnd={() => handle_eachday({day, block:4})}>
                     {planData[day-1][3]}
+                    {isBlockChoosed[day-1][3]? 
+                        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center',}}>
+                          <img src={delete_btn} style={{marginTop: '30px', width: '40px', height: '40px'}}></img>
+                        </div>
+                       : ""}
                   </div>
                 </div>
               );

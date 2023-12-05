@@ -214,6 +214,7 @@ export let participantsName: string[] = [];
 const days: string[] = ['일', '월', '화', '수', '목', '금', '토'];
 
 if (localStorage.getItem('guestID')){
+    localStorage.removeItem('guestID');
     axios.post(backend_url+"/api/plans/join/" + localStorage.getItem('guestID'), {
     }, { withCredentials: true })
     .then(function (response) {
