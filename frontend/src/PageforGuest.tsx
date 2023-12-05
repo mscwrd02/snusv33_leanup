@@ -7,6 +7,7 @@ import kakaoLogo from './images/kakaotalk.png';
 import invitationImg from './images/invitation.png';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { useEffect } from 'react'
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -19,23 +20,26 @@ function PageforGuest() {
   const id = query.get('id');
 
   const [responseData, setResponseData] = useState<any>(null);
-  axios.get(backend_url + '/api/plans/hashId/' + id, { withCredentials: true })
-  .then(response => {
-    setResponseData(response.data);
-    inviterName = generateStringToCopy();
-  })
-  .catch(error => {
-    console.error('Error fetching data: ', error);
-  });
 
-  const generateStringToCopy = () => {
-    let name = '';
-    if (responseData && responseData.participantsName) {
-      name = responseData.participantsName;
-    }
-    localStorage.setItem('guestID', responseData.planId);
-    return name;
-  };
+  useEffect(() => {
+    axios.get(backend_url + '/api/plans/hashId/' + id, { withCredentials: true })
+    .then(response => {
+      setResponseData(response.data);
+      inviterName = generateStringToCopy();
+    })
+    .catch(error => {
+      console.error('Error fetching data: ', error);
+    });
+
+    const generateStringToCopy = () => {
+      let name = '';
+      if (responseData && responseData.participantsName) {
+        name = responseData.participantsName;
+      }
+      localStorage.setItem('guestID', responseData.planId);
+      return name;
+    };
+  }, [])
 
   
 
