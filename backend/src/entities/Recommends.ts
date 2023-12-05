@@ -7,10 +7,11 @@ export class Recommends {
   @Column('int', { name: 'score', default: 0 })
   score: number;
 
-  @Column('text', {
+  @Column('varchar', {
     name: 'comments',
     nullable: true,
     default: '[]',
+    length: 500,
   })
   comments: string;
 
