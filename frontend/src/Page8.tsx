@@ -206,6 +206,7 @@ const Bottom = styled.div`
 const Before = styled.div`
     width: auto;
     height: auto;
+    padding: 5px;
 `;
 
 interface NextProps {
@@ -216,6 +217,7 @@ const Next = styled.div<NextProps>`
     pointer-events : ${(props) => (props.canClick ? 'auto' : 'none')};
     width: auto;
     height: auto;
+    padding: 5px;
 `;
 
 const Order = styled.div`
