@@ -18,7 +18,6 @@ import Page8 from "./Page8";
 import Page9 from "./Page9";
 
 import { useEffect } from 'react';
-import ReactGA from 'react-ga4';
 
 
 function App(){
