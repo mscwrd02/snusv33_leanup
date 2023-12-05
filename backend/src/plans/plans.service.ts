@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PlanDetailResponseDto } from 'src/dto/plan.detail.response.dto';
 import { Plans } from 'src/entities/Plans';
-import { IsNull, Not, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { PlanSimpleResponseDto } from 'src/dto/plan.simple.response.dto';
 import { Users } from 'src/entities/Users';
 import { PlanRequestDto } from 'src/dto/plan.request.dto';
@@ -81,7 +81,6 @@ export class PlansService {
     ) {
       throw new BadRequestException('이미 참여하셨습니다.');
     }
-    console.log('여기까지는 왔다');
     plan.ParticipantsList.push(user);
     plan.participantsName = JSON.stringify(
       JSON.parse(plan.participantsName).concat(user.nickname),
@@ -114,9 +113,19 @@ export class PlansService {
     //TODO : 여행 계획 수정하기
   }
 
-  async deletePlan(planId: number): Promise<void> {
-    // 여행 계획 삭제하기
-    await this.plansRepository.delete(planId);
+  async deletePlan(planId: number, userId: number) {
+    const plan = await this.plansRepository
+      .createQueryBuilder('plans')
+      .innerJoinAndSelect('plans.Owner', 'owner')
+      .where('plans.id = :planId', { planId: planId })
+      .andWhere('owner.id = :userId', { userId: userId })
+      .getOne();
+    if (!plan) {
+      throw new BadRequestException(
+        '여행계획을 삭제할 수 있는 권한이 없습니다.',
+      );
+    }
+    await this.plansRepository.delete({ id: planId });
   }
 
   async getPlanWithId(planId: number): Promise<PlanDetailResponseDto> {
@@ -125,6 +134,7 @@ export class PlansService {
       where: { id: planId },
       relations: ['ParticipantsList'],
     });
+
     const planDetailResponse: PlanDetailResponseDto = {
       planId: plan.id,
       userId: plan.userId,
@@ -179,28 +189,35 @@ export class PlansService {
 
   async getAllPlan(userId: number): Promise<PlanSimpleResponseDto[]> {
     // participant_list에서 user가 포함된 모든 여행 계획 전체 조회하기
-    const user = await this.usersRepository.findOne({ where: { id: userId } });
-    const plans = await this.plansRepository
-      .createQueryBuilder('plans')
-      .leftJoinAndSelect('plans.ParticipantsList', 'participants')
-      .where('participants.id IN (:...userIds)', { userIds: [user.id] })
-      .getMany();
+    try {
+      const user = await this.usersRepository.findOne({
+        where: { id: userId },
+      });
+      const plans = await this.plansRepository
+        .createQueryBuilder('plans')
+        .leftJoinAndSelect('plans.ParticipantsList', 'participants')
+        .where('participants.id IN (:...userIds)', { userIds: [user.id] })
+        .getMany();
 
-    const planSimpleResponse: PlanSimpleResponseDto[] = [];
-    for (let i = 0; i < plans.length; i++) {
-      const profileImage = await this.getProfileImage(plans[i].id);
-      const planSimple: PlanSimpleResponseDto = {
-        planId: plans[i].id,
-        userId: plans[i].userId,
-        groupNum: plans[i].group_num,
-        startDate: plans[i].startDate,
-        endDate: plans[i].endDate,
-        status: plans[i].status,
-        participantsName: plans[i].participantsName,
-        profileImg: profileImage,
-      };
-      planSimpleResponse.push(planSimple);
+      const planSimpleResponse: PlanSimpleResponseDto[] = [];
+      for (let i = 0; i < plans.length; i++) {
+        const profileImage = await this.getProfileImage(plans[i].id);
+        const planSimple: PlanSimpleResponseDto = {
+          planId: plans[i].id,
+          userId: plans[i].userId,
+          groupNum: plans[i].group_num,
+          startDate: plans[i].startDate,
+          endDate: plans[i].endDate,
+          status: plans[i].status,
+          participantsName: plans[i].participantsName,
+          profileImg: profileImage,
+        };
+        planSimpleResponse.push(planSimple);
+      }
+      return Promise.resolve(planSimpleResponse);
+    } catch (e) {
+      console.log(e);
+      throw new BadRequestException('잘못된 요청입니다.');
     }
-    return Promise.resolve(planSimpleResponse);
   }
 }

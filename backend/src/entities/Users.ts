@@ -15,7 +15,7 @@ import {
 } from 'typeorm';
 
 @Index('email', ['email'], { unique: true })
-@Entity({ schema: 'frienvel', name: 'users' })
+@Entity({ schema: process.env.DB_DATABSE, name: 'users' })
 export class Users {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;

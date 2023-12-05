@@ -1,9 +1,8 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { Plans } from './Plans';
 import { Spots } from './Spots';
 import { Categories } from './Categories';
 
-@Entity({ schema: 'frienvel', name: 'spot_categories' })
+@Entity({ schema: process.env.DB_DATABSE, name: 'spot_categories' })
 export class SpotCategories {
   @Column('int', { primary: true, name: 'SpotId' })
   SpotId: number;

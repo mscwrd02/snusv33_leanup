@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { SchedulesService } from './schedules.service';
 import { ScheduleRequestDto } from 'src/dto/schedule.request.dto';
-import { Schedules } from 'src/entities/Schedule';
+
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,

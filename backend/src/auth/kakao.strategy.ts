@@ -2,7 +2,6 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-kakao';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as _ from 'lodash';
 import { AuthService } from './auth.service';
 import { Platform } from 'src/entities/common/Platform';
 import axios from 'axios';

@@ -10,10 +10,6 @@ import {
 import { PlanStatus } from 'src/entities/common/PlanStatus';
 
 export class PlanDetailResponseDto {
-  // 여행계획 아이디 (int), 소유자 아이디 (int), 설문 주소 (string), 동행 인원 (Number), 지역 (east, west, south, north)
-  // 동행 인원 이름 (string), 동행 인원 취향 설문 결과 (string), 동행 인원 여행지 설문 결과 (string)
-  // 여행 시작일(Date), 여행 종료일(Date), 상태 (enum: ready, ing, end)
-
   @ApiProperty({
     example: '1',
     description: '여행계획 아이디',

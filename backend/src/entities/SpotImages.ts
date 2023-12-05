@@ -8,7 +8,7 @@ import {
 import { Spots } from './Spots';
 import { ApiProperty } from '@nestjs/swagger';
 
-@Entity({ schema: 'frienvel', name: 'spot_images' })
+@Entity({ schema: process.env.DB_DATABSE, name: 'spot_images' })
 export class SpotImages {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;

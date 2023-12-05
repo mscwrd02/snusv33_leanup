@@ -11,7 +11,6 @@ import {
 } from 'class-validator';
 
 export class SpotResponseDto {
-  // 여행계획 아이디 (int), 장소 아이디 (int), 점수 (int), 코멘트 (string), 마지막 여부 (boolean)
   @ApiProperty({
     example: '1',
     description: '여행계획 아이디',

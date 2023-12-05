@@ -18,7 +18,7 @@ import { Recommends } from './Recommends';
 import { PlanStatus } from './common/PlanStatus';
 import { Schedules } from './Schedule';
 
-@Entity({ schema: 'frienvel', name: 'plans' })
+@Entity({ schema: process.env.DB_DATABSE, name: 'plans' })
 export class Plans {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;

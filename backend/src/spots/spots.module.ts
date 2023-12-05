@@ -9,6 +9,8 @@ import { Plans } from 'src/entities/Plans';
 import { Recommends } from 'src/entities/Recommends';
 import { SpotResponses } from 'src/entities/SpotResponses';
 import { Users } from 'src/entities/Users';
+import { SpotCategories } from 'src/entities/SpotCategories';
+import { SpotImages } from 'src/entities/SpotImages';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { Users } from 'src/entities/Users';
       CategoryResponses,
       SpotResponses,
       Users,
+      SpotCategories,
+      SpotImages,
     ]),
   ],
   controllers: [SpotsController],

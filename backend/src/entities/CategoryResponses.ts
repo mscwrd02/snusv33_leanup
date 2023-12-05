@@ -8,7 +8,7 @@ import {
 import { Plans } from './Plans';
 import { Users } from './Users';
 
-@Entity({ schema: 'frienvel', name: 'category_responses' })
+@Entity({ schema: process.env.DB_DATABSE, name: 'category_responses' })
 export class CategoryResponses {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;

@@ -10,7 +10,7 @@ import { Spots } from './Spots';
 import { ApiProperty } from '@nestjs/swagger';
 import { SpotCategories } from './SpotCategories';
 
-@Entity({ schema: 'frienvel', name: 'categories' })
+@Entity({ schema: process.env.DB_DATABSE, name: 'categories' })
 export class Categories {
   @ApiProperty({
     example: 1,

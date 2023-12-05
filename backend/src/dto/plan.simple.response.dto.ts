@@ -6,13 +6,10 @@ import {
   IsNumber,
   IsString,
 } from 'class-validator';
-import { Transform, Type } from 'class-transformer';
+import { Transform } from 'class-transformer';
 import { PlanStatus } from 'src/entities/common/PlanStatus';
 
 export class PlanSimpleResponseDto {
-  // 여행계획 아이디 (int), 소유자 아이디 (int), 동행 인원 (Number)
-  // 여행 시작일 (Date), 여행 종료일(Date), 상태 (enum: ready, ing, end), 이름 (string), 카카오톡 프로필 (string)
-
   @ApiProperty({
     example: '1',
     description: '여행계획 아이디',

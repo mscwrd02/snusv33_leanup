@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { Plans } from './Plans';
 import { Spots } from './Spots';
 
-@Entity({ schema: 'frienvel', name: 'recommends' })
+@Entity({ schema: process.env.DB_DATABSE, name: 'recommends' })
 export class Recommends {
   @Column('int', { name: 'score', default: 0 })
   score: number;

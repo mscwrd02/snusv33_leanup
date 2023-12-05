@@ -15,7 +15,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Schedules } from './Schedule';
 import { SpotCategories } from './SpotCategories';
 
-@Entity({ schema: 'frienvel', name: 'spots' })
+@Entity({ schema: process.env.DB_DATABSE, name: 'spots' })
 export class Spots {
   @ApiProperty({
     example: 1,
