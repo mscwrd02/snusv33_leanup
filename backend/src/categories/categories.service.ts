@@ -1,6 +1,6 @@
+import { CategoryResponseDto } from './../dto/category.response.dto';
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CategoryResponseDto } from 'src/dto/category.response.dto';
 import { Categories } from 'src/entities/Categories';
 import { CategoryResponses } from 'src/entities/CategoryResponses';
 import { Plans } from 'src/entities/Plans';
@@ -36,10 +36,14 @@ export class CategoriesService {
 
   async submitCategories(userId: number, body: CategoryResponseDto) {
     await this.plansRepository
-      .findOne({ where: { id: body.planId } })
+      .findOne({ where: { id: body.planId }, relations: ['ParticipantsList'] })
       .then((plan) => {
         if (plan.status != PlanStatus.CATEGORYING)
           throw new BadRequestException('이미 취향 설문이 완료되었습니다');
+        if (plan.ParticipantsList.filter((it) => it.id == userId).length == 0)
+          throw new BadRequestException(
+            '이 여행 계획에 참여하지 않은 사용자입니다',
+          );
       });
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -49,7 +53,6 @@ export class CategoriesService {
 
       const newResponse = new CategoryResponses();
       newResponse.categoryList = body.categoryList;
-      newResponse.participationName = body.participantName;
       newResponse.UserId = userId;
       newResponse.PlanId = body.planId;
 
@@ -64,10 +67,23 @@ export class CategoriesService {
           where: { id: body.planId },
           relations: ['ParticipantsList'],
         });
-      includedPlan.categoryParticipations += 1;
-      if (includedPlan.group_num == includedPlan.categoryParticipations)
+
+      const index = JSON.parse(includedPlan.participantsName).indexOf(
+        user.nickname,
+      );
+      const categoryResponseStatus = JSON.parse(
+        includedPlan.categoryResponseStatus,
+      );
+      categoryResponseStatus[index] = true;
+      includedPlan.categoryResponseStatus = JSON.stringify(
+        categoryResponseStatus,
+      );
+      if (
+        categoryResponseStatus.filter((it) => it == true).length ==
+        includedPlan.group_num
+      ) {
         includedPlan.status = PlanStatus.SPOTING;
-      includedPlan.ParticipantsList.push(user);
+      }
 
       await Promise.all([
         queryRunner.manager.getRepository(CategoryResponses).save(newResponse),
@@ -114,7 +130,7 @@ export class CategoriesService {
     );
 
     const categoryRecommendResults: Array<number> = [];
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 20; i++) {
       const randomIndex = Math.floor(Math.random() * parsedResponses.length);
       const randomElement = parsedResponses[randomIndex];
       categoryRecommendResults.push(randomElement);
@@ -129,11 +145,11 @@ export class CategoriesService {
           (recommendedSpots) => recommendedSpots.SpotId,
         );
 
-        const wow = await this.categoriesRepository.findOne({
+        const selectedCategory = await this.categoriesRepository.findOne({
           where: { id: category },
           relations: ['Spots'],
         });
-        const availableSpotId = wow.Spots.map((it) => it.id);
+        const availableSpotId = selectedCategory.Spots.map((it) => it.id);
 
         if (recommendedSpotIds.length == 0) {
           const spot = await queryRunner.manager
@@ -147,7 +163,7 @@ export class CategoriesService {
             .getRepository(Recommends)
             .save({ PlanId: planId, SpotId: spot.id });
         } else {
-          const spot = await queryRunner.manager
+          let spot = await queryRunner.manager
             .getRepository(Spots)
             .createQueryBuilder('spot')
             .where('spot.region IN (:...availableRegion)', { availableRegion })
@@ -157,6 +173,15 @@ export class CategoriesService {
             .andWhere('spot.id IN (:...availableSpotId)', { availableSpotId })
             .orderBy('spot.reviews', 'DESC')
             .getOne();
+          if (!spot)
+            spot = await queryRunner.manager
+              .getRepository(Spots)
+              .createQueryBuilder('spot')
+              .where('spot.id NOT IN (:...recommendedSpotIds)', {
+                recommendedSpotIds,
+              })
+              .orderBy('spot.reviews', 'DESC')
+              .getOne();
           await queryRunner.manager
             .getRepository(Recommends)
             .save({ PlanId: planId, SpotId: spot.id });

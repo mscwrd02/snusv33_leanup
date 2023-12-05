@@ -4,15 +4,15 @@ import { Spots } from './Spots';
 import { TimeBlock } from './common/TimeBlock';
 import { ApiProperty } from '@nestjs/swagger';
 
-@Entity({ schema: 'frienvel', name: 'schedules' })
+@Entity({ schema: process.env.DB_DATABSE, name: 'schedules' })
 export class Schedules {
   @ApiProperty({
-    example: '2023-12-20',
-    description: '일정 날짜',
+    example: '1',
+    description: '일차',
     required: true,
   })
-  @Column('date', { name: 'date' })
-  date: Date;
+  @Column('int', { name: 'date' })
+  date: number;
 
   @ApiProperty({
     example: 1,

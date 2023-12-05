@@ -8,13 +8,10 @@ import {
 import { Plans } from './Plans';
 import { Users } from './Users';
 
-@Entity({ schema: 'frienvel', name: 'spot_responses' })
+@Entity({ schema: process.env.DB_DATABSE, name: 'spot_responses' })
 export class SpotResponses {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
-
-  @Column('varchar', { name: 'participant_name', length: 30 })
-  participationName: string;
 
   @Column('int', { name: 'score' })
   score: number;
@@ -32,7 +29,7 @@ export class SpotResponses {
   comment: string;
 
   @ManyToOne(() => Plans, (plans) => plans.SpotResponses, {
-    onDelete: 'CASCADE',
+    onDelete: 'SET NULL',
     onUpdate: 'CASCADE',
   })
   @JoinColumn([{ name: 'PlanId', referencedColumnName: 'id' }])

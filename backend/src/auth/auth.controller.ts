@@ -3,13 +3,9 @@ import { LocalAuthGuard } from './local-auth.guard';
 import { KakaoAuthGuard } from './kakao-auth.guard';
 import { LoggedInGuard } from './logged-in-guard';
 import {
-  ApiBadRequestResponse,
   ApiBody,
   ApiCreatedResponse,
-  ApiOkResponse,
   ApiOperation,
-  ApiProperty,
-  ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -56,7 +52,8 @@ export class AuthController {
 
   @Get('login/kakao/callback')
   @UseGuards(KakaoAuthGuard)
-  kakaoLogInRedirect(@Req() req) {
+  kakaoLogInRedirect(@Req() req, @Res() res) {
+    res.redirect(process.env.CALLBACK_URL);
     return req.user;
   }
 

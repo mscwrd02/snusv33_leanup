@@ -8,15 +8,12 @@ import {
 import { Plans } from './Plans';
 import { Users } from './Users';
 
-@Entity({ schema: 'frienvel', name: 'category_responses' })
+@Entity({ schema: process.env.DB_DATABSE, name: 'category_responses' })
 export class CategoryResponses {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
 
-  @Column('varchar', { name: 'participant_name', length: 30 })
-  participationName: string;
-
-  @Column('varchar', { name: 'category_list', length: 50 })
+  @Column('varchar', { name: 'category_list', length: 100 })
   categoryList: string;
 
   @Column('int', { name: 'UserId', nullable: true })
@@ -26,7 +23,7 @@ export class CategoryResponses {
   PlanId: number;
 
   @ManyToOne(() => Plans, (plans) => plans.CategoryResponses, {
-    onDelete: 'CASCADE',
+    onDelete: 'SET NULL',
     onUpdate: 'CASCADE',
   })
   @JoinColumn([{ name: 'PlanId', referencedColumnName: 'id' }])

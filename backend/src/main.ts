@@ -6,10 +6,14 @@ import passport from 'passport';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import helmet from 'helmet';
+import hpp from 'hpp';
 declare const module: any;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.use(helmet());
+  app.use(hpp());
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalPipes(new ValidationPipe());
 
@@ -21,13 +25,12 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('leanup API')
-    .setDescription('여행어플 개발을 위한 API 문서')
+    .setDescription('TripWiz 개발을 위한 API 문서')
     .setVersion('1.0')
     .addCookieAuth('connect.sid')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-
   app.use(
     session({
       resave: false,
@@ -42,7 +45,7 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  await app.listen(3095);
+  await app.listen(process.env.PORT);
   if (module.hot) {
     module.hot.accept();
     module.hot.dispose(() => app.close());

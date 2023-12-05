@@ -2,11 +2,11 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-kakao';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as _ from 'lodash';
 import { AuthService } from './auth.service';
 import { Platform } from 'src/entities/common/Platform';
 import axios from 'axios';
 import { KakaotalkProfileDto } from 'src/dto/kakaotalk.profile.dto';
+import { Users } from 'src/entities/Users';
 
 @Injectable()
 export class KakaoStrategy extends PassportStrategy(Strategy) {
@@ -39,7 +39,7 @@ export class KakaoStrategy extends PassportStrategy(Strategy) {
 
     const kakaotalkProfile: KakaotalkProfileDto = response.data;
 
-    const user = await this.authService.findOrCreateUser(
+    const user: Users = await this.authService.findOrCreateUser(
       email,
       kakaotalkProfile.nickName,
       Platform.KAKAO,

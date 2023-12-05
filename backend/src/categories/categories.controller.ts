@@ -1,11 +1,9 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Get,
   NotFoundException,
   Post,
-  Req,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -47,8 +45,7 @@ export class CategoriesController {
 
   @ApiOperation({ summary: '취향 설문 제출하기' })
   @ApiCreatedResponse({
-    description:
-      '취향 설문 제출 성공 / 마지막 제출의 경우, 장소 추천목록 만들어짐',
+    description: '취향 설문 제출 성공',
   })
   @ApiBadRequestResponse({
     description: '취향 설문 제출 실패',
@@ -64,6 +61,4 @@ export class CategoriesController {
       await this.categoriesService.addRecommends(body.planId);
     return 'ok';
   }
-
-  //취향설문제출에서, 모든 사람이 취향 설문을 제출했으면, recommends에 관광지 20개 추가하기
 }

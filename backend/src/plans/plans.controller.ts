@@ -8,6 +8,7 @@ import {
   Put,
   UseGuards,
   Param,
+  NotFoundException,
 } from '@nestjs/common';
 import { PlansService } from './plans.service';
 import {
@@ -52,6 +53,31 @@ export class PlansController {
     }
   }
 
+  // 새로운 user가 plan에 참여할 때 participantList에 추가해주기
+  @ApiOkResponse({
+    description: '여행 계획 참여 성공',
+    type: PlanDetailResponseDto,
+  })
+  @ApiNotFoundResponse({
+    description: '여행 계획이 존재하지 않습니다.',
+    type: ErrorResponseDto,
+  })
+  @ApiOperation({ summary: '여행 계획 참여하기' })
+  @Post('join/:planId')
+  @UseGuards(LoggedInGuard)
+  async joinPlan(
+    @User() user,
+    @Param('planId') planId: number,
+  ): Promise<PlanDetailResponseDto> {
+    // 여행 계획 참여하기
+    const plan = await this.plansService.joinPlan(user.id, planId);
+    if (plan) {
+      return plan;
+    } else {
+      throw new ForbiddenException();
+    }
+  }
+
   @ApiOperation({ summary: '여행 계획 수정하기 // 우선 구현 skip함' })
   @Put()
   @UseGuards(LoggedInGuard)
@@ -69,9 +95,10 @@ export class PlansController {
   @ApiOperation({ summary: '여행 계획 삭제하기' })
   @Delete(':planId')
   @UseGuards(LoggedInGuard)
-  async deletePlan(@Param('planId') planId: number): Promise<void> {
+  async deletePlan(@Param('planId') planId: number, @User() user) {
     // 여행 계획 삭제하기
-    await this.plansService.deletePlan(planId);
+    await this.plansService.deletePlan(planId, user.id);
+    return 'ok';
   }
 
   @ApiOkResponse({
@@ -116,7 +143,7 @@ export class PlansController {
     if (plan) {
       return plan;
     } else {
-      throw new ForbiddenException();
+      throw new NotFoundException('여행 계획이 존재하지 않습니다.');
     }
   }
 
@@ -132,14 +159,9 @@ export class PlansController {
   @ApiOperation({ summary: '사용자 정보로 사용자가 속한 모든 여행 조회하기' })
   @Get('all')
   @UseGuards(LoggedInGuard)
-  getAllPlan(@User() user): Promise<PlanSimpleResponseDto[]> {
+  async getAllPlan(@User() user): Promise<PlanSimpleResponseDto[]> {
     // 내가 속한 모든 여행 조회하기
     // 세부 사항이 아니라, 간단하게 현황과 날짜, 참여하고 있는 사람들의 프사같은 정보
-    const planList = this.plansService.getAllPlan(user.id);
-    if (planList) {
-      return planList;
-    } else {
-      throw new ForbiddenException();
-    }
+    return await this.plansService.getAllPlan(user.id);
   }
 }

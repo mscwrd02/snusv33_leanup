@@ -11,7 +11,12 @@ import { SpotMoreRecommendDto } from 'src/dto/spot.more.recommend.dto';
 import { ErrorResponseDto } from 'src/dto/error.response.dto';
 import { User } from 'src/decorators/user.decorator';
 import { LoggedInGuard } from 'src/auth/logged-in-guard';
-import { FormWithHistoryResponseDto } from 'src/dto/form.with.history.response.dto';
+import {
+  FormWithHistoryResponseDto,
+  SpotWithCategoryAndImage,
+} from 'src/dto/form.with.history.response.dto';
+import { SpotResponseDto } from 'src/dto/spot.response.dto';
+import { RecommendsResponseDto } from 'src/dto/recommends.response.dto';
 
 @ApiTags('SPOT')
 @Controller('api/spots')
@@ -23,7 +28,7 @@ export class SpotsController {
     description: '관광지 설문지를 받아옴',
     type: FormWithHistoryResponseDto,
   })
-  @Get(':planId')
+  @Get('survey/:planId')
   @UseGuards(LoggedInGuard)
   async getSpotsFormWithHistory(
     @Param('planId') planId: number,
@@ -38,10 +43,19 @@ export class SpotsController {
   }
 
   @ApiOperation({ summary: '관광지 설문 제출하기' })
+  @ApiOkResponse({
+    description:
+      '관광지 설문 제출 성공 (이미 제출했던 경우 수정, 새로 제출한 경우 생성)',
+  })
+  @ApiBadRequestResponse({
+    description: '관광지 설문 제출 실패',
+    type: ErrorResponseDto,
+  })
   @Post()
-  submitForm() {
-    //제출한 관광지 응답을 저장하기
-    //관광지 설문 하나마다 요청이 오는걸로 짜면 좋을듯
+  @UseGuards(LoggedInGuard)
+  async submitForm(@User() user, @Body() body: SpotResponseDto) {
+    await this.spotsService.submitSpotResponse(user.id, body);
+    return 'ok';
   }
 
   @ApiOperation({ summary: '관광지 추천 20개 더 받기' })
@@ -53,14 +67,42 @@ export class SpotsController {
     type: ErrorResponseDto,
   })
   @Post('more')
-  async getMoreRecommends(@Body() body: SpotMoreRecommendDto) {
-    await this.spotsService.addRecommends(body.planId);
+  @UseGuards(LoggedInGuard)
+  async getMoreRecommends(@Body() body: SpotMoreRecommendDto, @User() user) {
+    await this.spotsService.addRecommends(body.planId, user.id);
     return 'ok';
   }
 
   @ApiOperation({ summary: '관광지 추천결과 조회하기' })
-  @Get('recommend')
-  getRecommend() {
-    //지금까지 제출한 관광지 설문을 바탕으로 추천 결과를 보내주기
+  @ApiOkResponse({
+    description: '관광지 추천결과 조회 성공',
+    type: RecommendsResponseDto,
+    isArray: true,
+  })
+  @ApiBadRequestResponse({
+    description: '관광지 추천결과 조회 실패',
+    type: ErrorResponseDto,
+  })
+  @Get('recommend/:planId')
+  async getRecommend(@Param('planId') planId: number) {
+    // 지금까지 제출한 관광지 설문을 바탕으로 추천 결과를 보내주기
+    // 현재 planId에 속하는 모든 spotResponse의 score를 합산해서 내림차순으로 정렬해서 보내주기
+    const recommendSpots = await this.spotsService.getRecommend(planId);
+    return recommendSpots;
+  }
+
+  @ApiOperation({ summary: '관광지 상세정보 조회하기' })
+  @ApiOkResponse({
+    description: '관광지 상세정보 조회 성공',
+    type: SpotWithCategoryAndImage,
+  })
+  @ApiBadRequestResponse({
+    description: '관광지 상세정보 조회 실패',
+    type: ErrorResponseDto,
+  })
+  @Get('info/:spotId')
+  async getSpotInfo(@Param('spotId') spotId: number) {
+    const spotInfo = await this.spotsService.getSpotInfo(spotId);
+    return spotInfo;
   }
 }

@@ -1,4 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Categories } from 'src/entities/Categories';
+import { SpotImages } from 'src/entities/SpotImages';
 import { Spots } from 'src/entities/Spots';
 
 export class submitResponseDto {
@@ -15,14 +17,35 @@ export class submitResponseDto {
     required: true,
   })
   spotId: number;
+
+  @ApiProperty({
+    example: '집가고싶당',
+    description: '이전 댓글',
+    required: true,
+  })
+  comment: string;
+}
+
+export class SpotWithCategoryAndImage extends Spots {
+  @ApiProperty({
+    type: [Categories],
+    description: '장소에 대한 카테고리들',
+  })
+  Categories: Categories[];
+
+  @ApiProperty({
+    type: [SpotImages],
+    description: '장소 사진들',
+  })
+  Images: SpotImages[];
 }
 
 export class FormWithHistoryResponseDto {
   @ApiProperty({
-    type: [Spots],
+    type: [SpotWithCategoryAndImage],
     description: '추천 장소들',
   })
-  spotForm: Spots[];
+  spotForm: SpotWithCategoryAndImage[];
 
   @ApiProperty({
     type: [submitResponseDto],

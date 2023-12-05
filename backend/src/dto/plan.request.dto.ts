@@ -3,7 +3,6 @@ import { Transform } from 'class-transformer';
 import { IsDate, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class PlanRequestDto {
-  // 소유자 정보 (UserResponseDto), 동행 인원 (Number), 지역 (east, west, south, north), 여행 시작일(Date), 여행 종료일(Date)
   @ApiProperty({
     example: '4',
     description: '동행 인원',

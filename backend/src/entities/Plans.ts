@@ -18,7 +18,7 @@ import { Recommends } from './Recommends';
 import { PlanStatus } from './common/PlanStatus';
 import { Schedules } from './Schedule';
 
-@Entity({ schema: 'frienvel', name: 'plans' })
+@Entity({ schema: process.env.DB_DATABSE, name: 'plans' })
 export class Plans {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
@@ -26,20 +26,28 @@ export class Plans {
   @Column('int', { name: 'UserId', nullable: true })
   userId: number;
 
-  @Column('varchar', { name: 'link', unique: true, length: 50 })
+  @Column('varchar', {
+    name: 'link',
+    nullable: true,
+    unique: true,
+    length: 100,
+  })
   link: string;
 
   @Column('int', { name: 'group_num' })
   group_num: number;
 
-  @Column('varchar', { name: 'region_list', length: 30 })
+  @Column('varchar', { name: 'region_list', length: 50 })
   regionList: string;
 
-  @Column('int', { name: 'category_participants', default: 0 })
-  categoryParticipations: number;
+  @Column('varchar', { name: 'participants_name', length: 100 })
+  participantsName: string;
 
-  @Column('int', { name: 'spot_participants', default: 0 })
-  spotParticipations: number;
+  @Column('varchar', { name: 'category_response_status', length: 100 })
+  categoryResponseStatus: string;
+
+  @Column('varchar', { name: 'spot_response_status', length: 100 })
+  spotResponseStatus: string;
 
   @Column('date', { name: 'start_date' })
   startDate: Date;

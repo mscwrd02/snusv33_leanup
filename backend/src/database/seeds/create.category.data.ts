@@ -8,7 +8,7 @@ export default class CategorySeeder implements Seeder {
 
     await categoryRepository.insert([
       {
-        name: '산책로(공원)',
+        name: '산책로',
       },
       {
         name: '등산(오름)',
@@ -26,7 +26,7 @@ export default class CategorySeeder implements Seeder {
         name: '문화유적',
       },
       {
-        name: '박물관/미술관/전시',
+        name: '박물관/전시',
       },
       {
         name: '레저(액티비티)',
@@ -35,7 +35,7 @@ export default class CategorySeeder implements Seeder {
         name: '농장',
       },
       {
-        name: '절',
+        name: '미술관',
       },
       {
         name: '시장',

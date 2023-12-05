@@ -1,8 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsNumber } from 'class-validator';
-import { TimeBlock } from 'src/entities/common/TimeBlock';
+import { IsNotEmpty, IsNumber } from 'class-validator';
 
-export class ScheduleRequestDto {
+export class PostDayRequestDto {
   @ApiProperty({
     example: '1',
     description: '여행계획 아이디',
@@ -22,20 +21,31 @@ export class ScheduleRequestDto {
   spotId: number;
 
   @ApiProperty({
-    example: '1',
+    example: '2',
     description: '일차',
     required: true,
   })
   @IsNumber()
   @IsNotEmpty()
-  date: number;
+  day: number;
+}
 
+export class DeleteDayRequestDto {
   @ApiProperty({
-    example: 'morning',
-    description: 'morning, afternoon1, afternoon2, evening, night 중 하나',
+    example: '1',
+    description: '여행계획 아이디',
     required: true,
   })
-  @IsEnum(TimeBlock)
+  @IsNumber()
   @IsNotEmpty()
-  time: TimeBlock;
+  planId: number;
+
+  @ApiProperty({
+    example: '1',
+    description: '장소 아이디',
+    required: true,
+  })
+  @IsNumber()
+  @IsNotEmpty()
+  spotId: number;
 }
