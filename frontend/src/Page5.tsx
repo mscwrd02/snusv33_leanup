@@ -10,7 +10,7 @@ function Page5() {
 
   const generateStringToCopy = () => {
     // 여기에서 원하는 로직에 따라 새로운 문자열을 생성합니다.
-    return "https://www.tripwiz.space/PageforGuest?id=" + location.state.link;
+    return "https://tripwiz.space/PageforGuest?id=" + location.state.link;
   };
 
   // localStorage.setItem('guestID', location.state.link);
