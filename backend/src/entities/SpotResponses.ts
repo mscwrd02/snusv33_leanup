@@ -29,7 +29,7 @@ export class SpotResponses {
   comment: string;
 
   @ManyToOne(() => Plans, (plans) => plans.SpotResponses, {
-    onDelete: 'CASCADE',
+    onDelete: 'SET NULL',
     onUpdate: 'CASCADE',
   })
   @JoinColumn([{ name: 'PlanId', referencedColumnName: 'id' }])

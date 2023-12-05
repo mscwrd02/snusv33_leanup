@@ -13,7 +13,7 @@ export class CategoryResponses {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
 
-  @Column('varchar', { name: 'category_list', length: 50 })
+  @Column('varchar', { name: 'category_list', length: 100 })
   categoryList: string;
 
   @Column('int', { name: 'UserId', nullable: true })
@@ -23,7 +23,7 @@ export class CategoryResponses {
   PlanId: number;
 
   @ManyToOne(() => Plans, (plans) => plans.CategoryResponses, {
-    onDelete: 'CASCADE',
+    onDelete: 'SET NULL',
     onUpdate: 'CASCADE',
   })
   @JoinColumn([{ name: 'PlanId', referencedColumnName: 'id' }])

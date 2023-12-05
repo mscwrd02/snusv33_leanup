@@ -18,7 +18,7 @@ export class SpotImages {
     description: '사진 url',
     required: true,
   })
-  @Column('varchar', { name: 'path', length: 250 })
+  @Column('varchar', { name: 'path', length: 300 })
   path: string;
 
   @Column('int', { name: 'SpotId', nullable: true })

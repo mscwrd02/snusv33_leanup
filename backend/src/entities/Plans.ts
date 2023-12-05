@@ -26,7 +26,12 @@ export class Plans {
   @Column('int', { name: 'UserId', nullable: true })
   userId: number;
 
-  @Column('varchar', { name: 'link', nullable: true, unique: true, length: 50 })
+  @Column('varchar', {
+    name: 'link',
+    nullable: true,
+    unique: true,
+    length: 100,
+  })
   link: string;
 
   @Column('int', { name: 'group_num' })
@@ -35,13 +40,13 @@ export class Plans {
   @Column('varchar', { name: 'region_list', length: 50 })
   regionList: string;
 
-  @Column('varchar', { name: 'participants_name', length: 50 })
+  @Column('varchar', { name: 'participants_name', length: 100 })
   participantsName: string;
 
-  @Column('varchar', { name: 'category_response_status', length: 50 })
+  @Column('varchar', { name: 'category_response_status', length: 100 })
   categoryResponseStatus: string;
 
-  @Column('varchar', { name: 'spot_response_status', length: 50 })
+  @Column('varchar', { name: 'spot_response_status', length: 100 })
   spotResponseStatus: string;
 
   @Column('date', { name: 'start_date' })
