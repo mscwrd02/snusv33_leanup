@@ -1,12 +1,12 @@
 name: Deploy NestJS Application
 
-# main 브랜치로 push 혹은 pr이 날라와서 merge되면 workflow가 작동합니다.
+# backend 브랜치로 push 혹은 pr이 날라와서 merge되면 workflow가 작동합니다.
 # workflow_dispatch는 수동으로 workflow를 작동시키도록 할 수 있도록 합니다.
 on:
   push:
-    branches: [main]
+    branches: [backend]
   pull_request:
-    branches: [main]
+    branches: [backend]
 
   workflow_dispatch:
 
