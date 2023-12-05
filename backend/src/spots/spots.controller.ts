@@ -54,8 +54,6 @@ export class SpotsController {
   @Post()
   @UseGuards(LoggedInGuard)
   async submitForm(@User() user, @Body() body: SpotResponseDto) {
-    //제출한 관광지 응답을 저장하기
-    //관광지 설문 하나마다 요청이 오는걸로 짜면 좋을듯
     await this.spotsService.submitSpotResponse(user.id, body);
     return 'ok';
   }
@@ -70,8 +68,8 @@ export class SpotsController {
   })
   @Post('more')
   @UseGuards(LoggedInGuard)
-  async getMoreRecommends(@Body() body: SpotMoreRecommendDto) {
-    await this.spotsService.addRecommends(body.planId);
+  async getMoreRecommends(@Body() body: SpotMoreRecommendDto, @User() user) {
+    await this.spotsService.addRecommends(body.planId, user.id);
     return 'ok';
   }
 
@@ -86,7 +84,6 @@ export class SpotsController {
     type: ErrorResponseDto,
   })
   @Get('recommend/:planId')
-  //@UseGuards(LoggedInGuard)
   async getRecommend(@Param('planId') planId: number) {
     // 지금까지 제출한 관광지 설문을 바탕으로 추천 결과를 보내주기
     // 현재 planId에 속하는 모든 spotResponse의 score를 합산해서 내림차순으로 정렬해서 보내주기

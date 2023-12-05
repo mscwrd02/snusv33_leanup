@@ -145,11 +145,11 @@ export class CategoriesService {
           (recommendedSpots) => recommendedSpots.SpotId,
         );
 
-        const wow = await this.categoriesRepository.findOne({
+        const selectedCategory = await this.categoriesRepository.findOne({
           where: { id: category },
           relations: ['Spots'],
         });
-        const availableSpotId = wow.Spots.map((it) => it.id);
+        const availableSpotId = selectedCategory.Spots.map((it) => it.id);
 
         if (recommendedSpotIds.length == 0) {
           const spot = await queryRunner.manager

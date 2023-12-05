@@ -196,7 +196,7 @@ export class PlansService {
       const plans = await this.plansRepository
         .createQueryBuilder('plans')
         .leftJoinAndSelect('plans.ParticipantsList', 'participants')
-        .where('participants.id IN (:...userIds)', { userIds: [user.id] })
+        .where('participants.id = :userId', { userId: user.id })
         .getMany();
 
       const planSimpleResponse: PlanSimpleResponseDto[] = [];

@@ -6,6 +6,7 @@ import {
   Inject,
   Param,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { SchedulesService } from './schedules.service';
 import { ScheduleRequestDto } from 'src/dto/schedule.request.dto';
@@ -23,6 +24,8 @@ import {
 } from 'src/dto/day.request.dto';
 import { DayResponseDto } from 'src/dto/day.response.dto';
 import { ScheduleResponseDto } from 'src/dto/schedule.response.dto';
+import { LoggedInGuard } from 'src/auth/logged-in-guard';
+import { User } from 'src/decorators/user.decorator';
 
 @ApiTags('SCHEDULE')
 @Controller('api/schedules')
@@ -53,8 +56,9 @@ export class SchedulesController {
     description: '일정 생성 실패',
   })
   @Post()
-  async createSchedule(@Body() schedule: ScheduleRequestDto) {
-    await this.schedulesService.createSchedule(schedule);
+  @UseGuards(LoggedInGuard)
+  async createSchedule(@Body() schedule: ScheduleRequestDto, @User() user) {
+    await this.schedulesService.createSchedule(schedule, user.id);
     return 'ok';
   }
 
@@ -65,9 +69,10 @@ export class SchedulesController {
   @ApiBadRequestResponse({
     description: '일정 삭제 실패',
   })
+  @UseGuards(LoggedInGuard)
   @Delete()
-  async deleteSchedule(@Body() schedule: ScheduleRequestDto) {
-    await this.schedulesService.deleteSchedule(schedule);
+  async deleteSchedule(@Body() schedule: ScheduleRequestDto, @User() user) {
+    await this.schedulesService.deleteSchedule(schedule, user.id);
     return 'ok';
   }
 
@@ -78,9 +83,10 @@ export class SchedulesController {
   @ApiBadRequestResponse({
     description: '추천목록에 없는 장소를 일정에 추가할 수 없습니다',
   })
+  @UseGuards(LoggedInGuard)
   @Post('/day')
-  async updateDay(@Body() dayRequest: PostDayRequestDto) {
-    await this.schedulesService.addDay(dayRequest);
+  async updateDay(@Body() dayRequest: PostDayRequestDto, @User() user) {
+    await this.schedulesService.addDay(dayRequest, user.id);
     return 'ok';
   }
 
@@ -91,9 +97,10 @@ export class SchedulesController {
   @ApiBadRequestResponse({
     description: '존재하지 않는 일차입니다',
   })
+  @UseGuards(LoggedInGuard)
   @Delete('/day')
-  async deleteDay(@Body() dayRequest: DeleteDayRequestDto) {
-    await this.schedulesService.deleteDay(dayRequest);
+  async deleteDay(@Body() dayRequest: DeleteDayRequestDto, @User() user) {
+    await this.schedulesService.deleteDay(dayRequest, user.id);
     return 'ok';
   }
 

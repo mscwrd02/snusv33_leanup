@@ -5,6 +5,7 @@ import {
   DeleteDayRequestDto,
 } from 'src/dto/day.request.dto';
 import { ScheduleRequestDto } from 'src/dto/schedule.request.dto';
+import { Plans } from 'src/entities/Plans';
 import { Recommends } from 'src/entities/Recommends';
 import { Schedules } from 'src/entities/Schedule';
 import { DataSource, Repository } from 'typeorm';
@@ -18,6 +19,9 @@ export class SchedulesService {
 
     @InjectRepository(Recommends)
     private recommendRepository: Repository<Recommends>,
+
+    @InjectRepository(Plans)
+    private plansRepository: Repository<Plans>,
   ) {}
 
   async getScheduleByPlanId(planId: number) {
@@ -40,7 +44,23 @@ export class SchedulesService {
     }
   }
 
-  async createSchedule(schedule: ScheduleRequestDto) {
+  async userInPlan(planId: number, userId: number): Promise<boolean> {
+    const plan = await this.plansRepository
+      .createQueryBuilder('plans')
+      .innerJoinAndSelect('plans.ParticipantsList', 'participants')
+      .where('plans.id = :planId', { planId })
+      .where('participants.id = :userId', { userId })
+      .getOne();
+    if (!plan)
+      throw new BadRequestException(
+        '해당 여행 계획에 참여하지 않은 사용자입니다',
+      );
+    return true;
+  }
+
+  async createSchedule(schedule: ScheduleRequestDto, userId: number) {
+    await this.userInPlan(schedule.planId, userId);
+
     const queryRunner = this.dataSource.createQueryRunner();
     queryRunner.connect();
     queryRunner.startTransaction();
@@ -65,7 +85,8 @@ export class SchedulesService {
     }
   }
 
-  async deleteSchedule(schedule: ScheduleRequestDto) {
+  async deleteSchedule(schedule: ScheduleRequestDto, userId: number) {
+    await this.userInPlan(schedule.planId, userId);
     const queryRunner = this.dataSource.createQueryRunner();
     queryRunner.connect();
     queryRunner.startTransaction();
@@ -127,7 +148,8 @@ export class SchedulesService {
     }
   }
 
-  async addDay(dayRequest: PostDayRequestDto) {
+  async addDay(dayRequest: PostDayRequestDto, userId: number) {
+    await this.userInPlan(dayRequest.planId, userId);
     const recommend = await this.recommendRepository.findOne({
       where: { PlanId: dayRequest.planId, SpotId: dayRequest.spotId },
     });
@@ -141,7 +163,8 @@ export class SchedulesService {
     return true;
   }
 
-  async deleteDay(dayRequest: DeleteDayRequestDto) {
+  async deleteDay(dayRequest: DeleteDayRequestDto, userId: number) {
+    await this.userInPlan(dayRequest.planId, userId);
     const recommend = await this.recommendRepository.findOne({
       where: {
         PlanId: dayRequest.planId,

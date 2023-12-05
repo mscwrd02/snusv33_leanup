@@ -42,7 +42,17 @@ export class SpotsService {
     @InjectRepository(Users)
     private usersRepository: Repository<Users>,
   ) {}
-  async addRecommends(planId: number) {
+  async addRecommends(planId: number, userId: number) {
+    const plan = await this.plansRepository
+      .createQueryBuilder('plans')
+      .innerJoinAndSelect('plans.ParticipantsList', 'participants')
+      .where('plans.id = :planId', { planId })
+      .where('participants.id = :userId', { userId })
+      .getOne();
+    if (!plan)
+      throw new BadRequestException(
+        '해당 여행 계획에 참여하지 않은 사용자입니다',
+      );
     const presentRecommends = await this.recommendsRepository.find({
       where: { PlanId: planId },
     });
@@ -164,10 +174,10 @@ export class SpotsService {
 
   convertScore(score: number): number {
     const scoreMap: Record<number, number> = {
-      1: -200,
-      2: -100,
-      3: 100,
-      4: 200,
+      1: 100,
+      2: 200,
+      3: 300,
+      4: 400,
     };
 
     return scoreMap[score] || 0;
@@ -272,6 +282,44 @@ export class SpotsService {
   async getRecommend(planId: number) {
     try {
       // recommendSpot 가져와서 score 내림차순으로 정렬
+      const minScore = await this.recommendsRepository
+        .createQueryBuilder('recommends')
+        .where('recommends.PlanId = :planId', { planId })
+        .select('MIN(recommends.score)', 'min')
+        .getRawOne();
+
+      const maxScore = await this.recommendsRepository
+        .createQueryBuilder('recommends')
+        .where('recommends.PlanId = :planId', { planId })
+        .select('MAX(recommends.score)', 'max')
+        .getRawOne();
+
+      const recommends = await this.recommendsRepository
+        .createQueryBuilder('recommends')
+        .leftJoinAndSelect('recommends.Spot', 'spot')
+        .leftJoinAndSelect('spot.Images', 'images')
+        .where('recommends.PlanId = :planId', { planId })
+        .orderBy('recommends.score', 'DESC')
+        .getMany();
+
+      const numSections = 8;
+      const sectionWidth = (maxScore.max - minScore.min) / numSections;
+
+      const recommendSpotsWithCategories: RecommendsResponseDto[] =
+        recommends.map((recommend) => {
+          const section = Math.floor(
+            (recommend.score - minScore.min) / sectionWidth,
+          );
+          const normalizedScore = (section + 1 > 8 ? 8 : section + 1) * 100;
+
+          return {
+            score: normalizedScore,
+            comments: JSON.parse(recommend.comments),
+            isInSchedule: recommend.isInSchedule,
+            Spot: recommend.Spot,
+          };
+        });
+      /*
       const recommends = await this.recommendsRepository
         .createQueryBuilder('recommends')
         .leftJoinAndSelect('recommends.Spot', 'spot')
@@ -289,7 +337,7 @@ export class SpotsService {
             Spot: recommend.Spot,
           };
         });
-
+      */
       return recommendSpotsWithCategories;
     } catch (err) {
       console.log(err);

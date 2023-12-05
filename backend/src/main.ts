@@ -25,7 +25,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('leanup API')
-    .setDescription('여행어플 개발을 위한 API 문서')
+    .setDescription('TripWiz 개발을 위한 API 문서')
     .setVersion('1.0')
     .addCookieAuth('connect.sid')
     .build();

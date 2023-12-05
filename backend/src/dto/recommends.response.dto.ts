@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber } from 'class-validator';
+import { SpotImages } from 'src/entities/SpotImages';
 import { Spots } from 'src/entities/Spots';
 
 export class CommentDto {
@@ -12,7 +13,13 @@ export class CommentDto {
     this.comment = comment;
   }
 }
-
+export class SpotWithImage extends Spots {
+  @ApiProperty({
+    type: [SpotImages],
+    description: '장소 사진들',
+  })
+  Images: SpotImages[];
+}
 export class RecommendsResponseDto {
   @ApiProperty({
     example: 1,
@@ -39,8 +46,8 @@ export class RecommendsResponseDto {
   isInSchedule: boolean;
 
   @ApiProperty({
-    type: Spots,
+    type: SpotWithImage,
   })
   @IsNotEmpty()
-  Spot: Spots;
+  Spot: SpotWithImage;
 }
