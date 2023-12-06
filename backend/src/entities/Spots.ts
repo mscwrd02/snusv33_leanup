@@ -13,7 +13,6 @@ import { Region } from './common/Region';
 import { Recommends } from './Recommends';
 import { ApiProperty } from '@nestjs/swagger';
 import { Schedules } from './Schedule';
-import { SpotCategories } from './SpotCategories';
 
 @Entity({ schema: process.env.DB_DATABSE, name: 'spots' })
 export class Spots {
@@ -167,7 +166,4 @@ export class Spots {
 
   @OneToMany(() => Schedules, (schedules) => schedules.Spot)
   Schedules: Schedules[];
-
-  @OneToMany(() => SpotCategories, (spotCategories) => spotCategories.Spot)
-  SpotCategories: SpotCategories[];
 }
