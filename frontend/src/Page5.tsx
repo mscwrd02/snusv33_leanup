@@ -22,7 +22,7 @@ function Page5() {
     if (navigator.clipboard !== undefined) {
       navigator.clipboard.writeText(Sharing_Link)
       .then(() => {
-        //alert('텍스트가 복사되었습니다.');
+        alert('텍스트가 복사되었습니다.');
       })
       .catch((error) => {
         console.error('클립보드 복사 실패:', error);
