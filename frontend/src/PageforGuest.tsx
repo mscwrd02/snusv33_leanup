@@ -13,32 +13,23 @@ function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
-let inviterName: any;
 function PageforGuest() {
   const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
   const query = useQuery();
   const id = query.get('id');
 
   const [responseData, setResponseData] = useState<any>(null);
-
+  const [inviterName, setInviterName] = useState<any>(null);
   useEffect(() => {
     axios.get(backend_url + '/api/plans/hashId/' + id, { withCredentials: true })
     .then(response => {
       setResponseData(response.data);
-      inviterName = generateStringToCopy();
+      setInviterName(response.data.participantsName);
+      localStorage.setItem('guestID', response.data.planId);
     })
     .catch(error => {
       console.error('Error fetching data: ', error);
     });
-
-    const generateStringToCopy = () => {
-      let name = '';
-      if (responseData && responseData.participantsName) {
-        name = responseData.participantsName;
-      }
-      localStorage.setItem('guestID', responseData.planId);
-      return name;
-    };
   }, [])
 
   
