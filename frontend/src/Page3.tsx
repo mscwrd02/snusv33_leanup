@@ -20,28 +20,33 @@ const Link: React.FC<LinkProps> = ({ isActive, children, ...props }) => {
 };
 
 const Page3Container = styled.div`
-    width: 430px;
+    width: 100%;
     height: 100%;
-    background: #FFF;    
+    background: #FFF;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 `;
 
 const Top = styled.div`
     margin-top: 12px;
+    width: 100%;
+    box-sizing: border-box;
     display: flex;
-
-    padding-left: 22px;
+    justify-content: center;
     align-items: center;
+    position: relative;
 `;
 
 const Back = styled(ReactRouterDomLink)`
     width: 14px;
     height: 26.34px;
     flex-shrink: 0;
+    position: absolute;
+    left: 22px;
 `;
 
 const Title = styled.div`
-    margin-left: 115px;
-
     color: #292929;
 
     font-family: Inter;
@@ -51,8 +56,13 @@ const Title = styled.div`
     line-height: normal;
 `;
 
+const Container = styled.div`
+    width: 100%;
+    height: fit-content;
+`
+
 const Input = styled.div`
-    width: 356px;
+    width: 340px;
     height: 380px;
 
     display: flex;
@@ -60,7 +70,8 @@ const Input = styled.div`
     justify-content: space-between;
 
     margin-top: 140px;
-    margin-left: 38px;   
+    padding-bottom: 10px;
+    box-sizing: border-box;
 `;
 
 const Text = styled.div`
@@ -72,10 +83,12 @@ const Text = styled.div`
     line-height: normal;
 
     margin-bottom: 9px;
+
+    width: 100%;
 `;
 
 const Option = styled.select`
-    width: 356px;
+    width: 100%;
     height: 36px;
     flex-shrink: 0;
 
@@ -95,14 +108,15 @@ const Option = styled.select`
     letter-spacing: -0.8px;
 
     padding-left: 5px;
+    box-sizing: border-box;
 `;
 
 const Number = styled.div`
     display: flex;
     align-items: center;
 
-    width: 347px;
-    height: 22px;
+    width: 100%;
+    height: 33px;
     flex-shrink: 0;
 
     border: 0.5px solid #B4B4B4;
@@ -113,6 +127,7 @@ const Number = styled.div`
     padding-top: 6px;
     padding-bottom: 6px;
     padding-left: 5px;
+    box-sizing: border-box;
 `;
 
 const Minus = styled.svg`
@@ -146,7 +161,7 @@ const When = styled.div`
     display: flex;
     align-content: flex-start;
 
-    width: 356px;
+    width: 100%;
     height: 36px;
     flex-shrink: 0;
 
@@ -154,14 +169,13 @@ const When = styled.div`
     
     margin-left: 0px;
     margin-top: 0px;
-    
 `;
 
 const Picker = styled(DatePicker)`
     color: #000;
 
-    width: 348px;
-    height: 28px;
+    width: 340px;
+    height: 34px;
 
     color: #000;
     font-family: Noto Sans KR;
@@ -170,12 +184,12 @@ const Picker = styled(DatePicker)`
     font-weight: 400;
     line-height: 120%; /* 19.2px */
     letter-spacing: -0.8px;
-    
+    box-sizing: border-box;
 `;
 
 const Nextpage = styled(Link)`
     display: flex;
-    width: 360px;
+    width: 87%;
     height: 40px;
     justify-content: center;
     align-items: center;
@@ -198,7 +212,6 @@ const Nextpage = styled(Link)`
     line-height: normal;
 
     margin-top: 200px;
-    margin-left: 35px;
 
     text-decoration: None;
 `;
@@ -273,7 +286,7 @@ export function Page3() {
                 </Number>
             </div>
 
-            <div>
+            <Container>
                 <Text>여행 시작일</Text>
                 <When>
                     <Picker
@@ -283,7 +296,7 @@ export function Page3() {
                         onChange={(date) => setStartDate(date)}
                     />
                 </When>
-            </div>
+            </Container>
 
             <div>
                 <Text>여행 종료일</Text>

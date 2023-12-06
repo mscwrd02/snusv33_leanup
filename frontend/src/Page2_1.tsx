@@ -12,6 +12,8 @@ const Page2_1Container = styled.div`
     background: #FFF;
     padding-top: 6px;
     padding-bottom: 50px;
+    
+    box-sizing: border-box;
 
     display: flex;
     flex-direction: column;
@@ -31,7 +33,8 @@ const Logo = styled(Link)`
     line-height: 140%;
 
     text-align: start;
-    padding-left: 50px;
+    padding-left: 18px;
+    box-sizing: border-box;
 `;
 
 const Body2_1 = styled.div`
@@ -43,6 +46,7 @@ const Body2_1 = styled.div`
 
     margin-top: 25px;
     gap: 30px;
+    box-sizing: border-box;
 ` 
 
 const Location = styled.div`
@@ -57,7 +61,6 @@ const Location = styled.div`
     box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.20);
 
     padding: 18px 21px 13px 21px;
-    box-sizing: border-box;
 `;
 
 const Top = styled.div`
@@ -218,11 +221,13 @@ const Decoration = styled.div`
 `;
 
 const Add = styled.div`
-    width: 60px;
+    display: flex;
+    justify-content: end;
+    width: 100%;
     height: 60px;
     flex-shrink: 0;
 
-    margin-left: 323px;
+    padding-right: 42px;
     margin-top: 303px;
 `;
 
@@ -305,7 +310,7 @@ export function Page2_1() {
         const fetchData = async () => {
             try {
               const response = await axios.get(backend_url+"/api/plans/all", { withCredentials: true });
-              if(response['data'].length==0){
+              if(response['data'].length===0){
                 setHavePlan(false);
               }
               else{

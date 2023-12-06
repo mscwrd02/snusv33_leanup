@@ -7,9 +7,10 @@ const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
 
 const Page6_1Container = styled.div`
     width: 100%;
-    height: 932px;
+    height: 100%;
     background: #FFF;
     padding-top: 30px;
+    box-sizing: border-box;
 
     display: flex;
     flex-direction: column;

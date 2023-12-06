@@ -26,8 +26,9 @@ const Page1Container = styled.div`
 const Page1Header = styled.div`
   width: 100%;
   display:flex;
-  margin-top: 4px;
-  margin-left: 18px;
+  padding-top: 4px;
+  padding-left: 18px;
+  box-sizing: border-box;
 `;
 
 const Logo = styled.div`
