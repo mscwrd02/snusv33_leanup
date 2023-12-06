@@ -10,7 +10,7 @@ function Page5() {
 
   const generateStringToCopy = () => {
     // 여기에서 원하는 로직에 따라 새로운 문자열을 생성합니다.
-    return "https://www.tripwiz.space/PageforGuest?id=" + location.state.link;
+    return "https://tripwiz.space/PageforGuest?id=" + location.state.link;
   };
 
   // localStorage.setItem('guestID', location.state.link);
@@ -22,7 +22,7 @@ function Page5() {
     if (navigator.clipboard !== undefined) {
       navigator.clipboard.writeText(Sharing_Link)
       .then(() => {
-        //alert('텍스트가 복사되었습니다.');
+        alert('텍스트가 복사되었습니다.');
       })
       .catch((error) => {
         console.error('클립보드 복사 실패:', error);

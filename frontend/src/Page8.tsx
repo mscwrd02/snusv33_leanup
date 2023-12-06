@@ -10,7 +10,7 @@ interface Page8ContainerProps {
 }
 
 const Page8Container = styled.div<Page8ContainerProps>`
-    width: 430px;
+    width: 100%;
     height: 100%;
 
     display: flex;
@@ -23,6 +23,7 @@ const Page8Container = styled.div<Page8ContainerProps>`
     overflow: hidden;
 
     padding-bottom: 10px;
+    box-sizing: border-box;
 `
 
 const LogoContainer = styled.div`
@@ -41,7 +42,8 @@ const LogoContainer = styled.div`
     line-height: 140%; /* 33.6px */
 
     margin-top: 10px;
-    padding-left: 40px;
+    padding-left: 18px;
+    box-sizing: border-box;
 `
 
 const LinkContainer = styled(Link)`
@@ -206,6 +208,7 @@ const Bottom = styled.div`
 const Before = styled.div`
     width: auto;
     height: auto;
+    padding: 5px;
 `;
 
 interface NextProps {
@@ -216,6 +219,7 @@ const Next = styled.div<NextProps>`
     pointer-events : ${(props) => (props.canClick ? 'auto' : 'none')};
     width: auto;
     height: auto;
+    padding: 5px;
 `;
 
 const Order = styled.div`
@@ -326,7 +330,7 @@ interface PopupProps {
 }
 
 const PopupContainer = styled.div`
-    position: fixed;
+    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);

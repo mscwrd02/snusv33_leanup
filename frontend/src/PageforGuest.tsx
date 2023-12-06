@@ -7,35 +7,31 @@ import kakaoLogo from './images/kakaotalk.png';
 import invitationImg from './images/invitation.png';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { useEffect } from 'react'
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
-let inviterName: any;
 function PageforGuest() {
   const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
   const query = useQuery();
   const id = query.get('id');
 
   const [responseData, setResponseData] = useState<any>(null);
-  axios.get(backend_url + '/api/plans/hashId/' + id, { withCredentials: true })
-  .then(response => {
-    setResponseData(response.data);
-    inviterName = generateStringToCopy();
-  })
-  .catch(error => {
-    console.error('Error fetching data: ', error);
-  });
-
-  const generateStringToCopy = () => {
-    let name = '';
-    if (responseData && responseData.participantsName) {
-      name = responseData.participantsName;
-    }
-    localStorage.setItem('guestID', responseData.planId);
-    return name;
-  };
+  const [inviterName, setInviterName] = useState<any>(null);
+  useEffect(() => {
+    axios.get(backend_url + '/api/plans/hashId/' + id, { withCredentials: true })
+    .then(response => {
+      setResponseData(response.data);
+      setInviterName(response.data.participantsName);
+      localStorage.setItem('guestID', response.data.planId);
+      console.log("get hashId done");
+    })
+    .catch(error => {
+      console.error('Error fetching data: ', error);
+    });
+  }, [])
 
   
 

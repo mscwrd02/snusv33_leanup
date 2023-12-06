@@ -15,7 +15,7 @@ import right from './images/right.png';
 const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
 
 const Page1Container = styled.div`
-    width: 430px;
+    width: 100%;
     height: 100%;
     background: #FFF; 
     display: flex;
@@ -26,8 +26,9 @@ const Page1Container = styled.div`
 const Page1Header = styled.div`
   width: 100%;
   display:flex;
-  margin-top: 4px;
-  margin-left: 18px;
+  padding-top: 4px;
+  padding-left: 18px;
+  box-sizing: border-box;
 `;
 
 const Logo = styled.div`
@@ -109,7 +110,7 @@ interface ChooseProp {
 
 const Choose = styled.div<ChooseProp>`
   width: 215px;
-  height: 461px;
+  height: 482px;
   box-sizing: border-box;
   
   border-radius: 20px;
@@ -118,6 +119,7 @@ const Choose = styled.div<ChooseProp>`
   
   background-image: ${(props) => `url(${props.currentImg})`};
   background-repeat: no-repeat;
+  background-size: cover;
 
   position: relative;
 `;
@@ -150,13 +152,13 @@ const Start = styled(Link)`
 const LeftContainer = styled.div`
   position: absolute;
   left : -70px;
-  top : 40%;
+  top : 44%;
 `
 
 const RightContainer = styled.div`
   position: absolute;
   right : -70px;
-  top : 40%;
+  top : 44%;
 `
 
 function Page1() {

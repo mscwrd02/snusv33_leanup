@@ -19,11 +19,13 @@ const TimeTableContainer = styled.div`
 
 const Body = styled.div`
   background: #FFF;
-  height:932px;
+  height:1500px;
   display:flex;
   flex-direction: column;
-  align-items: center;
+  
 `;
+//align-items: center;
+
 
 const Top = styled.div`
     width: 100%;
@@ -234,6 +236,8 @@ function TimeTable() {
         setResponseData(response.data);
         let tempNSpot = nSpot; // 임시 변수에 현재 nSpot 값 저장
         let day: any;
+        spot_arr = new Array(n_day);
+        spot_arr_count = new Array(n_day+1).fill(0);
         if (!get_flag){
           for(let data of response.data){
             day = data.day;  // day 속성 값 가져오기
@@ -594,7 +598,7 @@ const explain_style: React.CSSProperties = {
 };
 const spot_list_popup_style: React.CSSProperties = {
   zIndex: '15',
-  position: 'absolute',
+  position: 'fixed',
   bottom: '0px',
   width: '95%',
   height: '200px',

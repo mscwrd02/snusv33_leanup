@@ -118,6 +118,7 @@ const With = styled.div`
 `
 
 const Text = styled.span`
+  width: fit-content;
   color: #000;
   text-align: center;
   font-family: Noto Sans KR;
@@ -523,7 +524,7 @@ function Page6() {
                     )}
                 </Preferencetop>
                 <Surveyrate status={JSON.parse(myResponse.categoryResponseStatus).filter((value:boolean) => value === true).length / myResponse.groupNum * 100}>
-                    <span>{JSON.parse(myResponse.categoryResponseStatus).filter((value:boolean) => value === true).length / myResponse.groupNum * 100}%</span>
+                    <span>{(JSON.parse(myResponse.categoryResponseStatus).filter((value:boolean) => value === true).length / myResponse.groupNum * 100).toFixed(1)}%</span>
                     <Bar>
                         <Completebar status={JSON.parse(myResponse.categoryResponseStatus).filter((value:boolean) => value === true).length / myResponse.groupNum * 100}/>
                     </Bar>
@@ -559,7 +560,7 @@ function Page6() {
 
                     </Preferencetop>
                     <Surveyrate status={JSON.parse(myResponse.spotResponseStatus).filter((value:boolean) => value === true).length / myResponse.groupNum * 100}>
-                        <span>{JSON.parse(myResponse.spotResponseStatus).filter((value:boolean) => value === true).length / myResponse.groupNum * 100}%</span>
+                        <span>{(JSON.parse(myResponse.spotResponseStatus).filter((value:boolean) => value === true).length / myResponse.groupNum * 100).toFixed(1)}%</span>
                         <Bar>
                             <Completebar status={JSON.parse(myResponse.spotResponseStatus).filter((value:boolean) => value === true).length / myResponse.groupNum * 100}/>
                         </Bar>

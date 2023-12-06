@@ -277,7 +277,7 @@ function PlannerMap() {
         <Map id="map" />
       </div>
       <div className="hi" style={my_style}> 
-        <button style={{background: 'None', border:'None'}} onClick={() => navigate('/surveyresult', { state: { planId: location.state.planId} })}>
+        <button style={{background: 'None', border:'None'}} onClick={() => navigate('/surveyresult', { state: { planId: location.state.planId, howMuchDays: location.state.howMuchDays} })}>
           <img src={prev_btn_x} style={{width: '74px', height: '60px'}} alt="이전" /> 
         </button>
       </div>
