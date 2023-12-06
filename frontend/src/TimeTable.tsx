@@ -598,7 +598,7 @@ const explain_style: React.CSSProperties = {
 };
 const spot_list_popup_style: React.CSSProperties = {
   zIndex: '15',
-  position: 'absolute',
+  position: 'fixed',
   bottom: '0px',
   width: '95%',
   height: '200px',

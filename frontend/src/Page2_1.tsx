@@ -43,6 +43,7 @@ const Body2_1 = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
 
     margin-top: 25px;
     gap: 30px;
@@ -52,6 +53,7 @@ const Body2_1 = styled.div`
 const Location = styled.div`
     width: 87%;
     height: 239px;
+    box-sizing: border-box;
     flex-shrink: 0;
 
     border-radius: 20px;
