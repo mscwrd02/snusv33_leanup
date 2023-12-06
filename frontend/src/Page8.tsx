@@ -42,7 +42,7 @@ const LogoContainer = styled.div`
     line-height: 140%; /* 33.6px */
 
     margin-top: 10px;
-    padding-left: 40px;
+    padding-left: 18px;
     box-sizing: border-box;
 `
 
