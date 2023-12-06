@@ -26,6 +26,7 @@ function PageforGuest() {
       setResponseData(response.data);
       setInviterName(response.data.participantsName);
       localStorage.setItem('guestID', response.data.planId);
+      console.log("get hashId done");
     })
     .catch(error => {
       console.error('Error fetching data: ', error);
