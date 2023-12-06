@@ -19,7 +19,7 @@ const TimeTableContainer = styled.div`
 
 const Body = styled.div`
   background: #FFF;
-  height:932px;
+  height:1500px;
   display:flex;
   flex-direction: column;
   
