@@ -60,6 +60,8 @@ const Body = styled.div`
     flex-direction: column;
     align-items: center;
     gap: 24px;
+
+    margin-bottom: 100px;
 `
 
 const More = styled.div`

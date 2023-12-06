@@ -11,7 +11,6 @@ const Page4Container = styled.div`
     width: 100%;
     height: 100%;
     background: #FFF;
-    padding-top: 30px;
 
     display: flex;
     flex-direction: column;
@@ -19,24 +18,24 @@ const Page4Container = styled.div`
 `;
 
 const Top = styled.div`
+    margin-top: 12px;
     width: 100%;
-    height: 30px;
-    text-align: center;
+    box-sizing: border-box;
     display: flex;
-
-    color: #292929;
+    justify-content: center;
+    align-items: center;
+    position: relative;
 `;
 
 const Back = styled(Link)`
-    margin-left: 22px;
-    width: auto;
-    height: auto;
+    width: 14px;
+    height: 26.34px;
+    flex-shrink: 0;
+    position: absolute;
+    left: 22px;
 `;
 
 const Title = styled.div`
-    width: auto;
-    height: auto;
-
     color: #292929;
 
     font-family: Inter;
@@ -44,11 +43,6 @@ const Title = styled.div`
     font-style: normal;
     font-weight: 700;
     line-height: normal;
-
-    margin-left: auto;
-    margin-right: auto;
-
-    padding-right: 36px;
 `;
 
 const Explaination = styled.div`
@@ -103,7 +97,7 @@ const Extra = styled.div`
 `;
 
 const Selection = styled.div`
-    width: 85;
+    width: 85%;
     height: auto;
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -124,7 +118,7 @@ const Card = styled.button<CardProps>`
     flex-direction: column;
     align-items: center;
 
-    width: 166px;
+    width: auto;
     height: 250px;
     flex-shrink: 0;
 
