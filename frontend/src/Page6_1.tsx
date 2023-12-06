@@ -135,7 +135,7 @@ const Ok = styled.div`
     align-items: center;
     justify-content: center;
 
-    margin-top: 236px;
+    margin-top: 100px;
 `;
 
 function Page6_1(){
