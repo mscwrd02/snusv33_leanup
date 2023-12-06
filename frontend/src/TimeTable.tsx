@@ -22,8 +22,10 @@ const Body = styled.div`
   height:932px;
   display:flex;
   flex-direction: column;
-  align-items: center;
+  
 `;
+//align-items: center;
+
 
 const Top = styled.div`
     width: 100%;
