@@ -260,6 +260,7 @@ export let participantsName: string[] = [];
 
 const days: string[] = ['일', '월', '화', '수', '목', '금', '토'];
 
+/*
 if (localStorage.getItem('guestID')){
     
     axios.post(backend_url+"/api/plans/join/" + localStorage.getItem('guestID'), {
@@ -272,7 +273,7 @@ if (localStorage.getItem('guestID')){
     }).then(function() {
         // 항상 실행
     });
-}
+}*/
 
 export function Page2_1() {
     const navigate = useNavigate();
@@ -280,6 +281,8 @@ export function Page2_1() {
     const [havePlan, setHavePlan] = useState(true);
     const [myResponse, setMyResponse] = useState(Array<string[]>());
     const [isClickDeleteMenuArray, setIsClickDeleteMenuArray] = useState<boolean[]>([]);
+    
+    const [haveGuestID, setHaveGuestID] = useState(false);
 
     const deletePlan = (event: any, planId: string, index: number) => {
         event.stopPropagation();
@@ -308,8 +311,20 @@ export function Page2_1() {
         });
     };
 
-
     useEffect(() => {
+        if(localStorage.getItem('guestID') !== null){
+            axios.post(backend_url+"/api/plans/join/" + localStorage.getItem('guestID'), {
+            }, { withCredentials: true })
+            .then(function (response) {
+                //redirect
+                localStorage.removeItem('guestID');
+            }).catch(function (error) {
+                // 오류발생시 실행
+            }).then(function() {
+                // 항상 실행
+            });
+            setHaveGuestID(true);
+        }
         const fetchData = async () => {
             try {
               const response = await axios.get(backend_url+"/api/plans/all", { withCredentials: true });
@@ -340,6 +355,36 @@ export function Page2_1() {
     }, []); // 최초 한번
 
     useEffect(() => {}, [isClickDeleteMenuArray]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+              const response = await axios.get(backend_url+"/api/plans/all", { withCredentials: true });
+              if(response['data'].length===0){
+                setHavePlan(false);
+              }
+              else{
+                const tempResponse: Array<string[]> = [];
+                for(let i=0;i<response['data'].length;i++){
+                    const tempArray: string[] = [];
+                    tempArray.push(response['data'][i]['startDate']);
+                    tempArray.push(response['data'][i]['endDate']);
+                    tempArray.push(response['data'][i]['status']);
+                    tempArray.push(response['data'][i]['participantsName']);
+                    tempArray.push(String(response['data'][i]['planId']));
+
+                    tempResponse.push(tempArray);
+                }
+                setMyResponse(tempResponse);
+              }
+            } catch (error) {
+              // 오류 발생시 실행
+            } finally {
+              // 항상 실행
+            }
+        };
+        fetchData();
+    }, [haveGuestID]);
 
     return (
         <Page2_1Container>
