@@ -44,5 +44,6 @@ jobs:
         env:
           BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET }}
         run: |
+          cd frontend
           aws s3 sync \
             ./build s3://$BUCKET_NAME
