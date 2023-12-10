@@ -7,6 +7,10 @@ on:
     branches:
       - frontend
 
+env:
+  BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET }}
+  CI: false
+
 # 위의 이벤트가 트리거되면 실행할 목록입니다.
 jobs:
   build:
@@ -41,8 +45,7 @@ jobs:
 
       # S3에 build 파일을 올립니다.
       - name: Upload to S3
-        env:
-          BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET }}
+
         run: |
           cd frontend
           aws s3 sync \
