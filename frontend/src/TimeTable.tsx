@@ -69,6 +69,17 @@ let spot_id = 0;
 const color_array = ["rgba(0, 122, 255, 0.14)", "rgba(255, 204, 0, 0.14)", "rgba(255, 59, 48, 0.14)", "rgba(175, 82, 222, 0.14)", "rgba(255, 149, 0, 0.14)"];
 const text_color_array = ["rgba(0, 122, 255, 1)", "rgba(255, 204, 0, 1)", "rgba(255, 59, 48, 1)", "rgba(175, 82, 222, 1)", "rgba(255, 149, 0, 1)"];
 // 6개 색
+
+
+interface ResponseData_totalplan {
+  date: number;
+  PlanId: number;
+  SpotId: number;
+  time: string;
+  name: string;
+} 
+
+
 function TimeTable() {
   const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
   const [brightness, setBrightness] = useState(Array(n_day).fill(1));
@@ -83,10 +94,8 @@ function TimeTable() {
   const [planData, setPlanData] = useState<string[][]>([]);
   const [isBlockChoosed, setIsBlockChoosed] = useState<boolean[][]>([]); // for delete button visible
 
-  const initialResponseData = {}; // 초기 responseData 값
-
   // responseData를 객체로 관리
-  const [responseData_totalplan, setResponseData_totalplan] = useState(initialResponseData);
+  const [responseData_totalplan, setResponseData_totalplan] = useState<ResponseData_totalplan[]>([]);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -106,6 +115,7 @@ function TimeTable() {
     setSelectedSpot(null)
   };
 
+
   const handle_eachday = async ({day, block}: {day: number, block: number}) => {
     // 버튼 클릭 시 실행될 코드
     let time: string;
@@ -119,14 +129,17 @@ function TimeTable() {
       if (planData[day-1][block-1] && isDeleteEnable &&isBlockChoosed[day-1][block-1]) { // delete
         setIsDeleteEnable(false);
         selected_day = day;
-        const selectedDayData = spot_arr[selected_day];
-        if (selectedDayData) {
-          // if (!spot_id) {
-            let index = spot_arr[selected_day].findIndex((item: { name: string }) => item.name === planData[day-1][block-1]);
-            // if (spot_arr[selected_day][index]) 
-            spot_id = spot_arr[selected_day][index].spotId;
-          // }
-        }
+        // if (selectedDayData) {
+        //   // if (!spot_id) {
+        //     let index = spot_arr[selected_day].findIndex((item: { name: string }) => item.name === planData[day-1][block-1]);
+        //     // if (spot_arr[selected_day][index]) 
+        //     spot_id = spot_arr[selected_day][index].spotId;
+        //   // }
+        // }
+        const spot = responseData_totalplan.find(item => item.name == planData[day-1][block-1]);
+        if (spot) spot_id = spot.SpotId;
+        else spot_id = 0; //error
+
         axios.delete(backend_url + '/api/schedules', { ///day
           withCredentials: true,
           data: {
@@ -260,6 +273,7 @@ function TimeTable() {
   useEffect(() => {
     axios.get(backend_url + '/api/schedules/all/' + String(location.state.planId), { withCredentials: true }) //+ String(location.state.planId), { withCredentials: true })
     .then(response => {
+        setResponseData_totalplan(response.data);
         // const dayNum = 3; //////////// 재혁이가 넘겨줄 예정
         let newPlanData: string[][] = [];
         let newIsBlockChoosed: boolean[][] = [];
@@ -288,13 +302,6 @@ function TimeTable() {
               throw new Error('Unsupported time');
           }
         }
-        // response.data.forEach((item: {day: string, time: string, name: string}) => {
-        //     const { day, time, name } = item;
-        //     if (!newPlanData[day]) {
-        //         newPlanData[day] = {};
-        //     }
-        //     newPlanData[day][time] page= name;
-        // });
         setPlanData(newPlanData);
         setIsBlockChoosed(newIsBlockChoosed);
         setnewPostFlag(0);

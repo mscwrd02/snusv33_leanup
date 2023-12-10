@@ -243,7 +243,7 @@ const Order = styled.div`
     justify-content: center;
 `
 
-const FormContainer = styled.form`
+const FormContainer = styled.div`
     width: fill;
     height: 43px;
 

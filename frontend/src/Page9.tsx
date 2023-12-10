@@ -606,7 +606,7 @@ function Page9(){
                                                     <img src={comment_img1} width={22} height={21}></img>
                                                 </div>)}
                                             {commentLengthArray[index] > 0 && (
-                                                <Ellipse>{responseArray[index].comments.length}</Ellipse>)}
+                                                <Ellipse>{commentLengthArray[index]}</Ellipse>)}
                                         </ExplanationTop>
                                         {responseArray[index].Spot.overview}
                                     </ExplanationContainer>
