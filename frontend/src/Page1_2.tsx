@@ -27,7 +27,8 @@ function Page1_2() {
     window.location.href = backend_url + "/api/auth/login/kakao";
   }
 
-  const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
+  //const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
+  const backend_url: string = "http://ec2-3-37-49-144.ap-northeast-2.compute.amazonaws.com:3095";
 
   const handleJoin = async () => {
     if (userId && userPW && userName){

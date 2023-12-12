@@ -4,7 +4,7 @@ import styled from "styled-components";
 import friend_icon from './friend_icon.png';
 
 import axios from 'axios';
-const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
+const backend_url: string = "http://ec2-3-37-49-144.ap-northeast-2.compute.amazonaws.com:3095";
 
 const Page6Container = styled.div`
   width: 100%;
