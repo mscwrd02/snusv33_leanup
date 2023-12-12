@@ -10,6 +10,8 @@ on:
 env:
   BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET }}
   CI: false
+  REACT_APP_BACKEND_URL : ${{ secrets.REACT_APP_BACKEND_URL }}
+  REACT_APP_KAKAO_JSKEY : ${{ secrets.REACT_APP_KAKAO_JSKEY }}
 
 # 위의 이벤트가 트리거되면 실행할 목록입니다.
 jobs:
