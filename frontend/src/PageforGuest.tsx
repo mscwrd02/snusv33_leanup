@@ -14,7 +14,7 @@ function useQuery() {
 }
 
 function PageforGuest() {
-  const backend_url: string = "http://ec2-3-37-49-144.ap-northeast-2.compute.amazonaws.com:3095";
+  const backend_url: string = "https://api.tripwiz.space";
   const query = useQuery();
   const id = query.get('id');
 

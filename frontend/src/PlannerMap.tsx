@@ -55,7 +55,7 @@ let newLng:any;
 let newLat:any;
 
 function PlannerMap() {
-  const backend_url: string = "http://ec2-3-37-49-144.ap-northeast-2.compute.amazonaws.com:3095";
+  const backend_url: string = "https://api.tripwiz.space";
   const [responseData, setResponseData] = useState<any[]>([]);
   const [responseDataPost, setResponseDataPost] = useState<any[]>([]);
   const [spotId, setSpotId] = useState(0);

@@ -81,7 +81,7 @@ interface ResponseData_totalplan {
 
 
 function TimeTable() {
-  const backend_url: string = "http://ec2-3-37-49-144.ap-northeast-2.compute.amazonaws.com:3095";
+  const backend_url: string = "https://api.tripwiz.space";
   const [brightness, setBrightness] = useState(Array(n_day).fill(1));
   const [selected, setSelected] = useState<any>(null);
   const [isVisible, setIsVisible] = useState(false);

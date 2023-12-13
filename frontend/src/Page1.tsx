@@ -13,7 +13,7 @@ import left from "./images/left.png";
 import right from "./images/right.png";
 
 //const backend_url: string = process.env.REACT_APP_BACKEND_URL as string;
-const backend_url: string = "http://ec2-3-37-49-144.ap-northeast-2.compute.amazonaws.com:3095";
+const backend_url: string = "https://api.tripwiz.space";
 
 const Page1Container = styled.div`
   width: 100%;

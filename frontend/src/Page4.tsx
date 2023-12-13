@@ -5,7 +5,7 @@ import axios from 'axios';
 import { exportCounter, exportStartDate, exportEndDate } from './Page3';
 
 
-const backend_url: string = "http://ec2-3-37-49-144.ap-northeast-2.compute.amazonaws.com:3095";
+const backend_url: string = "https://api.tripwiz.space";
 
 const Page4Container = styled.div`
     width: 100%;

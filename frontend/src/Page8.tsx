@@ -3,7 +3,7 @@ import {useState, useEffect, useRef} from 'react';
 import styled from "styled-components";
 import axios from 'axios';
 
-const backend_url: string = "http://ec2-3-37-49-144.ap-northeast-2.compute.amazonaws.com:3095";
+const backend_url: string = "https://api.tripwiz.space";
 
 interface Page8ContainerProps {
     isPopupOpen: boolean;

@@ -5,7 +5,7 @@ import example1Img from './images/example1.png';
 import comment_img1 from './images/comment_img1.png';
 
 import axios from 'axios';
-const backend_url: string = "http://ec2-3-37-49-144.ap-northeast-2.compute.amazonaws.com:3095";
+const backend_url: string = "https://api.tripwiz.space";
 
 const Page9Container = styled.div`
     width: 100%;
