@@ -460,6 +460,8 @@ function Page8(){
     const [scoreArray, setScoreArray] = useState<number[]>(new Array(20).fill(0));
     const [commentArray, setCommentArray] = useState<string[]>(new Array(20).fill(""));
 
+    const [currentSpotId, setCurrentSpotId] = useState(0);
+
     const [isPopupOpen, setIsPopupOpen] = useState(false);
 
     const navigate = useNavigate();
@@ -496,7 +498,6 @@ function Page8(){
             return updatedArray;
         })
     };
-    const [currentSpotId, setCurrentSpotId] = useState(0);
 
     function saveScore(score: number){
         setScoreArray(prevState => {
@@ -543,7 +544,7 @@ function Page8(){
               const response = await axios.get(backend_url+"/api/spots/survey/"+String(location.state.planId), { withCredentials: true });
               setMyResponse(response.data);
               if(response.data.alreadySubmitResponses.length > 0){
-                setCurrentSpotId(response.data.alreadySubmitResponses[0].length);
+                setCurrentSpotId(response.data.alreadySubmitResponses.length);
                 for(let i=0; i<response.data.alreadySubmitResponses.length; i++){
                     setScoreArray(prevState => {
                         const updatedArray = [...prevState];
