@@ -310,6 +310,7 @@ class SpotForm {
 class AlreadySubmitResponse {
     score: number = 0;
     spotId: number = 0;
+    comment: string = "";
 };
   
 class ResponseType {
