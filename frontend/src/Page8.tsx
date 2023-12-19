@@ -567,8 +567,8 @@ function Page8(){
         fetchData();
     }, []);
 
-    useEffect(() => {
-    }, [currentSpotId, scoreArray]);
+    /*useEffect(() => {
+    }, [currentSpotId, scoreArray]);*/
     
     return(
         <Page8Container isPopupOpen={isPopupOpen}>
