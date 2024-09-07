@@ -1,8 +1,8 @@
-# snusv33_leanup
+# Tripwiz
+[demo_video](https://www.instagram.com/tripwiz_official/)
 
 ## Frontend
 React + typescript
-styling : emotion
 
 ## Backend
 NestJs
