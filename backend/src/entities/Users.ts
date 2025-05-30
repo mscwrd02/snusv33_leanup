@@ -37,6 +37,9 @@ export class Users {
   @Column({ type: 'enum', name: 'platform', enum: Platform })
   platform: Platform;
 
+  @Column('varchar', { name: 'google_id', unique: true, nullable: true, length: 50 })
+  googleId: string | null;
+
   @Column('varchar', { name: 'profile_image', nullable: true, length: 200 })
   profileImage: string | null;
 

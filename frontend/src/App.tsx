@@ -10,6 +10,7 @@ import Page5 from './Page5';
 import Page6 from "./Page6";
 import Page6_1 from "./Page6_1";
 import PageforGuest from "./PageforGuest";
+import GoogleLoginCallback from "./GoogleLoginCallback";
 
 import PlannerMap from './PlannerMap';
 import TimeTable from './TimeTable';
@@ -55,6 +56,7 @@ function App(){
                   <Route path="pageforguest" element={<PageforGuest />} />
                   <Route path="spotsurvey" element={<Page8 />} />
                   <Route path="surveyresult" element={<Page9 />} />
+                  <Route path="auth/google/callback_success" element={<GoogleLoginCallback />} />
               </Route>
           </Routes>
       </BrowserRouter>

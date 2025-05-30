@@ -5,6 +5,7 @@ import { Users } from '../entities/Users';
 import { AuthService } from './auth.service';
 import { LocalSerializer } from './local.serializer';
 import { LocalStrategy } from './local.strategy';
+import { GoogleStrategy } from './google.strategy';
 import { KakaoStrategy } from './kakao.strategy';
 import { ConfigService } from '@nestjs/config';
 import { AuthController } from './auth.controller';
@@ -18,6 +19,7 @@ import { AuthController } from './auth.controller';
     AuthService,
     LocalStrategy,
     LocalSerializer,
+    GoogleStrategy,
     KakaoStrategy,
     ConfigService,
   ],

@@ -44,6 +44,10 @@ function Page1_1() {
     window.location.href = backend_url + "/api/auth/login/kakao";
   };
 
+  const handleGoogleLogin = async () => {
+    window.location.href = `${backend_url}/api/auth/google`;
+  };
+
   return (
     <div className="page1_1">
       <div className="title">
@@ -102,6 +106,12 @@ function Page1_1() {
           카카오 계정으로 로그인
         </button>
         {/* </Link> */}
+      </div>
+      <div className="Google_Login_btn" style={center_align}>
+        <button onClick={handleGoogleLogin} style={google_login_btn_style}>
+          {/* Add Google logo if available, similar to Kakao */}
+          Sign in with Google
+        </button>
       </div>
     </div>
   );
@@ -182,7 +192,7 @@ const join_btn_style: React.CSSProperties = {
 };
 
 const kakao_login_btn_style: React.CSSProperties = {
-  marginTop: "167px",
+  marginTop: "20px", // Adjusted margin for spacing from the join button
   width: "83.7%",
   height: "40px",
   background: "rgba(254, 229, 0, 1)",
@@ -206,6 +216,27 @@ const kakao_login_btn_style: React.CSSProperties = {
   fontStyle: "normal",
   fontWeight: 500,
   lineHeight: "normal",
+};
+
+const google_login_btn_style: React.CSSProperties = {
+  marginTop: "15px", // Space between Kakao and Google buttons
+  width: "83.7%",
+  height: "40px",
+  background: "#4285F4", // Google's blue color
+  color: "white",
+  border: "none",
+  borderRadius: "10px",
+  boxShadow: "0px 0px 6px 0px rgba(0, 0, 0, 0.20)",
+  justifyContent: "center",
+  alignItems: "center",
+  display: "flex",
+  flexDirection: "row",
+  fontFamily: "Inter",
+  fontSize: "16px",
+  fontStyle: "normal",
+  fontWeight: 500,
+  lineHeight: "normal",
+  cursor: "pointer",
 };
 
 export default Page1_1;
